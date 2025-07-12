@@ -17,32 +17,32 @@ const checklistSteps = [
   {
     label: "Lista de Convidados",
     icon: Users,
-    image: "step1.png",
+    image: "/step1.png",
     detail: "Monte sua lista com praticidade e compartilhe com o Celebre."
   },
   {
     label: "Convites Personalizados",
     icon: Mail,
-    image: "step2.png",
+    image: "/step2.png",
     detail: "Crie convites elegantes e envie direto pelo WhatsApp."
   },
   {
     label: "Confirmações",
     icon: CheckCircle,
-    image: "step3.png",
+    image: "/step3.png",
     detail:
       "Acompanhe quem confirmou presença com atualização automática. tudo através do WhatsApp, tanto voce como seu convidado"
   },
   {
     label: "Organização do Evento",
     icon: CalendarClock,
-    image: "step4.png",
+    image: "/step4.png",
     detail: "Gerencie fornecedores, horários e mensagens com facilidade."
   },
   {
     label: "Dia do Casamento",
     icon: HeartHandshake,
-    image: "step5.png",
+    image: "/step5.png",
     detail: "Tudo pronto? Aproveite o grande dia com tranquilidade."
   }
 ];
