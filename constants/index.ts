@@ -1,9 +1,9 @@
 // NAVIGATION
 export const NAV_LINKS = [
-  { href: '/', key: 'Celebre', label: 'Home' },
-  { href: '/', key: 'Funcionalidades', label: 'How Hilink Work?' },
-  { href: '/', key: 'Planos', label: 'Services' },
-  { href: '/', key: 'Contato ', label: 'Pricing ' },
+  { href: '/', key: 'Celebre', label: 'Celebre' },
+  { href: '/', key: 'Funcionalidades', label: 'Funcionalidades' },
+  { href: '/', key: 'Planos', label: 'Planos' },
+  { href: '/', key: 'Contato ', label: 'Contato ' },
 ];
 
 
