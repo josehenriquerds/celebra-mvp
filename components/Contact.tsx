@@ -37,11 +37,6 @@ const EmailFaq = () => {
             Quero receber
           </button>
         </div>
-
-        <a href="https://www.ecelebre.com.br/public/Contato.vcf" download="contato-celebre.vcf">
-          Baixar contato da Celebre (.vcf)
-        </a>
-
         {/* Lado direito: FAQ */}
         <div className="z-20 flex flex-col justify-center bg-white/70 backdrop-blur-lg p-10 rounded-3xl shadow-md w-full lg:w-[50%]">
           <h2 className="bold-32 lg:bold-40 mb-4 text-[#F2B7B6]">Perguntas Frequentes</h2>

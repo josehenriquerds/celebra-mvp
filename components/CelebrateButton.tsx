@@ -14,11 +14,12 @@ export default function CelebrateButton() {
   }
 
   return (
-    <button
+    <a
+      href="https://forms.gle/t7iCjRbAKuq3R1vS7"
       onClick={handleClick}
       className="relative px-6 py-3 rounded-lg text-white font-semibold bg-[#F2B7B6] text-white hover:bg-[#e39b9a] transition-all duration-300 shadow-lg hover:shadow-xl active:scale-95"
     >
     Comece a Celebrar
-    </button>
+    </a>
   )
 }
