@@ -27,7 +27,7 @@ const CampSite = ({ backgroundImage, title, subtitle, peopleJoined }: CampProps)
         </div>
       </div>
 
-      <div className="flexCenter gap-6">
+      {/* <div className="flexCenter gap-6">
         <span className="flex -space-x-4 overflow-hidden">
           {PEOPLE_URL.map((url) => (
             <Image 
@@ -41,7 +41,7 @@ const CampSite = ({ backgroundImage, title, subtitle, peopleJoined }: CampProps)
           ))}
         </span>
         <p className="bold-16 md:bold-20 text-white">{peopleJoined}</p>
-      </div>
+      </div> */}
      </div>
     </div>
   )
@@ -66,7 +66,7 @@ const Camp = () => {
       </div>
 
       <div className="flexEnd mt-10 px-6 lg:-mt-60 lg:mr-6">
-        <div className="bg-[#a2c6d8] p-8 lg:max-w-[500px] xl:max-w-[734px] xl:rounded-5xl xl:px-16 xl:py-20 relative w-full overflow-hidden rounded-3xl">
+        <div className="bg-[#F2B7B6] p-8 lg:max-w-[500px] xl:max-w-[734px] xl:rounded-5xl xl:px-16 xl:py-20 relative w-full overflow-hidden rounded-3xl">
           <h2 className="regular-24 md:regular-32 2xl:regular-64 capitalize text-white">
             <strong>Celebre,</strong><br></br> E deixe o resto com a gente
           </h2>

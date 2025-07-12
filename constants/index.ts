@@ -7,6 +7,16 @@ export const NAV_LINKS = [
   { href: '/', key: 'contact_us', label: 'Contact Us' },
 ];
 
+
+import { 
+  FiMessageCircle, 
+  FiClipboard, 
+  FiCheckCircle, 
+  FiMail, 
+  FiUsers, 
+  FiCpu 
+} from "react-icons/fi";
+
 // CAMP SECTION
 export const PEOPLE_URL = [
   '/person-1.png',
@@ -16,71 +26,81 @@ export const PEOPLE_URL = [
 ];
 
 // FEATURES SECTION
-export const FEATURES = [
+  export const FEATURES = [
   {
-    title: 'Real maps can be offline',
-    icon: '/map.svg',
+    title: 'Convide e gerencie tudo pelo WhatsApp',
+    icon: FiMessageCircle,
     variant: 'green',
     description:
-      'We provide a solution for you to be able to use our application when climbing, yes offline maps you can use at any time there is no signal at the location',
+      'Adicione convidados, envie convites personalizados, receba confirmações e gerencie detalhes do evento com comandos simples pelo WhatsApp. Fácil, rápido e intuitivo.',
   },
   {
-    title: 'Set an adventure schedule',
-    icon: '/calendar.svg',
+    title: 'Checklist interativo do evento',
+    icon: FiClipboard,
     variant: 'green',
     description:
-      "Schedule an adventure with friends. On holidays, there are many interesting offers from Hilink. That way, there's no more discussion",
+      'Monte e acompanhe o checklist de tarefas do casamento, receba lembretes automáticos e garanta que nenhum detalhe seja esquecido. Visualize o progresso de cada etapa.',
   },
   {
-    title: 'Technology using augment reality',
-    icon: '/tech.svg',
+    title: 'Confirmações automáticas de presença',
+    icon: FiCheckCircle,
     variant: 'green',
     description:
-      'Technology uses augmented reality as a guide to your hiking trail in the forest to the top of the mountain. Already supported by the latest technology without an internet connection',
+      'Acompanhe as confirmações de presença em tempo real. Os convidados podem responder pelo WhatsApp, e o sistema atualiza tudo automaticamente para você.',
   },
   {
-    title: 'Many new locations every month',
-    icon: '/location.svg',
+    title: 'Convites digitais personalizáveis',
+    icon: FiMail,
     variant: 'orange',
     description:
-      'Lots of new locations every month, because we have a worldwide community of climbers who share their best experiences with climbing',
+      'Crie convites elegantes com o seu estilo, envie pelo WhatsApp e acompanhe quem recebeu e visualizou. Personalize com fotos, frases e informações do evento.',
+  },
+  {
+    title: 'Organização centralizada do evento',
+    icon: FiUsers,
+    variant: 'orange',
+    description:
+      'Reúna todas as informações do evento em um só lugar: lista de convidados, local, horário, lembretes, checklist e atualizações. Tudo acessível a qualquer momento.',
+  },
+  {
+    title: 'Assistente inteligente de automações',
+    icon: FiCpu,
+    variant: 'orange',
+    description:
+      'Receba sugestões automáticas, lembretes, mensagens prontas e tire dúvidas diretamente com a IA integrada à plataforma. Ideal para quem quer praticidade.',
   },
 ];
+
 
 // FOOTER SECTION
 export const FOOTER_LINKS = [
   {
-    title: 'Learn More',
+    title: 'Saiba mais',
     links: [
-      'About Hilink',
-      'Press Releases',
-      'Environment',
-      'Jobs',
-      'Privacy Policy',
-      'Contact Us',
+      'Sobre nós',
+      'Próximos eventos',
+      'Politica de Privacidade',
+      'Entre em contato',
     ],
   },
   {
-    title: 'Our Community',
-    links: ['Climbing xixixi', 'Hiking hilink', 'Hilink kinthill'],
+    title: 'Nossos serviços',
+    links: ['Casamentos', 'Chás', 'Eventos Corporativos', 'Aniversários'],
   },
 ];
 
 export const FOOTER_CONTACT_INFO = {
-  title: 'Contact Us',
+  title: 'Entre em contato',
   links: [
-    { label: 'Admin Officer', value: '123-456-7890' },
-    { label: 'Email Officer', value: 'hilink@akinthil.com' },
+    { label: 'WhatsApp', value: '27 99710-9712' },
+    { label: 'WhatsApp', value: '27 99634-3742' },
+    { label: 'Email', value: 'EntaoCelebre@gmail.com' },
   ],
 };
 
 export const SOCIALS = {
   title: 'Social',
   links: [
-    '/facebook.svg',
     '/instagram.svg',
-    '/twitter.svg',
-    '/youtube.svg',
-    '/wordpress.svg',
   ],
 };
