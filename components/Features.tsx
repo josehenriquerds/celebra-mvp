@@ -31,7 +31,7 @@ const Features = () => {
       <div className="max-container padding-container relative w-full flex justify-end">
         <div className="flex flex-1 lg:min-h-[900px]">
           <Image
-            src="/phone.png"
+            src="/public/phones.png"
             alt="phone"
             width={440}
             height={1000}
