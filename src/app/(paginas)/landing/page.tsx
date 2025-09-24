@@ -102,11 +102,11 @@ export default function Home() {
       <main className="font-inter bg-white min-h-screen text-gray-900">
         {/* Header */}
         <header className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex items-center justify-between">
-            <h1 className="font-[Playfair Display] text-3xl font-bold text-[#FCDAC9] tracking-tight">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 flex items-center justify-between">
+            <h1 className="font-[Playfair Display] text-2xl sm:text-3xl font-bold text-[#FCDAC9] tracking-tight">
               <a href="/">Celebre</a>
             </h1>
-            <nav className="hidden md:flex gap-8 text-lg font-medium">
+            <nav className="hidden md:flex gap-6 lg:gap-8 text-base lg:text-lg font-medium">
               <a href="/" className="hover:text-[#FCDAC9] transition-colors">
                 Home
               </a>
@@ -120,67 +120,68 @@ export default function Home() {
                 Contato
               </a>
             </nav>
-            {/* <motion.button
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-[#DAC9FB] text-white px-6 py-2 rounded-full font-semibold shadow-md hover:bg-[#C9FBDA] transition-all duration-300"
+              className="hidden sm:block bg-[#DAC9FB] text-white px-4 sm:px-6 py-2 rounded-full font-semibold shadow-md hover:bg-[#C9FBDA] transition-all duration-300 text-sm sm:text-base"
             >
-              Planeje seu Evento
-            </motion.button> */}
+              Entrar
+            </motion.button>
           </div>
         </header>
 
         {/* Hero Section */}
-        <section className="pt-24 pb-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#FCDAC9] via-[#DAC9FB] to-[#C9FBDA]">
-  <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
+        <section className="pt-20 sm:pt-24 pb-16 sm:pb-24 lg:pb-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#FCDAC9] via-[#DAC9FB] to-[#C9FBDA]">
+  <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
     <motion.div
-      className="md:w-1/2 text-center md:text-left"
+      className="w-full lg:w-1/2 text-center lg:text-left"
       initial={{ opacity: 0, x: -50 }}
       whileInView={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
     >
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-[Playfair Display] font-bold text-gray-900 leading-tight mb-6">
-        Celebre, 
+      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-[Playfair Display] font-bold text-gray-900 leading-tight mb-4 sm:mb-6">
+        Celebre,
       </h1>
-      <p className="text-lg sm:text-xl text-gray-700 mb-8 max-w-md mx-auto md:mx-0">
+      <p className="text-base sm:text-lg lg:text-xl text-gray-700 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0">
         Planeje eventos memoráveis com convites pelo WhatsApp, RSVP automático, listas de presentes e um mural interativo, tudo em um só lugar.
       </p>
-      {/* <motion.button
+      <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-[#C9FBDA] text-gray-900 font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-[#FCDAC9] transition-all duration-300"
+        className="bg-[#C9FBDA] text-gray-900 font-semibold py-3 sm:py-4 px-6 sm:px-8 rounded-full shadow-lg hover:bg-[#FCDAC9] transition-all duration-300 text-sm sm:text-base"
       >
         Comece Grátis
-      </motion.button> */}
+      </motion.button>
     </motion.div>
     <motion.div
-            className="md:w-1/2 flex justify-center mt-12 md:mt-0"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
-            <Image
-  src="/illustrations/celebrecasamento.png"
-  width={800}
-  height={700}
-  alt="Convite elegante pelo WhatsApp com Celebre"
-  className="object-cover "
-  priority
-/>
-
-          </motion.div>
+      className="w-full lg:w-1/2 flex justify-center mt-8 lg:mt-0"
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, ease: "easeOut" }}
+      viewport={{ once: true }}
+    >
+      <div className="relative w-full max-w-md sm:max-w-lg lg:max-w-xl">
+        <Image
+          src="/illustrations/celebrecasamento.png"
+          width={800}
+          height={700}
+          alt="Convite elegante pelo WhatsApp com Celebre"
+          className="w-full h-auto object-cover rounded-lg"
+          priority
+        />
+      </div>
+    </motion.div>
   </div>
 </section>
 
 
         {/* Metrics */}
-        <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#FCDAC9]/20">
-          <h2 className="text-4xl font-[Playfair Display] font-bold text-center text-gray-900 mb-12">
+        <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 bg-[#FCDAC9]/20">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-[Playfair Display] font-bold text-center text-gray-900 mb-8 sm:mb-12">
             Nossa História
           </h2>
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               { value: "17+", label: "Clientes Ativos" },
               { value: "Junte-se", label: "À nossa comunidade de eventos incríveis" },
@@ -188,14 +189,14 @@ export default function Home() {
             ].map((item, idx) => (
               <motion.div
                 key={idx}
-                className="bg-white p-8 rounded-xl shadow-md border border-[#DAC9FB]/30"
+                className="bg-white p-6 sm:p-8 rounded-xl shadow-md border border-[#DAC9FB]/30"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: idx * 0.15, ease: "easeOut" }}
                 viewport={{ once: true }}
               >
-                <div className="text-4xl font-bold text-[#DAC9FB]">{item.value}</div>
-                <div className="text-base text-gray-700 mt-3">{item.label}</div>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#DAC9FB]">{item.value}</div>
+                <div className="text-sm sm:text-base text-gray-700 mt-2 sm:mt-3">{item.label}</div>
               </motion.div>
             ))}
           </div>
