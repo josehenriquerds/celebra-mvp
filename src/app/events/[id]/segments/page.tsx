@@ -491,7 +491,7 @@ export default function SegmentsPage() {
                   {/* Rules Display */}
                   <div className="space-y-2 mb-4">
                     <p className="text-xs font-medium text-celebre-muted">Regras:</p>
-                    {(segment.rules.and || []).map((rule: any, index: number) => {
+                    {(segment.rules?.and || []).map((rule: any, index: number) => {
                       const field = FIELDS.find((f) => f.value === rule.field)
                       return (
                         <div key={index} className="text-xs text-celebre-muted bg-gray-50 p-2 rounded">

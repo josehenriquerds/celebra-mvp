@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Search, Filter, Download, Send, Users, Star, Baby, Clock, Phone, ArrowLeft } from 'lucide-react'
+import { Search, Filter, Download, Send, Users, Star, Baby, Clock, Phone, ArrowLeft, Tag, Plus, X } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -38,6 +38,16 @@ interface Guest {
     id: string
     label: string
   } | null
+  tags?: {
+    id: string
+    name: string
+  }[]
+}
+
+interface GuestGroup {
+  id: string
+  name: string
+  guestCount: number
 }
 
 const FILTERS = [
@@ -75,9 +85,14 @@ export default function GuestsPage() {
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
+  const [groups, setGroups] = useState<GuestGroup[]>([])
+  const [showGroupModal, setShowGroupModal] = useState(false)
+  const [showAssignModal, setShowAssignModal] = useState(false)
+  const [newGroupName, setNewGroupName] = useState('')
 
   useEffect(() => {
     fetchGuests()
+    fetchGroups()
   }, [eventId, filter, search, page])
 
   async function fetchGuests() {
@@ -100,6 +115,74 @@ export default function GuestsPage() {
       console.error('Error fetching guests:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function fetchGroups() {
+    try {
+      const res = await fetch(`/api/events/${eventId}/groups`)
+      const data = await res.json()
+      setGroups(data || [])
+    } catch (error) {
+      console.error('Error fetching groups:', error)
+    }
+  }
+
+  async function createGroup() {
+    if (!newGroupName.trim()) return
+
+    try {
+      const res = await fetch(`/api/events/${eventId}/groups`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newGroupName }),
+      })
+
+      if (res.ok) {
+        setNewGroupName('')
+        setShowGroupModal(false)
+        fetchGroups()
+      }
+    } catch (error) {
+      console.error('Error creating group:', error)
+    }
+  }
+
+  async function assignToGroup(groupId: string) {
+    if (selectedGuests.size === 0) return
+
+    try {
+      const res = await fetch(`/api/events/${eventId}/groups/${groupId}/assign`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guestIds: Array.from(selectedGuests) }),
+      })
+
+      if (res.ok) {
+        setShowAssignModal(false)
+        setSelectedGuests(new Set())
+        fetchGuests()
+        fetchGroups()
+      }
+    } catch (error) {
+      console.error('Error assigning guests:', error)
+    }
+  }
+
+  async function deleteGroup(groupId: string) {
+    if (!confirm('Tem certeza que deseja excluir este grupo?')) return
+
+    try {
+      const res = await fetch(`/api/events/${eventId}/groups/${groupId}`, {
+        method: 'DELETE',
+      })
+
+      if (res.ok) {
+        fetchGroups()
+        fetchGuests()
+      }
+    } catch (error) {
+      console.error('Error deleting group:', error)
     }
   }
 
@@ -186,6 +269,16 @@ export default function GuestsPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowGroupModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Novo Grupo
+              </Button>
+              {selectedGuests.size > 0 && (
+                <Button variant="outline" size="sm" onClick={() => setShowAssignModal(true)}>
+                  <Tag className="h-4 w-4 mr-2" />
+                  Atribuir Grupo ({selectedGuests.size})
+                </Button>
+              )}
               <Button variant="outline" size="sm" onClick={handleExportCSV}>
                 <Download className="h-4 w-4 mr-2" />
                 Exportar CSV
@@ -203,6 +296,37 @@ export default function GuestsPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Groups Section */}
+        {groups.length > 0 && (
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold text-celebre-ink">Grupos</h2>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {groups.map((group) => (
+                <div
+                  key={group.id}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-300 hover:shadow-sm transition-all group"
+                >
+                  <Tag className="h-4 w-4 text-celebre-brand" />
+                  <span className="text-sm font-medium text-celebre-ink">
+                    {group.name}
+                  </span>
+                  <span className="text-xs text-celebre-muted">
+                    ({group.guestCount})
+                  </span>
+                  <button
+                    onClick={() => deleteGroup(group.id)}
+                    className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="h-3 w-3 text-red-500 hover:text-red-700" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Filters & Search */}
         <div className="mb-6 space-y-4">
           {/* Filter Chips */}
@@ -350,6 +474,12 @@ export default function GuestsPage() {
                           {guest.children}
                         </Badge>
                       )}
+                      {guest.tags?.map((tag) => (
+                        <Badge key={tag.id} variant="outline" className="text-xs bg-celebre-accent">
+                          <Tag className="h-3 w-3 mr-1" />
+                          {tag.name}
+                        </Badge>
+                      ))}
                     </div>
 
                     {/* Info */}
@@ -403,6 +533,80 @@ export default function GuestsPage() {
           </>
         )}
       </main>
+
+      {/* Create Group Modal */}
+      {showGroupModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h2 className="text-xl font-semibold text-celebre-ink mb-4">Criar Novo Grupo</h2>
+            <input
+              type="text"
+              placeholder="Nome do grupo (ex: Amigos da Noiva)"
+              value={newGroupName}
+              onChange={(e) => setNewGroupName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && createGroup()}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-celebre-brand mb-4"
+              autoFocus
+            />
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowGroupModal(false)
+                  setNewGroupName('')
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button onClick={createGroup} disabled={!newGroupName.trim()}>
+                Criar Grupo
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Assign to Group Modal */}
+      {showAssignModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h2 className="text-xl font-semibold text-celebre-ink mb-4">
+              Atribuir {selectedGuests.size} convidado(s) ao grupo
+            </h2>
+            <div className="space-y-2 mb-4 max-h-64 overflow-y-auto">
+              {groups.length === 0 ? (
+                <p className="text-sm text-celebre-muted text-center py-4">
+                  Nenhum grupo criado. Crie um grupo primeiro.
+                </p>
+              ) : (
+                groups.map((group) => (
+                  <button
+                    key={group.id}
+                    onClick={() => assignToGroup(group.id)}
+                    className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl hover:bg-celebre-accent transition-all"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-celebre-brand" />
+                      <span className="font-medium text-celebre-ink">{group.name}</span>
+                    </div>
+                    <span className="text-xs text-celebre-muted">
+                      {group.guestCount} convidados
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setShowAssignModal(false)}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -46,19 +46,24 @@ export async function GET(
       y: table.y,
       rotation: table.rotation,
       shape: table.shape,
+      radius: 80, // Add radius field
       seats: table.seats.map((seat) => ({
         id: seat.id,
         index: seat.index,
         x: seat.x,
         y: seat.y,
         rotation: seat.rotation,
-        guest: seat.assignments[0]
+        assignment: seat.assignments[0]
           ? {
-              id: seat.assignments[0].guest.id,
-              name: seat.assignments[0].guest.contact.fullName,
-              isVip: seat.assignments[0].guest.contact.isVip,
-              household: seat.assignments[0].guest.contact.household?.label,
-              locked: seat.assignments[0].locked,
+              id: seat.assignments[0].id,
+              guest: {
+                id: seat.assignments[0].guest.id,
+                contact: {
+                  fullName: seat.assignments[0].guest.contact.fullName,
+                  isVip: seat.assignments[0].guest.contact.isVip,
+                },
+                children: seat.assignments[0].guest.children,
+              },
             }
           : null,
       })),
@@ -86,26 +91,26 @@ export async function GET(
       ],
     })
 
-    // Group by household
-    const households = unassignedGuests.reduce((acc, guest) => {
-      const householdLabel = guest.contact.household?.label || 'Sem Família'
-      if (!acc[householdLabel]) {
-        acc[householdLabel] = []
-      }
-      acc[householdLabel].push({
-        id: guest.id,
-        name: guest.contact.fullName,
+    const formattedUnassigned = unassignedGuests.map((guest) => ({
+      id: guest.id,
+      contact: {
+        id: guest.contact.id,
+        fullName: guest.contact.fullName,
         isVip: guest.contact.isVip,
-      })
-      return acc
-    }, {} as Record<string, any[]>)
+      },
+      household: guest.contact.household
+        ? {
+            id: guest.contact.household.id,
+            label: guest.contact.household.label,
+          }
+        : null,
+      children: guest.children,
+      seats: guest.seats,
+    }))
 
     return NextResponse.json({
       tables: formattedTables,
-      unassignedGuests: Object.entries(households).map(([label, members]) => ({
-        household: label,
-        members,
-      })),
+      unassigned: formattedUnassigned,
     })
   } catch (error) {
     console.error('Error fetching tables:', error)

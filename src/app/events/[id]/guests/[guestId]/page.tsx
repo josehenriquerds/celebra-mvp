@@ -427,7 +427,7 @@ export default function GuestProfilePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {guest.timeline.length === 0 ? (
+                {(!guest.timeline || guest.timeline.length === 0) ? (
                   <div className="text-center py-8 text-celebre-muted">
                     <Clock className="h-12 w-12 mx-auto mb-2 opacity-50" />
                     <p>Nenhuma interação registrada</p>

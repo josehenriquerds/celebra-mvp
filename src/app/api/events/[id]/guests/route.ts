@@ -69,6 +69,11 @@ export async function GET(
               },
             },
           },
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
         },
         orderBy: [
           { contact: { isVip: 'desc' } },
@@ -119,6 +124,10 @@ export async function GET(
             label: guest.seatAssignments[0].seat.table.label,
           }
         : null,
+      tags: guest.tags.map((gt) => ({
+        id: gt.tag.id,
+        name: gt.tag.name,
+      })),
     }))
 
     return NextResponse.json({
