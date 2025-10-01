@@ -1,16 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { vendorUpdateSchema } from '@/lib/validations/vendor';
-import { calculateProfileScore, normalizeInstagramHandle } from '@/lib/vendor-utils';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { vendorUpdateSchema } from '@/lib/validations/vendor'
+import { calculateProfileScore, normalizeInstagramHandle } from '@/lib/vendor-utils'
 
 /**
  * GET /api/vendor-partners/:id
  * Busca vendor partner por ID (CRM)
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const vendor = await prisma.vendorPartner.findUnique({
       where: { id: params.id },
@@ -34,27 +31,25 @@ export async function GET(
           },
         },
       },
-    });
+    })
 
     if (!vendor) {
-      return NextResponse.json({ error: 'Vendor não encontrado' }, { status: 404 });
+      return NextResponse.json({ error: 'Vendor não encontrado' }, { status: 404 })
     }
 
     // Calcular média de avaliações
-    const avgRating = vendor.reviews.length > 0
-      ? vendor.reviews.reduce((acc, r) => acc + r.rating, 0) / vendor.reviews.length
-      : 0;
+    const avgRating =
+      vendor.reviews.length > 0
+        ? vendor.reviews.reduce((acc, r) => acc + r.rating, 0) / vendor.reviews.length
+        : 0
 
     return NextResponse.json({
       ...vendor,
       avgRating,
-    });
+    })
   } catch (error) {
-    console.error('Vendor get error:', error);
-    return NextResponse.json(
-      { error: 'Erro ao buscar vendor' },
-      { status: 500 }
-    );
+    console.error('Vendor get error:', error)
+    return NextResponse.json({ error: 'Erro ao buscar vendor' }, { status: 500 })
   }
 }
 
@@ -62,30 +57,28 @@ export async function GET(
  * PATCH /api/vendor-partners/:id
  * Atualiza vendor (admin ou dono)
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const body = await request.json();
+    const body = await request.json()
 
     // Validar dados
-    const validated = vendorUpdateSchema.parse(body);
+    const validated = vendorUpdateSchema.parse(body)
 
     // Buscar vendor existente
     const existing = await prisma.vendorPartner.findUnique({
       where: { id: params.id },
       include: { media: true },
-    });
+    })
 
     if (!existing) {
-      return NextResponse.json({ error: 'Vendor não encontrado' }, { status: 404 });
+      return NextResponse.json({ error: 'Vendor não encontrado' }, { status: 404 })
     }
 
     // Normalizar Instagram se fornecido
-    const instagramHandle = validated.instagramHandle !== undefined
-      ? normalizeInstagramHandle(validated.instagramHandle)
-      : undefined;
+    const instagramHandle =
+      validated.instagramHandle !== undefined
+        ? normalizeInstagramHandle(validated.instagramHandle)
+        : undefined
 
     // Atualizar
     const updated = await prisma.vendorPartner.update({
@@ -100,23 +93,29 @@ export async function PATCH(
         ...(validated.whatsappUrl !== undefined && { whatsappUrl: validated.whatsappUrl || null }),
         ...(validated.city && { city: validated.city }),
         ...(validated.state && { state: validated.state.toUpperCase() }),
-        ...(validated.serviceRadiusKm !== undefined && { serviceRadiusKm: validated.serviceRadiusKm }),
+        ...(validated.serviceRadiusKm !== undefined && {
+          serviceRadiusKm: validated.serviceRadiusKm,
+        }),
         ...(validated.categories && { categories: validated.categories }),
         ...(validated.priceFromCents !== undefined && { priceFromCents: validated.priceFromCents }),
-        ...(validated.descriptionShort !== undefined && { descriptionShort: validated.descriptionShort }),
-        ...(validated.descriptionLong !== undefined && { descriptionLong: validated.descriptionLong }),
+        ...(validated.descriptionShort !== undefined && {
+          descriptionShort: validated.descriptionShort,
+        }),
+        ...(validated.descriptionLong !== undefined && {
+          descriptionLong: validated.descriptionLong,
+        }),
       },
       include: {
         media: true,
       },
-    });
+    })
 
     // Recalcular score
-    const newScore = calculateProfileScore(updated);
+    const newScore = calculateProfileScore(updated)
     await prisma.vendorPartner.update({
       where: { id: params.id },
       data: { profileScore: newScore },
-    });
+    })
 
     // Log da atualização
     await prisma.vendorStatusLog.create({
@@ -126,26 +125,20 @@ export async function PATCH(
         actorUserId: body.actorUserId || null,
         reason: 'Dados atualizados',
       },
-    });
+    })
 
     return NextResponse.json({
       success: true,
       vendor: { ...updated, profileScore: newScore },
-    });
+    })
   } catch (error) {
-    console.error('Vendor update error:', error);
+    console.error('Vendor update error:', error)
 
     if (error instanceof Error && 'issues' in error) {
-      return NextResponse.json(
-        { error: 'Dados inválidos', details: error },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Dados inválidos', details: error }, { status: 400 })
     }
 
-    return NextResponse.json(
-      { error: 'Erro ao atualizar vendor' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erro ao atualizar vendor' }, { status: 500 })
   }
 }
 
@@ -153,24 +146,18 @@ export async function PATCH(
  * DELETE /api/vendor-partners/:id
  * Remove vendor (LGPD)
  */
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await prisma.vendorPartner.delete({
       where: { id: params.id },
-    });
+    })
 
     return NextResponse.json({
       success: true,
       message: 'Vendor removido',
-    });
+    })
   } catch (error) {
-    console.error('Vendor delete error:', error);
-    return NextResponse.json(
-      { error: 'Erro ao remover vendor' },
-      { status: 500 }
-    );
+    console.error('Vendor delete error:', error)
+    return NextResponse.json({ error: 'Erro ao remover vendor' }, { status: 500 })
   }
 }

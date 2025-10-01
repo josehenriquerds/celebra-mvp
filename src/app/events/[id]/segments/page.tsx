@@ -3,16 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import {
-  ArrowLeft,
-  Plus,
-  Edit2,
-  Trash2,
-  X,
-  Users,
-  Filter,
-  Send,
-} from 'lucide-react'
+import { ArrowLeft, Plus, Edit2, Trash2, X, Users, Filter, Send } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -57,12 +48,8 @@ const OPERATORS = {
     { value: 'gte', label: 'Maior ou igual' },
     { value: 'lte', label: 'Menor ou igual' },
   ],
-  boolean: [
-    { value: 'eq', label: 'É' },
-  ],
-  select: [
-    { value: 'eq', label: 'Igual a' },
-  ],
+  boolean: [{ value: 'eq', label: 'É' }],
+  select: [{ value: 'eq', label: 'Igual a' }],
 }
 
 const RSVP_OPTIONS = ['sim', 'nao', 'talvez', 'pendente']
@@ -235,9 +222,9 @@ export default function SegmentsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando segmentos...</p>
         </div>
       </div>
@@ -247,8 +234,8 @@ export default function SegmentsPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
@@ -257,16 +244,16 @@ export default function SegmentsPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-3xl font-heading font-bold text-celebre-ink">
+                <h1 className="font-heading text-3xl font-bold text-celebre-ink">
                   Segmentação Dinâmica
                 </h1>
-                <p className="text-sm text-celebre-muted mt-1">
+                <p className="mt-1 text-sm text-celebre-muted">
                   Crie filtros avançados e envie mensagens direcionadas
                 </p>
               </div>
             </div>
             <Button onClick={openCreateModal}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Novo Segmento
             </Button>
           </div>
@@ -275,8 +262,8 @@ export default function SegmentsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <Card className="w-full max-w-3xl my-8">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-4">
+          <Card className="my-8 w-full max-w-3xl">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="font-heading">
@@ -301,7 +288,9 @@ export default function SegmentsPage() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-celebre-ink">Descrição (Opcional)</label>
+                  <label className="text-sm font-medium text-celebre-ink">
+                    Descrição (Opcional)
+                  </label>
                   <Input
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -313,12 +302,12 @@ export default function SegmentsPage() {
 
               {/* Rules Builder */}
               <div>
-                <div className="flex items-center justify-between mb-3">
+                <div className="mb-3 flex items-center justify-between">
                   <label className="text-sm font-medium text-celebre-ink">
                     Regras (todas devem ser verdadeiras)
                   </label>
                   <Button variant="outline" size="sm" onClick={addRule}>
-                    <Plus className="h-3 w-3 mr-1" />
+                    <Plus className="mr-1 h-3 w-3" />
                     Adicionar Regra
                   </Button>
                 </div>
@@ -326,16 +315,17 @@ export default function SegmentsPage() {
                 <div className="space-y-3">
                   {formData.rules.map((rule, index) => {
                     const fieldConfig = getFieldConfig(rule.field)
-                    const operators = OPERATORS[(fieldConfig?.type || 'text') as keyof typeof OPERATORS]
+                    const operators =
+                      OPERATORS[(fieldConfig?.type || 'text') as keyof typeof OPERATORS]
 
                     return (
-                      <div key={index} className="flex gap-2 items-start p-3 bg-gray-50 rounded-lg">
-                        <div className="flex-1 grid grid-cols-3 gap-2">
+                      <div key={index} className="flex items-start gap-2 rounded-lg bg-gray-50 p-3">
+                        <div className="grid flex-1 grid-cols-3 gap-2">
                           {/* Field */}
                           <select
                             value={rule.field}
                             onChange={(e) => updateRule(index, 'field', e.target.value)}
-                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                            className="focus:ring-celebre-brand rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                           >
                             {FIELDS.map((field) => (
                               <option key={field.value} value={field.value}>
@@ -348,7 +338,7 @@ export default function SegmentsPage() {
                           <select
                             value={rule.operator}
                             onChange={(e) => updateRule(index, 'operator', e.target.value)}
-                            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                            className="focus:ring-celebre-brand rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                           >
                             {operators.map((op) => (
                               <option key={op.value} value={op.value}>
@@ -362,7 +352,7 @@ export default function SegmentsPage() {
                             <select
                               value={rule.value}
                               onChange={(e) => updateRule(index, 'value', e.target.value)}
-                              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                              className="focus:ring-celebre-brand rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                             >
                               <option value="true">Sim</option>
                               <option value="false">Não</option>
@@ -371,7 +361,7 @@ export default function SegmentsPage() {
                             <select
                               value={rule.value}
                               onChange={(e) => updateRule(index, 'value', e.target.value)}
-                              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                              className="focus:ring-celebre-brand rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                             >
                               {RSVP_OPTIONS.map((opt) => (
                                 <option key={opt} value={opt}>
@@ -383,7 +373,7 @@ export default function SegmentsPage() {
                             <select
                               value={rule.value}
                               onChange={(e) => updateRule(index, 'value', e.target.value)}
-                              className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                              className="focus:ring-celebre-brand rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                             >
                               {TIER_OPTIONS.map((opt) => (
                                 <option key={opt} value={opt}>
@@ -416,17 +406,22 @@ export default function SegmentsPage() {
               </div>
 
               {/* Preview */}
-              <div className="flex items-center gap-3 p-4 bg-celebre-accent/20 rounded-lg">
-                <Users className="h-5 w-5 text-celebre-brand" />
+              <div className="bg-celebre-accent/20 flex items-center gap-3 rounded-lg p-4">
+                <Users className="text-celebre-brand h-5 w-5" />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-celebre-ink">Preview de Convidados</p>
                   {previewCount !== null && (
-                    <p className="text-xs text-celebre-muted mt-1">
+                    <p className="mt-1 text-xs text-celebre-muted">
                       {previewCount} convidado{previewCount !== 1 ? 's' : ''} neste segmento
                     </p>
                   )}
                 </div>
-                <Button variant="outline" size="sm" onClick={handlePreview} disabled={previewLoading}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePreview}
+                  disabled={previewLoading}
+                >
                   {previewLoading ? 'Calculando...' : 'Atualizar Preview'}
                 </Button>
               </div>
@@ -446,26 +441,26 @@ export default function SegmentsPage() {
       )}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {segments.length === 0 ? (
           <Card>
-            <CardContent className="text-center py-12">
-              <Filter className="h-12 w-12 mx-auto mb-4 text-celebre-muted opacity-50" />
-              <p className="text-celebre-muted mb-4">Nenhum segmento criado ainda</p>
+            <CardContent className="py-12 text-center">
+              <Filter className="mx-auto mb-4 h-12 w-12 text-celebre-muted opacity-50" />
+              <p className="mb-4 text-celebre-muted">Nenhum segmento criado ainda</p>
               <Button onClick={openCreateModal}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Criar Primeiro Segmento
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {segments.map((segment) => (
               <Card key={segment.id} className="hover:shadow-celebre-lg transition-shadow">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="mb-4 flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-celebre-ink mb-1">
+                      <h3 className="mb-1 text-lg font-semibold text-celebre-ink">
                         {segment.label}
                       </h3>
                       {segment.description && (
@@ -475,13 +470,13 @@ export default function SegmentsPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => openEditModal(segment)}
-                        className="p-2 hover:bg-celebre-accent rounded-lg transition-colors"
+                        className="hover:bg-celebre-accent rounded-lg p-2 transition-colors"
                       >
                         <Edit2 className="h-4 w-4 text-celebre-muted" />
                       </button>
                       <button
                         onClick={() => handleDelete(segment.id)}
-                        className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                        className="rounded-lg p-2 transition-colors hover:bg-red-100"
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </button>
@@ -489,28 +484,31 @@ export default function SegmentsPage() {
                   </div>
 
                   {/* Rules Display */}
-                  <div className="space-y-2 mb-4">
+                  <div className="mb-4 space-y-2">
                     <p className="text-xs font-medium text-celebre-muted">Regras:</p>
                     {(segment.rules?.and || []).map((rule: any, index: number) => {
                       const field = FIELDS.find((f) => f.value === rule.field)
                       return (
-                        <div key={index} className="text-xs text-celebre-muted bg-gray-50 p-2 rounded">
+                        <div
+                          key={index}
+                          className="rounded bg-gray-50 p-2 text-xs text-celebre-muted"
+                        >
                           {field?.label} {rule.operator === 'eq' ? '=' : rule.operator} {rule.value}
                         </div>
                       )
                     })}
                   </div>
 
-                  <div className="flex items-center justify-between pt-4 border-t">
+                  <div className="flex items-center justify-between border-t pt-4">
                     <div className="flex items-center gap-2">
                       <Users className="h-4 w-4 text-celebre-muted" />
-                      <span className="text-sm font-semibold text-celebre-brand">
+                      <span className="text-celebre-brand text-sm font-semibold">
                         {segment._count.guests}
                       </span>
                       <span className="text-xs text-celebre-muted">convidados</span>
                     </div>
                     <Button size="sm" onClick={() => handleSendMessage(segment.id)}>
-                      <Send className="h-3 w-3 mr-1" />
+                      <Send className="mr-1 h-3 w-3" />
                       Enviar
                     </Button>
                   </div>

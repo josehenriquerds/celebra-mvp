@@ -1,6 +1,15 @@
 'use client'
 
-import { Home, Users, Gift, MessageCircle, Settings, Calendar, Heart, ClipboardList } from 'lucide-react'
+import {
+  Home,
+  Users,
+  Gift,
+  MessageCircle,
+  Settings,
+  Calendar,
+  Heart,
+  ClipboardList,
+} from 'lucide-react'
 import { NavigationRail } from '@/components/ui/navigation-rail'
 import { Topbar } from '@/components/ui/topbar'
 
@@ -18,9 +27,7 @@ const navSections = [
   {
     id: 'config',
     label: 'Configurações',
-    items: [
-      { icon: Settings, label: 'Configurações', href: '/configuracoes' },
-    ],
+    items: [{ icon: Settings, label: 'Configurações', href: '/configuracoes' }],
   },
 ]
 
@@ -45,7 +52,7 @@ export function DashboardLayout({
       <NavigationRail sections={navSections} />
 
       {/* Main Content */}
-      <div className="ml-20 lg:ml-[260px] transition-all duration-300">
+      <div className="ml-20 transition-all duration-300 lg:ml-[260px]">
         {/* Topbar */}
         <Topbar
           searchPlaceholder={searchPlaceholder}
@@ -55,9 +62,7 @@ export function DashboardLayout({
         />
 
         {/* Content Area */}
-        <main className="container-8pt py-8">
-          {children}
-        </main>
+        <main className="container-8pt py-8">{children}</main>
       </div>
     </div>
   )

@@ -1,57 +1,57 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 export interface SeatAssignment {
-  id: string;
-  guestId: string;
-  seatId: string;
-  locked: boolean;
+  id: string
+  guestId: string
+  seatId: string
+  locked: boolean
 }
 
 export interface Seat {
-  id: string;
-  tableId: string;
-  index: number;
-  x: number;
-  y: number;
-  rotation: number;
+  id: string
+  tableId: string
+  index: number
+  x: number
+  y: number
+  rotation: number
 }
 
 export interface Table {
-  id: string;
-  label: string;
-  capacity: number;
-  zone?: string;
-  x: number;
-  y: number;
-  rotation: number;
-  shape: 'round' | 'square' | 'rect';
-  seats: Seat[];
+  id: string
+  label: string
+  capacity: number
+  zone?: string
+  x: number
+  y: number
+  rotation: number
+  shape: 'round' | 'square' | 'rect'
+  seats: Seat[]
 }
 
 interface SeatingState {
-  tables: Table[];
-  assignments: SeatAssignment[];
-  history: SeatAssignment[][];
-  historyIndex: number;
-  selectedTableId: string | null;
+  tables: Table[]
+  assignments: SeatAssignment[]
+  history: SeatAssignment[][]
+  historyIndex: number
+  selectedTableId: string | null
 
   // Actions
-  setTables: (tables: Table[]) => void;
-  setAssignments: (assignments: SeatAssignment[]) => void;
-  assignGuestToSeat: (guestId: string, seatId: string) => void;
-  unassignSeat: (seatId: string) => void;
-  lockAssignment: (assignmentId: string, locked: boolean) => void;
-  setSelectedTableId: (id: string | null) => void;
+  setTables: (tables: Table[]) => void
+  setAssignments: (assignments: SeatAssignment[]) => void
+  assignGuestToSeat: (guestId: string, seatId: string) => void
+  unassignSeat: (seatId: string) => void
+  lockAssignment: (assignmentId: string, locked: boolean) => void
+  setSelectedTableId: (id: string | null) => void
 
   // Undo/Redo
-  undo: () => void;
-  redo: () => void;
-  canUndo: () => boolean;
-  canRedo: () => boolean;
+  undo: () => void
+  redo: () => void
+  canUndo: () => boolean
+  canRedo: () => boolean
 
   // Auto-allocation
-  autoAllocateByHousehold: () => void;
-  autoAllocateVIPs: () => void;
+  autoAllocateByHousehold: () => void
+  autoAllocateVIPs: () => void
 }
 
 export const useSeatingStore = create<SeatingState>((set, get) => ({
@@ -74,45 +74,41 @@ export const useSeatingStore = create<SeatingState>((set, get) => ({
     set((state) => {
       const newAssignments = state.assignments.filter(
         (a) => a.seatId !== seatId && a.guestId !== guestId
-      );
+      )
       newAssignments.push({
         id: `${guestId}-${seatId}`,
         guestId,
         seatId,
         locked: false,
-      });
+      })
 
-      const newHistory = state.history.slice(0, state.historyIndex + 1);
-      newHistory.push(newAssignments);
+      const newHistory = state.history.slice(0, state.historyIndex + 1)
+      newHistory.push(newAssignments)
 
       return {
         assignments: newAssignments,
         history: newHistory,
         historyIndex: state.historyIndex + 1,
-      };
+      }
     }),
 
   unassignSeat: (seatId) =>
     set((state) => {
-      const newAssignments = state.assignments.filter(
-        (a) => a.seatId !== seatId
-      );
+      const newAssignments = state.assignments.filter((a) => a.seatId !== seatId)
 
-      const newHistory = state.history.slice(0, state.historyIndex + 1);
-      newHistory.push(newAssignments);
+      const newHistory = state.history.slice(0, state.historyIndex + 1)
+      newHistory.push(newAssignments)
 
       return {
         assignments: newAssignments,
         history: newHistory,
         historyIndex: state.historyIndex + 1,
-      };
+      }
     }),
 
   lockAssignment: (assignmentId, locked) =>
     set((state) => ({
-      assignments: state.assignments.map((a) =>
-        a.id === assignmentId ? { ...a, locked } : a
-      ),
+      assignments: state.assignments.map((a) => (a.id === assignmentId ? { ...a, locked } : a)),
     })),
 
   setSelectedTableId: (id) => set({ selectedTableId: id }),
@@ -123,9 +119,9 @@ export const useSeatingStore = create<SeatingState>((set, get) => ({
         return {
           historyIndex: state.historyIndex - 1,
           assignments: state.history[state.historyIndex - 1],
-        };
+        }
       }
-      return state;
+      return state
     }),
 
   redo: () =>
@@ -134,9 +130,9 @@ export const useSeatingStore = create<SeatingState>((set, get) => ({
         return {
           historyIndex: state.historyIndex + 1,
           assignments: state.history[state.historyIndex + 1],
-        };
+        }
       }
-      return state;
+      return state
     }),
 
   canUndo: () => get().historyIndex > 0,
@@ -150,4 +146,4 @@ export const useSeatingStore = create<SeatingState>((set, get) => ({
   autoAllocateVIPs: () => {
     // Implementation would go here
   },
-}));
+}))

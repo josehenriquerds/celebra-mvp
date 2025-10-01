@@ -1,25 +1,25 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import * as React from 'react'
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts'
 
 interface DonutChartProps {
   data: Array<{
-    name: string;
-    value: number;
-    color?: string;
-  }>;
-  innerRadius?: number;
-  outerRadius?: number;
-  showLegend?: boolean;
+    name: string
+    value: number
+    color?: string
+  }>
+  innerRadius?: number
+  outerRadius?: number
+  showLegend?: boolean
   centerLabel?: {
-    value: string | number;
-    label: string;
-  };
-  height?: number;
+    value: string | number
+    label: string
+  }
+  height?: number
 }
 
-const COLORS = ['#E8B4C8', '#C8B4E8', '#B4D4E8', '#D4E8B4', '#E8D4B4'];
+const COLORS = ['#E8B4C8', '#C8B4E8', '#B4D4E8', '#D4E8B4', '#E8D4B4']
 
 export function DonutChart({
   data,
@@ -44,46 +44,37 @@ export function DonutChart({
             dataKey="value"
           >
             {data.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={entry.color || COLORS[index % COLORS.length]}
-              />
+              <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           {showLegend && (
             <Legend
               verticalAlign="bottom"
               height={36}
-              formatter={(value) => (
-                <span className="text-sm text-muted-foreground">{value}</span>
-              )}
+              formatter={(value) => <span className="text-sm text-muted-foreground">{value}</span>}
             />
           )}
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 return (
-                  <div className="bg-white rounded-lg shadow-lg border p-3">
+                  <div className="rounded-lg border bg-white p-3 shadow-lg">
                     <p className="text-sm font-medium">{payload[0].name}</p>
-                    <p className="text-lg font-bold text-primary">
-                      {payload[0].value}
-                    </p>
+                    <p className="text-lg font-bold text-primary">{payload[0].value}</p>
                   </div>
-                );
+                )
               }
-              return null;
+              return null
             }}
           />
         </PieChart>
       </ResponsiveContainer>
       {centerLabel && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <div className="text-3xl font-bold text-foreground">
-            {centerLabel.value}
-          </div>
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+          <div className="text-3xl font-bold text-foreground">{centerLabel.value}</div>
           <div className="text-sm text-muted-foreground">{centerLabel.label}</div>
         </div>
       )}
     </div>
-  );
+  )
 }

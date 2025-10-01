@@ -1,12 +1,16 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(date: Date | string, format: 'short' | 'long' = 'short'): string {
+export function formatDate(date: Date | string | null | undefined, format: 'short' | 'long' = 'short'): string {
+  if (!date) return '-'
+
   const d = typeof date === 'string' ? new Date(date) : date
+
+  if (Number.isNaN(d.getTime())) return '-'
 
   if (format === 'short') {
     return d.toLocaleDateString('pt-BR', {
@@ -23,8 +27,13 @@ export function formatDate(date: Date | string, format: 'short' | 'long' = 'shor
   })
 }
 
-export function formatTime(date: Date | string): string {
+export function formatTime(date: Date | string | null | undefined): string {
+  if (!date) return '-'
+
   const d = typeof date === 'string' ? new Date(date) : date
+
+  if (Number.isNaN(d.getTime())) return '-'
+
   return d.toLocaleTimeString('pt-BR', {
     hour: '2-digit',
     minute: '2-digit',
@@ -66,4 +75,4 @@ export function getSLABadgeColor(dueAt: Date | string | null): 'success' | 'warn
   if (hoursRemaining < 8) return 'danger'
   if (hoursRemaining < 24) return 'warning'
   return 'success'
-} 
+}

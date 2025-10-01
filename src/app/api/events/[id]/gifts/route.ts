@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // GET /api/events/:id/gifts - List all gifts for event
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Get all gifts for this event
     const gifts = await prisma.giftRegistryItem.findMany({
@@ -35,19 +32,13 @@ export async function GET(
 }
 
 // POST /api/events/:id/gifts - Create new gift (without guest assignment)
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const { title, description, price, imageUrl, externalUrl } = body
 
     if (!title || price === undefined) {
-      return NextResponse.json(
-        { error: 'Missing required fields: title, price' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields: title, price' }, { status: 400 })
     }
 
     // Create a placeholder guest to hold unassigned gifts

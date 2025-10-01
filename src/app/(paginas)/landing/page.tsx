@@ -1,6 +1,16 @@
 'use client'
 
-import { MessageCircle, Gift, BookText, CheckCircle, Infinity, LayoutDashboard, Heart, Users, Calendar } from 'lucide-react'
+import {
+  MessageCircle,
+  Gift,
+  BookText,
+  CheckCircle,
+  Infinity,
+  LayoutDashboard,
+  Heart,
+  Users,
+  Calendar,
+} from 'lucide-react'
 import Link from 'next/link'
 import { Hero } from '@/components/ui/hero'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -52,9 +62,9 @@ export default function LandingPage() {
     <div className="min-h-screen">
       {/* Topbar simples para landing */}
       <header className="sticky top-4 z-30 mx-4">
-        <div className="glass rounded-3xl shadow-elevation-2 px-6 py-4">
+        <div className="glass rounded-3xl px-6 py-4 shadow-elevation-2">
           <div className="flex items-center justify-between">
-            <div className="text-2xl font-bold bg-gradient-to-r from-pastel-lavender-600 to-pastel-rose-600 bg-clip-text text-transparent">
+            <div className="bg-gradient-to-r from-pastel-lavender-600 to-pastel-rose-600 bg-clip-text text-2xl font-bold text-transparent">
               Celebre
             </div>
             <div className="flex items-center gap-4">
@@ -78,25 +88,25 @@ export default function LandingPage() {
           subtitle="Tudo que você precisa em um só lugar: convites, lista de presentes, RSVP e muito mais"
           stats={heroStats}
           ctaLabel="Começar Grátis →"
-          onCtaClick={() => window.location.href = '/dashboard'}
+          onCtaClick={() => (window.location.href = '/dashboard')}
         />
       </section>
 
       {/* Features Section */}
       <section className="container-8pt py-16">
-        <div className="text-center mb-12">
+        <div className="mb-12 text-center">
           <Badge variant="info" size="lg" className="mb-4">
             Funcionalidades
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-celebre-ink mb-4">
+          <h2 className="mb-4 text-4xl font-bold text-celebre-ink md:text-5xl">
             Tudo que você precisa
           </h2>
-          <p className="text-lg text-celebre-muted max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-lg text-celebre-muted">
             Planeje cada detalhe do seu evento com ferramentas profissionais e intuitivas
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => {
             const Icon = feature.icon
             return (
@@ -105,10 +115,10 @@ export default function LandingPage() {
                 variant="glass"
                 interactive
                 padding="lg"
-                className="group hover:scale-105 transition-all duration-300"
+                className="group transition-all duration-300 hover:scale-105"
               >
                 <CardHeader>
-                  <div className="flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-pastel-lavender-100 to-pastel-rose-100 mb-4 group-hover:from-pastel-lavender-200 group-hover:to-pastel-rose-200 transition-colors">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pastel-lavender-100 to-pastel-rose-100 transition-colors group-hover:from-pastel-lavender-200 group-hover:to-pastel-rose-200">
                     <Icon className="h-8 w-8 text-pastel-lavender-600" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -124,23 +134,23 @@ export default function LandingPage() {
 
       {/* Pricing Section */}
       <section className="container-8pt py-16">
-        <div className="text-center mb-12">
+        <div className="mb-12 text-center">
           <Badge variant="success" size="lg" className="mb-4">
             Preços
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-celebre-ink mb-4">
-            Comece grátis
-          </h2>
-          <p className="text-lg text-celebre-muted max-w-2xl mx-auto">
+          <h2 className="mb-4 text-4xl font-bold text-celebre-ink md:text-5xl">Comece grátis</h2>
+          <p className="mx-auto max-w-2xl text-lg text-celebre-muted">
             Sem custos iniciais. Cobramos apenas 3% sobre presentes vendidos.
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
           {/* Plano Gratuito */}
           <Card variant="elevated" padding="lg">
             <CardHeader>
-              <Badge variant="default" className="w-fit mb-4">Gratuito</Badge>
+              <Badge variant="default" className="mb-4 w-fit">
+                Gratuito
+              </Badge>
               <CardTitle className="text-3xl">R$ 0</CardTitle>
               <CardDescription>Para sempre</CardDescription>
             </CardHeader>
@@ -163,16 +173,22 @@ export default function LandingPage() {
                   <span className="text-sm">Dashboard completo</span>
                 </div>
               </div>
-              <Button variant="soft" className="w-full mt-6">
+              <Button variant="soft" className="mt-6 w-full">
                 Começar Agora
               </Button>
             </CardContent>
           </Card>
 
           {/* Plano Pro */}
-          <Card variant="glass" padding="lg" className="border-2 border-pastel-lavender-300 shadow-elevation-4">
+          <Card
+            variant="glass"
+            padding="lg"
+            className="border-2 border-pastel-lavender-300 shadow-elevation-4"
+          >
             <CardHeader>
-              <Badge variant="success" className="w-fit mb-4">Popular</Badge>
+              <Badge variant="success" className="mb-4 w-fit">
+                Popular
+              </Badge>
               <CardTitle className="text-3xl">Lista de Presentes</CardTitle>
               <CardDescription>Taxa de 3% sobre vendas</CardDescription>
             </CardHeader>
@@ -195,7 +211,7 @@ export default function LandingPage() {
                   <span className="text-sm">Mural de fotos</span>
                 </div>
               </div>
-              <Button variant="primary" className="w-full mt-6">
+              <Button variant="primary" className="mt-6 w-full">
                 Ativar Lista de Presentes
               </Button>
             </CardContent>
@@ -205,15 +221,13 @@ export default function LandingPage() {
 
       {/* FAQ Section */}
       <section className="container-8pt py-16">
-        <div className="text-center mb-12">
+        <div className="mb-12 text-center">
           <Badge variant="warning" size="lg" className="mb-4">
             Perguntas Frequentes
           </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-celebre-ink mb-4">
-            Dúvidas?
-          </h2>
+          <h2 className="mb-4 text-4xl font-bold text-celebre-ink md:text-5xl">Dúvidas?</h2>
         </div>
-        <div className="max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl">
           <FAQAccordion />
         </div>
       </section>
@@ -226,14 +240,15 @@ export default function LandingPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-pastel-lavender-100 via-pastel-rose-100 to-pastel-peach-100 opacity-50" />
 
             {/* Content */}
-            <div className="relative text-center py-20 px-8">
-              <h2 className="text-4xl md:text-5xl font-bold text-celebre-ink mb-6">
+            <div className="relative px-8 py-20 text-center">
+              <h2 className="mb-6 text-4xl font-bold text-celebre-ink md:text-5xl">
                 Pronto para começar?
               </h2>
-              <p className="text-lg text-celebre-muted mb-8 max-w-2xl mx-auto">
-                Junte-se a milhares de casais que já estão planejando o casamento dos sonhos com o Celebre
+              <p className="mx-auto mb-8 max-w-2xl text-lg text-celebre-muted">
+                Junte-se a milhares de casais que já estão planejando o casamento dos sonhos com o
+                Celebre
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                 <Link href="/dashboard">
                   <Button variant="primary" size="xl">
                     Começar Grátis →
@@ -253,18 +268,26 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-pastel-lavender-100 py-12">
         <div className="container-8pt">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-2xl font-bold bg-gradient-to-r from-pastel-lavender-600 to-pastel-rose-600 bg-clip-text text-transparent">
+          <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
+            <div className="bg-gradient-to-r from-pastel-lavender-600 to-pastel-rose-600 bg-clip-text text-2xl font-bold text-transparent">
               Celebre
             </div>
             <div className="flex gap-6 text-sm text-celebre-muted">
-              <Link href="/sobre" className="hover:text-celebre-ink">Sobre</Link>
-              <Link href="/contato" className="hover:text-celebre-ink">Contato</Link>
-              <Link href="/termos" className="hover:text-celebre-ink">Termos</Link>
-              <Link href="/privacidade" className="hover:text-celebre-ink">Privacidade</Link>
+              <Link href="/sobre" className="hover:text-celebre-ink">
+                Sobre
+              </Link>
+              <Link href="/contato" className="hover:text-celebre-ink">
+                Contato
+              </Link>
+              <Link href="/termos" className="hover:text-celebre-ink">
+                Termos
+              </Link>
+              <Link href="/privacidade" className="hover:text-celebre-ink">
+                Privacidade
+              </Link>
             </div>
           </div>
-          <div className="text-center mt-8 text-sm text-celebre-muted">
+          <div className="mt-8 text-center text-sm text-celebre-muted">
             © 2025 Celebre. Todos os direitos reservados.
           </div>
         </div>

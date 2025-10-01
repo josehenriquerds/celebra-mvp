@@ -19,7 +19,13 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { formatDate, formatTime } from '@/lib/utils'
 
@@ -122,20 +128,20 @@ export default function EventTimelinePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-celebre-ink">Timeline Global</h1>
-          <p className="text-celebre-muted mt-1">
+          <h1 className="font-heading text-3xl font-bold text-celebre-ink">Timeline Global</h1>
+          <p className="mt-1 text-celebre-muted">
             Visualização cronológica de todas as atividades do evento
           </p>
         </div>
         <Button variant="outline" onClick={handleExport}>
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="mr-2 h-4 w-4" />
           Exportar
         </Button>
       </div>
 
       {/* Stats Cards */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
@@ -208,10 +214,10 @@ export default function EventTimelinePage() {
       {/* Filters */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-celebre-muted" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-celebre-muted" />
                 <Input
                   placeholder="Buscar por convidado, título ou descrição..."
                   value={searchQuery}
@@ -249,18 +255,19 @@ export default function EventTimelinePage() {
         <CardHeader>
           <CardTitle className="font-heading">Atividades Recentes</CardTitle>
           <CardDescription>
-            {timeline.length} {timeline.length === 1 ? 'atividade encontrada' : 'atividades encontradas'}
+            {timeline.length}{' '}
+            {timeline.length === 1 ? 'atividade encontrada' : 'atividades encontradas'}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+            <div className="py-12 text-center">
+              <div className="border-celebre-brand mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
               <p className="text-celebre-muted">Carregando timeline...</p>
             </div>
           ) : timeline.length === 0 ? (
-            <div className="text-center py-12">
-              <Activity className="h-12 w-12 text-celebre-muted mx-auto mb-4" />
+            <div className="py-12 text-center">
+              <Activity className="mx-auto mb-4 h-12 w-12 text-celebre-muted" />
               <p className="text-celebre-muted">Nenhuma atividade encontrada</p>
             </div>
           ) : (
@@ -270,17 +277,16 @@ export default function EventTimelinePage() {
                 const colorClass = TYPE_COLORS[item.type] || 'bg-gray-100 text-gray-800'
 
                 return (
-                  <div
-                    key={item.id}
-                    className="relative flex gap-4 pb-4 border-b last:border-b-0"
-                  >
+                  <div key={item.id} className="relative flex gap-4 border-b pb-4 last:border-b-0">
                     {/* Timeline line */}
                     {index !== timeline.length - 1 && (
-                      <div className="absolute left-5 top-12 w-0.5 h-full bg-gray-200"></div>
+                      <div className="absolute left-5 top-12 h-full w-0.5 bg-gray-200"></div>
                     )}
 
                     {/* Icon */}
-                    <div className={`flex-shrink-0 w-10 h-10 rounded-full ${colorClass} flex items-center justify-center z-10`}>
+                    <div
+                      className={`h-10 w-10 flex-shrink-0 rounded-full ${colorClass} z-10 flex items-center justify-center`}
+                    >
                       <Icon className="h-5 w-5" />
                     </div>
 
@@ -288,14 +294,14 @@ export default function EventTimelinePage() {
                     <div className="flex-1 pt-1">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="mb-1 flex items-center gap-2">
                             <h4 className="font-semibold text-celebre-ink">{item.title}</h4>
                             <Badge variant="outline" className="text-xs">
                               {item.type}
                             </Badge>
                           </div>
                           {item.description && (
-                            <p className="text-sm text-celebre-muted mb-2">{item.description}</p>
+                            <p className="mb-2 text-sm text-celebre-muted">{item.description}</p>
                           )}
                           <div className="flex items-center gap-4 text-xs text-celebre-muted">
                             <span className="flex items-center gap-1">
@@ -304,7 +310,8 @@ export default function EventTimelinePage() {
                             </span>
                             <span className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              {formatDate(item.occurredAt, 'short')} às {formatTime(item.occurredAt)}
+                              {formatDate(item.occurredAt, 'short')} às{' '}
+                              {formatTime(item.occurredAt)}
                             </span>
                           </div>
                         </div>
@@ -312,7 +319,7 @@ export default function EventTimelinePage() {
 
                       {/* Metadata badges */}
                       {item.metadata && Object.keys(item.metadata).length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
+                        <div className="mt-2 flex flex-wrap gap-2">
                           {item.metadata.direction && (
                             <Badge variant="secondary" className="text-xs">
                               {item.metadata.direction === 'inbound' ? 'Recebida' : 'Enviada'}

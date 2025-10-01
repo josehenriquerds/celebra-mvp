@@ -4,10 +4,7 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 // GET: Fetch guest profile (360° view)
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const guestId = params.id
 
@@ -132,31 +129,17 @@ export async function GET(
     })
   } catch (error) {
     console.error('Error fetching guest:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // PATCH: Update guest details
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const guestId = params.id
     const body = await request.json()
 
-    const {
-      rsvp,
-      seats,
-      children,
-      transportNeeded,
-      optOut,
-      restrictions,
-      notes,
-    } = body
+    const { rsvp, seats, children, transportNeeded, optOut, restrictions, notes } = body
 
     // Update guest
     const updateData: any = {}
@@ -216,9 +199,6 @@ export async function PATCH(
     })
   } catch (error) {
     console.error('Error updating guest:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

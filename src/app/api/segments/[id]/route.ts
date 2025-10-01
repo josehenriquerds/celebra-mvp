@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/segments/:id - Update segment
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const { label, description, rules } = body
@@ -33,10 +30,7 @@ export async function PATCH(
 }
 
 // DELETE /api/segments/:id - Delete segment
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await prisma.segmentTag.delete({
       where: { id: params.id },

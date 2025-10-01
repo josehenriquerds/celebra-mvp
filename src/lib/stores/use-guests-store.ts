@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 export type GuestFilter =
   | 'all'
@@ -8,31 +8,31 @@ export type GuestFilter =
   | 'vip'
   | 'children'
   | 'no-phone'
-  | 'vendors';
+  | 'vendors'
 
 interface GuestsState {
   // Filters
-  activeFilters: GuestFilter[];
-  searchQuery: string;
+  activeFilters: GuestFilter[]
+  searchQuery: string
 
   // Selection
-  selectedGuestIds: string[];
+  selectedGuestIds: string[]
 
   // Pagination
-  page: number;
-  pageSize: number;
+  page: number
+  pageSize: number
 
   // Actions
-  setActiveFilters: (filters: GuestFilter[]) => void;
-  toggleFilter: (filter: GuestFilter) => void;
-  setSearchQuery: (query: string) => void;
-  setSelectedGuestIds: (ids: string[]) => void;
-  toggleGuestSelection: (id: string) => void;
-  selectAll: (ids: string[]) => void;
-  clearSelection: () => void;
-  setPage: (page: number) => void;
-  setPageSize: (size: number) => void;
-  reset: () => void;
+  setActiveFilters: (filters: GuestFilter[]) => void
+  toggleFilter: (filter: GuestFilter) => void
+  setSearchQuery: (query: string) => void
+  setSelectedGuestIds: (ids: string[]) => void
+  toggleGuestSelection: (id: string) => void
+  selectAll: (ids: string[]) => void
+  clearSelection: () => void
+  setPage: (page: number) => void
+  setPageSize: (size: number) => void
+  reset: () => void
 }
 
 const initialState = {
@@ -41,7 +41,7 @@ const initialState = {
   selectedGuestIds: [],
   page: 1,
   pageSize: 10,
-};
+}
 
 export const useGuestsStore = create<GuestsState>((set) => ({
   ...initialState,
@@ -50,20 +50,20 @@ export const useGuestsStore = create<GuestsState>((set) => ({
 
   toggleFilter: (filter) =>
     set((state) => {
-      const isActive = state.activeFilters.includes(filter);
-      let newFilters: GuestFilter[];
+      const isActive = state.activeFilters.includes(filter)
+      let newFilters: GuestFilter[]
 
       if (filter === 'all') {
-        newFilters = ['all'];
+        newFilters = ['all']
       } else if (isActive) {
-        newFilters = state.activeFilters.filter((f) => f !== filter);
-        if (newFilters.length === 0) newFilters = ['all'];
+        newFilters = state.activeFilters.filter((f) => f !== filter)
+        if (newFilters.length === 0) newFilters = ['all']
       } else {
-        newFilters = state.activeFilters.filter((f) => f !== 'all');
-        newFilters.push(filter);
+        newFilters = state.activeFilters.filter((f) => f !== 'all')
+        newFilters.push(filter)
       }
 
-      return { activeFilters: newFilters, page: 1 };
+      return { activeFilters: newFilters, page: 1 }
     }),
 
   setSearchQuery: (query) => set({ searchQuery: query, page: 1 }),
@@ -86,4 +86,4 @@ export const useGuestsStore = create<GuestsState>((set) => ({
   setPageSize: (size) => set({ pageSize: size, page: 1 }),
 
   reset: () => set(initialState),
-}));
+}))

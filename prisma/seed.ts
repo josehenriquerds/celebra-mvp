@@ -462,7 +462,14 @@ async function main() {
   // TABLES - 10 tables with seats
   // =============================================
   const tableConfigs = [
-    { label: 'Mesa Principal', capacity: 10, zone: 'Centro', x: 400, y: 200, shape: 'round' as const },
+    {
+      label: 'Mesa Principal',
+      capacity: 10,
+      zone: 'Centro',
+      x: 400,
+      y: 200,
+      shape: 'round' as const,
+    },
     { label: 'Mesa 1', capacity: 8, zone: 'Esquerda', x: 200, y: 100, shape: 'round' as const },
     { label: 'Mesa 2', capacity: 8, zone: 'Esquerda', x: 200, y: 300, shape: 'round' as const },
     { label: 'Mesa 3', capacity: 8, zone: 'Direita', x: 600, y: 100, shape: 'round' as const },
@@ -802,7 +809,8 @@ async function main() {
         eventId: event1.id,
         name: 'confirmacao_presente',
         variables: ['first_name', 'gift_name'],
-        contentText: 'Obrigado {{first_name}}! 🎁\n\nRecebemos a confirmação do presente: {{gift_name}}.\n\nEstamos muito felizes!',
+        contentText:
+          'Obrigado {{first_name}}! 🎁\n\nRecebemos a confirmação do presente: {{gift_name}}.\n\nEstamos muito felizes!',
       },
     ],
   })

@@ -35,7 +35,7 @@ const Stat = React.forwardRef<HTMLDivElement, StatProps>(
       <motion.div
         ref={ref}
         className={cn(
-          'relative rounded-3xl p-6 bg-gradient-to-br',
+          'relative rounded-3xl bg-gradient-to-br p-6',
           variantColors[variant],
           'shadow-elevation-1 hover:shadow-elevation-2',
           'transition-smooth',
@@ -47,20 +47,14 @@ const Stat = React.forwardRef<HTMLDivElement, StatProps>(
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">
-            <p className="text-sm font-medium text-celebre-muted uppercase tracking-wide">
+            <p className="text-sm font-medium uppercase tracking-wide text-celebre-muted">
               {label}
             </p>
-            <p className="text-3xl font-bold text-celebre-ink tabular-nums">
-              {value}
-            </p>
+            <p className="text-3xl font-bold tabular-nums text-celebre-ink">{value}</p>
             {trend && (
-              <Badge
-                variant={trend.value >= 0 ? 'success' : 'danger'}
-                className="text-xs"
-              >
+              <Badge variant={trend.value >= 0 ? 'success' : 'danger'} className="text-xs">
                 {trend.value >= 0 ? '+' : ''}
-                {trend.value}%
-                {trend.label && ` ${trend.label}`}
+                {trend.value}%{trend.label && ` ${trend.label}`}
               </Badge>
             )}
           </div>

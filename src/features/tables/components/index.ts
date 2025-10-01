@@ -1,0 +1,7 @@
+export { DroppableSeat } from './DroppableSeat'
+export { ElementsPalette } from './ElementsPalette'
+export { GuestChip } from './GuestChip'
+export { TableItem } from './TableItem'
+export { TablesCanvas } from './TablesCanvas'
+export { Toolbar } from './Toolbar'
+export { UnassignedZone } from './UnassignedZone'

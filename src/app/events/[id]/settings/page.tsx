@@ -113,7 +113,7 @@ export default function EventSettingsPage() {
   if (loading || !settings || !templates) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-celebre-brand"></div>
+        <div className="border-celebre-brand h-8 w-8 animate-spin rounded-full border-b-2"></div>
       </div>
     )
   }
@@ -123,20 +123,18 @@ export default function EventSettingsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-celebre-ink">Configurações</h1>
-          <p className="text-celebre-muted mt-1">
-            Personalize seu evento, templates e integrações
-          </p>
+          <h1 className="font-heading text-3xl font-bold text-celebre-ink">Configurações</h1>
+          <p className="mt-1 text-celebre-muted">Personalize seu evento, templates e integrações</p>
         </div>
         <Button onClick={handleSave} disabled={saving}>
           {saved ? (
             <>
-              <CheckCircle className="h-4 w-4 mr-2" />
+              <CheckCircle className="mr-2 h-4 w-4" />
               Salvo!
             </>
           ) : (
             <>
-              <Save className="h-4 w-4 mr-2" />
+              <Save className="mr-2 h-4 w-4" />
               {saving ? 'Salvando...' : 'Salvar Alterações'}
             </>
           )}
@@ -147,23 +145,23 @@ export default function EventSettingsPage() {
       <Tabs defaultValue="templates" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="templates">
-            <MessageSquare className="h-4 w-4 mr-2" />
+            <MessageSquare className="mr-2 h-4 w-4" />
             Templates
           </TabsTrigger>
           <TabsTrigger value="branding">
-            <Palette className="h-4 w-4 mr-2" />
+            <Palette className="mr-2 h-4 w-4" />
             Marca
           </TabsTrigger>
           <TabsTrigger value="lgpd">
-            <Shield className="h-4 w-4 mr-2" />
+            <Shield className="mr-2 h-4 w-4" />
             LGPD
           </TabsTrigger>
           <TabsTrigger value="integrations">
-            <Plug className="h-4 w-4 mr-2" />
+            <Plug className="mr-2 h-4 w-4" />
             Integrações
           </TabsTrigger>
           <TabsTrigger value="notifications">
-            <Bell className="h-4 w-4 mr-2" />
+            <Bell className="mr-2 h-4 w-4" />
             Notificações
           </TabsTrigger>
         </TabsList>
@@ -175,11 +173,11 @@ export default function EventSettingsPage() {
               <CardTitle className="font-heading">Templates de Mensagens</CardTitle>
               <CardDescription>
                 Personalize as mensagens automáticas enviadas aos convidados. Use variáveis como{' '}
-                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">{'{{name}}'}</code>,{' '}
-                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">{'{{eventTitle}}'}</code>,{' '}
-                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">{'{{date}}'}</code>,{' '}
-                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">{'{{time}}'}</code>,{' '}
-                <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">{'{{venue}}'}</code>
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{'{{name}}'}</code>,{' '}
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{'{{eventTitle}}'}</code>,{' '}
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{'{{date}}'}</code>,{' '}
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{'{{time}}'}</code>,{' '}
+                <code className="rounded bg-gray-100 px-1 py-0.5 text-xs">{'{{venue}}'}</code>
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -188,9 +186,7 @@ export default function EventSettingsPage() {
                 <Textarea
                   id="rsvpConfirmation"
                   value={templates.rsvpConfirmation}
-                  onChange={(e) =>
-                    setTemplates({ ...templates, rsvpConfirmation: e.target.value })
-                  }
+                  onChange={(e) => setTemplates({ ...templates, rsvpConfirmation: e.target.value })}
                   rows={3}
                   placeholder="Mensagem enviada quando o convidado confirma presença"
                 />
@@ -208,9 +204,7 @@ export default function EventSettingsPage() {
                   rows={3}
                   placeholder="Mensagem de lembrete sobre o evento"
                 />
-                <p className="text-xs text-celebre-muted">
-                  Lembrete enviado antes do evento
-                </p>
+                <p className="text-xs text-celebre-muted">Lembrete enviado antes do evento</p>
               </div>
 
               <div className="space-y-2">
@@ -256,7 +250,7 @@ export default function EventSettingsPage() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="primaryColor">Cor Principal</Label>
-                <div className="flex gap-3 items-center">
+                <div className="flex items-center gap-3">
                   <Input
                     type="color"
                     id="primaryColor"
@@ -267,7 +261,7 @@ export default function EventSettingsPage() {
                         branding: { ...settings.branding, primaryColor: e.target.value },
                       })
                     }
-                    className="w-20 h-10"
+                    className="h-10 w-20"
                   />
                   <Input
                     type="text"
@@ -301,9 +295,7 @@ export default function EventSettingsPage() {
                   }
                   placeholder="https://exemplo.com/logo.png"
                 />
-                <p className="text-xs text-celebre-muted">
-                  Logo exibido no portal do convidado
-                </p>
+                <p className="text-xs text-celebre-muted">Logo exibido no portal do convidado</p>
               </div>
 
               <div className="space-y-2">
@@ -394,11 +386,11 @@ export default function EventSettingsPage() {
                 />
               </div>
 
-              <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-900 font-medium mb-2">
+              <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                <p className="mb-2 text-sm font-medium text-blue-900">
                   ✓ Portal do Convidado LGPD-Compliant
                 </p>
-                <ul className="text-xs text-blue-800 space-y-1">
+                <ul className="space-y-1 text-xs text-blue-800">
                   <li>• Direito de acesso aos dados</li>
                   <li>• Direito de portabilidade (exportação JSON)</li>
                   <li>• Direito ao esquecimento (exclusão)</li>
@@ -415,9 +407,7 @@ export default function EventSettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-heading">Integrações</CardTitle>
-              <CardDescription>
-                Conecte com calendários e ferramentas externas
-              </CardDescription>
+              <CardDescription>Conecte com calendários e ferramentas externas</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Google Calendar */}
@@ -436,14 +426,17 @@ export default function EventSettingsPage() {
                         ...settings,
                         integrations: {
                           ...settings.integrations,
-                          googleCalendar: { ...settings.integrations.googleCalendar, enabled: checked },
+                          googleCalendar: {
+                            ...settings.integrations.googleCalendar,
+                            enabled: checked,
+                          },
                         },
                       })
                     }
                   />
                 </div>
                 {settings.integrations.googleCalendar.enabled && (
-                  <div className="space-y-2 ml-6">
+                  <div className="ml-6 space-y-2">
                     <Input
                       placeholder="Client ID do Google"
                       value={settings.integrations.googleCalendar.clientId || ''}
@@ -487,7 +480,7 @@ export default function EventSettingsPage() {
                   />
                 </div>
                 {settings.integrations.outlook.enabled && (
-                  <div className="space-y-2 ml-6">
+                  <div className="ml-6 space-y-2">
                     <Input
                       placeholder="Client ID do Microsoft"
                       value={settings.integrations.outlook.clientId || ''}
@@ -531,7 +524,7 @@ export default function EventSettingsPage() {
                   />
                 </div>
                 {settings.integrations.n8n.enabled && (
-                  <div className="space-y-2 ml-6">
+                  <div className="ml-6 space-y-2">
                     <Input
                       placeholder="https://n8n.exemplo.com/webhook"
                       value={settings.integrations.n8n.webhookUrl || ''}
@@ -586,9 +579,7 @@ export default function EventSettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Email</Label>
-                  <p className="text-sm text-celebre-muted">
-                    Enviar notificações por email
-                  </p>
+                  <p className="text-sm text-celebre-muted">Enviar notificações por email</p>
                 </div>
                 <Switch
                   checked={settings.notifications.emailEnabled}
@@ -604,9 +595,7 @@ export default function EventSettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>SMS</Label>
-                  <p className="text-sm text-celebre-muted">
-                    Enviar mensagens via SMS
-                  </p>
+                  <p className="text-sm text-celebre-muted">Enviar mensagens via SMS</p>
                 </div>
                 <Switch
                   checked={settings.notifications.smsEnabled}
@@ -628,12 +617,12 @@ export default function EventSettingsPage() {
         <Button onClick={handleSave} disabled={saving} size="lg">
           {saved ? (
             <>
-              <CheckCircle className="h-4 w-4 mr-2" />
+              <CheckCircle className="mr-2 h-4 w-4" />
               Alterações Salvas!
             </>
           ) : (
             <>
-              <Save className="h-4 w-4 mr-2" />
+              <Save className="mr-2 h-4 w-4" />
               {saving ? 'Salvando...' : 'Salvar Todas as Configurações'}
             </>
           )}

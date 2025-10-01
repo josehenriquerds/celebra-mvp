@@ -3,7 +3,11 @@ import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
 function generateToken(guestId: string): string {
-  return crypto.createHash('sha256').update(guestId + process.env.NEXTAUTH_SECRET).digest('hex').substring(0, 32)
+  return crypto
+    .createHash('sha256')
+    .update(guestId + process.env.NEXTAUTH_SECRET)
+    .digest('hex')
+    .substring(0, 32)
 }
 
 async function findGuestByToken(token: string) {
@@ -15,10 +19,7 @@ async function findGuestByToken(token: string) {
 }
 
 // POST /api/guest-portal/:token/opt-out - Opt out from communications
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { token: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { token: string } }) {
   try {
     const guestId = await findGuestByToken(params.token)
 

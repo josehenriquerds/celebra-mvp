@@ -86,9 +86,9 @@ export default function ReportsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando relatórios...</p>
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function ReportsPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <p className="text-celebre-muted">Erro ao carregar relatórios</p>
       </div>
     )
@@ -106,8 +106,8 @@ export default function ReportsPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <Link href={`/events/${eventId}`}>
               <Button variant="ghost" size="icon">
@@ -115,19 +115,17 @@ export default function ReportsPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-heading font-bold text-celebre-ink">
+              <h1 className="font-heading text-3xl font-bold text-celebre-ink">
                 Relatórios e Analytics
               </h1>
-              <p className="text-sm text-celebre-muted mt-1">
-                Insights e métricas do seu evento
-              </p>
+              <p className="mt-1 text-sm text-celebre-muted">Insights e métricas do seu evento</p>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
         {/* RSVP vs Presença */}
         <Card>
           <CardHeader>
@@ -151,15 +149,25 @@ export default function ReportsPage() {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="confirmados" fill={COLORS.brand} name="Confirmados" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="presentes" fill={COLORS.success} name="Presentes" radius={[8, 8, 0, 0]} />
+                <Bar
+                  dataKey="confirmados"
+                  fill={COLORS.brand}
+                  name="Confirmados"
+                  radius={[8, 8, 0, 0]}
+                />
+                <Bar
+                  dataKey="presentes"
+                  fill={COLORS.success}
+                  name="Presentes"
+                  radius={[8, 8, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Row: Mensagens por Dia + Engajamento */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Mensagens por Dia */}
           <Card>
             <CardHeader>
@@ -229,7 +237,7 @@ export default function ReportsPage() {
         </div>
 
         {/* Row: Custo + Presentes */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Custo por Convidado */}
           <Card>
             <CardHeader>
@@ -242,24 +250,24 @@ export default function ReportsPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-celebre-brand">
+                  <div className="text-celebre-brand text-4xl font-bold">
                     {formatCurrency(data.custoPorConvidado.porPessoa)}
                   </div>
-                  <p className="text-sm text-celebre-muted mt-2">Por convidado confirmado</p>
+                  <p className="mt-2 text-sm text-celebre-muted">Por convidado confirmado</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-celebre-accent/20 rounded-lg">
+                  <div className="bg-celebre-accent/20 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-celebre-ink">
                       {formatCurrency(data.custoPorConvidado.total)}
                     </div>
-                    <p className="text-xs text-celebre-muted mt-1">Orçamento Total</p>
+                    <p className="mt-1 text-xs text-celebre-muted">Orçamento Total</p>
                   </div>
-                  <div className="text-center p-4 bg-celebre-accent/20 rounded-lg">
+                  <div className="bg-celebre-accent/20 rounded-lg p-4 text-center">
                     <div className="text-2xl font-bold text-celebre-ink">
                       {data.custoPorConvidado.confirmados}
                     </div>
-                    <p className="text-xs text-celebre-muted mt-1">Confirmados</p>
+                    <p className="mt-1 text-xs text-celebre-muted">Confirmados</p>
                   </div>
                 </div>
               </div>
@@ -278,26 +286,26 @@ export default function ReportsPage() {
             <CardContent>
               <div className="space-y-6">
                 <div className="text-center">
-                  <div className="text-4xl font-bold text-celebre-brand">
+                  <div className="text-celebre-brand text-4xl font-bold">
                     {data.conversaoPresentes.percentRecebidos}%
                   </div>
-                  <p className="text-sm text-celebre-muted mt-2">Taxa de conversão</p>
+                  <p className="mt-2 text-sm text-celebre-muted">Taxa de conversão</p>
                 </div>
 
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-gray-100 p-3">
                     <span className="text-sm text-celebre-muted">Total de Itens</span>
                     <span className="font-semibold text-celebre-ink">
                       {data.conversaoPresentes.total}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-yellow-100 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-yellow-100 p-3">
                     <span className="text-sm text-yellow-800">Reservados</span>
                     <span className="font-semibold text-yellow-900">
                       {data.conversaoPresentes.reservados}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-green-100 p-3">
                     <span className="text-sm text-green-800">Recebidos</span>
                     <span className="font-semibold text-green-900">
                       {data.conversaoPresentes.recebidos}
@@ -306,7 +314,7 @@ export default function ReportsPage() {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200">
                   <div
                     className="h-full bg-green-500 transition-all duration-1000"
                     style={{ width: `${data.conversaoPresentes.percentRecebidos}%` }}

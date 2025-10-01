@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 export const taskSchema = z.object({
   title: z.string().min(3, 'Título deve ter pelo menos 3 caracteres'),
@@ -11,11 +11,11 @@ export const taskSchema = z.object({
   tags: z.array(z.string()).default([]),
   estimatedHours: z.number().min(0).optional(),
   actualHours: z.number().min(0).optional(),
-});
+})
 
-export type TaskFormData = z.infer<typeof taskSchema>;
+export type TaskFormData = z.infer<typeof taskSchema>
 
-export const taskUpdateSchema = taskSchema.partial();
+export const taskUpdateSchema = taskSchema.partial()
 
 export const taskFilterSchema = z.object({
   status: z.enum(['backlog', 'doing', 'done']).optional(),
@@ -23,6 +23,6 @@ export const taskFilterSchema = z.object({
   assignee: z.string().optional(),
   category: z.string().optional(),
   search: z.string().optional(),
-});
+})
 
-export type TaskFilterData = z.infer<typeof taskFilterSchema>;
+export type TaskFilterData = z.infer<typeof taskFilterSchema>

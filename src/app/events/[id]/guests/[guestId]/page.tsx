@@ -1,113 +1,45 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft,
-  Star,
-  Phone,
-  Mail,
-  Users,
-  MapPin,
   Baby,
   Clock,
-  MessageSquare,
-  CheckCircle,
-  Gift,
-  Shield,
   Edit,
-  Send,
-  Trash2,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Phone,
   Save,
+  Send,
+  Shield,
+  Star,
+  Users,
   X,
 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useToast } from '@/components/ui/use-toast'
+import { useGuest, useUpdateGuest } from '@/features/guests/hooks/useGuests'
 import { formatDate, formatTime } from '@/lib/utils'
-
-interface GuestProfile {
-  id: string
-  contact: {
-    id: string
-    fullName: string
-    phone: string
-    email: string | null
-    relation: string
-    isVip: boolean
-    restrictions: any
-  }
-  household: {
-    id: string
-    label: string
-    size: number
-  } | null
-  inviteStatus: string
-  rsvp: string
-  seats: number
-  children: number
-  transportNeeded: boolean
-  optOut: boolean
-  engagementScore: {
-    id: string
-    value: number
-    tier: string
-    lastDecayAt: string
-  } | null
-  seatAssignment: {
-    id: string
-    seat: {
-      id: string
-      index: number
-      table: {
-        id: string
-        label: string
-      }
-    }
-  } | null
-  interactions: Array<{
-    id: string
-    type: string
-    direction: string
-    channel: string
-    messageSnippet: string | null
-    occurredAt: string
-  }>
-  checkins: Array<{
-    id: string
-    status: string
-    method: string
-    occurredAt: string
-  }>
-  gifts: Array<{
-    id: string
-    title: string
-    price: number
-    status: string
-  }>
-  consentLogs: Array<{
-    id: string
-    action: string
-    context: string
-    occurredAt: string
-  }>
-  timeline: Array<{
-    id: string
-    type: string
-    title: string
-    description: string | null
-    occurredAt: string
-  }>
-}
 
 const RSVP_COLORS = {
   sim: 'bg-green-100 text-green-800 border-green-200',
   nao: 'bg-red-100 text-red-800 border-red-200',
   talvez: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   pendente: 'bg-gray-100 text-gray-800 border-gray-200',
+}
+
+const RSVP_LABELS = {
+  sim: 'Confirmado',
+  nao: 'Recusado',
+  talvez: 'Talvez',
+  pendente: 'Pendente',
 }
 
 const ENGAGEMENT_COLORS = {
@@ -118,69 +50,44 @@ const ENGAGEMENT_COLORS = {
 
 export default function GuestProfilePage() {
   const params = useParams()
-  const router = useRouter()
   const eventId = params.id as string
   const guestId = params.guestId as string
+  const { toast } = useToast()
 
-  const [guest, setGuest] = useState<GuestProfile | null>(null)
-  const [loading, setLoading] = useState(true)
+  // Queries
+  const { data: guest, isLoading } = useGuest(guestId)
+
+  // Mutations
+  const updateMutation = useUpdateGuest()
+
+  // Local state
   const [editing, setEditing] = useState(false)
   const [editForm, setEditForm] = useState({
-    seats: 0,
-    children: 0,
-    transportNeeded: false,
-    restrictions: '',
+    seats: guest?.seats || 0,
+    children: guest?.children || 0,
+    transportNeeded: guest?.transportNeeded || false,
+    restrictions: guest?.contact.restrictions || '',
   })
-
-  useEffect(() => {
-    fetchGuest()
-  }, [guestId])
-
-  async function fetchGuest() {
-    try {
-      setLoading(true)
-      const res = await fetch(`/api/guests/${guestId}`)
-      const data = await res.json()
-      setGuest(data)
-      setEditForm({
-        seats: data.seats,
-        children: data.children,
-        transportNeeded: data.transportNeeded,
-        restrictions: data.contact.restrictions || '',
-      })
-    } catch (error) {
-      console.error('Error fetching guest:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function handleSave() {
     try {
-      const res = await fetch(`/api/guests/${guestId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+      await updateMutation.mutateAsync({
+        id: guestId,
+        data: editForm,
       })
-
-      if (res.ok) {
-        const updated = await res.json()
-        setGuest(updated)
-        setEditing(false)
-      }
+      toast({
+        title: 'Convidado atualizado',
+        description: 'As informações foram atualizadas com sucesso.',
+      })
+      setEditing(false)
     } catch (error) {
-      console.error('Error updating guest:', error)
+      toast({
+        title: 'Erro',
+        description:
+          error instanceof Error ? error.message : 'Ocorreu um erro ao atualizar o convidado.',
+        variant: 'destructive',
+      })
     }
-  }
-
-  function getRsvpLabel(rsvp: string) {
-    const labels: Record<string, string> = {
-      sim: 'Confirmado',
-      nao: 'Recusado',
-      talvez: 'Talvez',
-      pendente: 'Pendente',
-    }
-    return labels[rsvp] || rsvp
   }
 
   function getInteractionIcon(type: string) {
@@ -190,11 +97,11 @@ export default function GuestProfilePage() {
     return Clock
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando perfil...</p>
         </div>
       </div>
@@ -203,7 +110,7 @@ export default function GuestProfilePage() {
 
   if (!guest) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
           <p className="text-celebre-muted">Convidado não encontrado</p>
           <Link href={`/events/${eventId}/guests`}>
@@ -219,8 +126,8 @@ export default function GuestProfilePage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}/guests`}>
@@ -230,14 +137,14 @@ export default function GuestProfilePage() {
               </Link>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-3xl font-heading font-bold text-celebre-ink">
+                  <h1 className="font-heading text-3xl font-bold text-celebre-ink">
                     {guest.contact.fullName}
                   </h1>
                   {guest.contact.isVip && (
-                    <Star className="h-6 w-6 text-yellow-500 fill-yellow-500" />
+                    <Star className="h-6 w-6 fill-yellow-500 text-yellow-500" />
                   )}
                 </div>
-                <p className="text-sm text-celebre-muted mt-1">
+                <p className="mt-1 text-sm text-celebre-muted">
                   {guest.contact.relation}
                   {guest.household && ` • ${guest.household.label}`}
                 </p>
@@ -247,23 +154,23 @@ export default function GuestProfilePage() {
               {!editing ? (
                 <>
                   <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                    <Edit className="h-4 w-4 mr-2" />
+                    <Edit className="mr-2 h-4 w-4" />
                     Editar
                   </Button>
                   <Button variant="outline" size="sm">
-                    <Send className="h-4 w-4 mr-2" />
+                    <Send className="mr-2 h-4 w-4" />
                     Enviar Mensagem
                   </Button>
                 </>
               ) : (
                 <>
                   <Button variant="outline" size="sm" onClick={() => setEditing(false)}>
-                    <X className="h-4 w-4 mr-2" />
+                    <X className="mr-2 h-4 w-4" />
                     Cancelar
                   </Button>
-                  <Button size="sm" onClick={handleSave}>
-                    <Save className="h-4 w-4 mr-2" />
-                    Salvar
+                  <Button size="sm" onClick={handleSave} disabled={updateMutation.isPending}>
+                    <Save className="mr-2 h-4 w-4" />
+                    {updateMutation.isPending ? 'Salvando...' : 'Salvar'}
                   </Button>
                 </>
               )}
@@ -273,7 +180,7 @@ export default function GuestProfilePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList>
             <TabsTrigger value="overview">Dados Gerais</TabsTrigger>
@@ -285,7 +192,7 @@ export default function GuestProfilePage() {
 
           {/* Dados Gerais */}
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Contact Info */}
               <Card>
                 <CardHeader>
@@ -329,11 +236,9 @@ export default function GuestProfilePage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <p className="text-xs text-celebre-muted mb-2">RSVP</p>
-                    <Badge
-                      className={`text-sm ${RSVP_COLORS[guest.rsvp as keyof typeof RSVP_COLORS] || RSVP_COLORS.pendente}`}
-                    >
-                      {getRsvpLabel(guest.rsvp)}
+                    <p className="mb-2 text-xs text-celebre-muted">RSVP</p>
+                    <Badge className={`text-sm ${RSVP_COLORS[guest.rsvp] || RSVP_COLORS.pendente}`}>
+                      {RSVP_LABELS[guest.rsvp]}
                     </Badge>
                   </div>
                   {editing ? (
@@ -427,9 +332,9 @@ export default function GuestProfilePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {(!guest.timeline || guest.timeline.length === 0) ? (
-                  <div className="text-center py-8 text-celebre-muted">
-                    <Clock className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                {!guest.timeline || guest.timeline.length === 0 ? (
+                  <div className="py-8 text-center text-celebre-muted">
+                    <Clock className="mx-auto mb-2 h-12 w-12 opacity-50" />
                     <p>Nenhuma interação registrada</p>
                   </div>
                 ) : (
@@ -439,7 +344,7 @@ export default function GuestProfilePage() {
                       return (
                         <div
                           key={item.id}
-                          className="flex items-start gap-4 p-4 rounded-lg border hover:bg-celebre-accent/20 transition-colors"
+                          className="hover:bg-celebre-accent/20 flex items-start gap-4 rounded-lg border p-4 transition-colors"
                         >
                           <div className="mt-1">
                             <Icon className="h-5 w-5 text-celebre-muted" />
@@ -447,9 +352,9 @@ export default function GuestProfilePage() {
                           <div className="flex-1">
                             <p className="font-medium text-celebre-ink">{item.title}</p>
                             {item.description && (
-                              <p className="text-sm text-celebre-muted mt-1">{item.description}</p>
+                              <p className="mt-1 text-sm text-celebre-muted">{item.description}</p>
                             )}
-                            <p className="text-xs text-celebre-muted mt-2">
+                            <p className="mt-2 text-xs text-celebre-muted">
                               {formatDate(item.occurredAt)} às {formatTime(item.occurredAt)}
                             </p>
                           </div>
@@ -476,7 +381,7 @@ export default function GuestProfilePage() {
                       <MapPin className="h-5 w-5 text-celebre-muted" />
                       <div>
                         <p className="text-xs text-celebre-muted">Mesa</p>
-                        <p className="font-medium text-lg">
+                        <p className="text-lg font-medium">
                           {guest.seatAssignment.seat.table.label}
                         </p>
                       </div>
@@ -489,13 +394,13 @@ export default function GuestProfilePage() {
                       </div>
                     </div>
                     <Button variant="outline" size="sm" className="mt-4">
-                      <MapPin className="h-4 w-4 mr-2" />
+                      <MapPin className="mr-2 h-4 w-4" />
                       Ver no Planner de Mesas
                     </Button>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-celebre-muted">
-                    <MapPin className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <div className="py-8 text-center text-celebre-muted">
+                    <MapPin className="mx-auto mb-2 h-12 w-12 opacity-50" />
                     <p>Assento não alocado</p>
                     <Button variant="outline" size="sm" className="mt-4">
                       Alocar Assento
@@ -517,12 +422,10 @@ export default function GuestProfilePage() {
                 {guest.engagementScore ? (
                   <div className="space-y-6">
                     <div className="text-center">
-                      <div className="text-5xl font-bold text-celebre-brand mb-2">
+                      <div className="text-celebre-brand mb-2 text-5xl font-bold">
                         {guest.engagementScore.value}
                       </div>
-                      <Badge
-                        className={`text-sm ${ENGAGEMENT_COLORS[guest.engagementScore.tier as keyof typeof ENGAGEMENT_COLORS]}`}
-                      >
+                      <Badge className={`text-sm ${ENGAGEMENT_COLORS[guest.engagementScore.tier]}`}>
                         {guest.engagementScore.tier.charAt(0).toUpperCase() +
                           guest.engagementScore.tier.slice(1)}
                       </Badge>
@@ -543,33 +446,30 @@ export default function GuestProfilePage() {
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t">
-                      <h4 className="font-medium mb-3">Histórico de Interações</h4>
+                    <div className="border-t pt-4">
+                      <h4 className="mb-3 font-medium">Histórico de Interações</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-celebre-muted">Mensagens WhatsApp</span>
                           <span className="font-medium">
-                            {
-                              guest.interactions.filter((i) => i.type === 'whatsapp_message')
-                                .length
-                            }
+                            {guest.interactions?.filter((i) => i.type === 'whatsapp_message').length || 0}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-celebre-muted">Emails</span>
                           <span className="font-medium">
-                            {guest.interactions.filter((i) => i.type === 'email_sent').length}
+                            {guest.interactions?.filter((i) => i.type === 'email_sent').length || 0}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-celebre-muted">Check-ins</span>
-                          <span className="font-medium">{guest.checkins.length}</span>
+                          <span className="font-medium">{guest.checkins?.length || 0}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-celebre-muted">
+                  <div className="py-8 text-center text-celebre-muted">
                     <p>Score de engajamento não disponível</p>
                   </div>
                 )}
@@ -585,9 +485,9 @@ export default function GuestProfilePage() {
                 <CardDescription>Logs LGPD e preferências de comunicação</CardDescription>
               </CardHeader>
               <CardContent>
-                {guest.consentLogs.length === 0 ? (
-                  <div className="text-center py-8 text-celebre-muted">
-                    <Shield className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                {!guest.consentLogs || guest.consentLogs.length === 0 ? (
+                  <div className="py-8 text-center text-celebre-muted">
+                    <Shield className="mx-auto mb-2 h-12 w-12 opacity-50" />
                     <p>Nenhum log de consentimento registrado</p>
                   </div>
                 ) : (
@@ -595,21 +495,18 @@ export default function GuestProfilePage() {
                     {guest.consentLogs.map((log) => (
                       <div
                         key={log.id}
-                        className="flex items-start justify-between p-3 rounded-lg border"
+                        className="flex items-start justify-between rounded-lg border p-3"
                       >
                         <div>
                           <p className="font-medium text-celebre-ink">
                             {log.action === 'opt_in' ? 'Opt-in' : 'Opt-out'}
                           </p>
-                          <p className="text-xs text-celebre-muted mt-1">{log.context}</p>
-                          <p className="text-xs text-celebre-muted mt-2">
+                          <p className="mt-1 text-xs text-celebre-muted">{log.context}</p>
+                          <p className="mt-2 text-xs text-celebre-muted">
                             {formatDate(log.occurredAt)} às {formatTime(log.occurredAt)}
                           </p>
                         </div>
-                        <Badge
-                          variant={log.action === 'opt_in' ? 'success' : 'danger'}
-                          className="text-xs"
-                        >
+                        <Badge className="text-xs">
                           {log.action === 'opt_in' ? 'Consentiu' : 'Recusou'}
                         </Badge>
                       </div>
@@ -618,12 +515,12 @@ export default function GuestProfilePage() {
                 )}
 
                 {guest.optOut && (
-                  <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4">
                     <div className="flex items-center gap-2 text-red-800">
                       <span>🚫</span>
                       <p className="font-medium">Opt-out ativo</p>
                     </div>
-                    <p className="text-sm text-red-600 mt-1">
+                    <p className="mt-1 text-sm text-red-600">
                       Este convidado solicitou não receber mais comunicações.
                     </p>
                   </div>

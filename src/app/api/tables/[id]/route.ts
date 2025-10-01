@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/tables/:id - Update table position or properties
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const { x, y, label, capacity } = body
@@ -55,18 +52,12 @@ export async function PATCH(
     return NextResponse.json(updatedTable)
   } catch (error) {
     console.error('Error updating table:', error)
-    return NextResponse.json(
-      { error: 'Failed to update table' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update table' }, { status: 500 })
   }
 }
 
 // DELETE /api/tables/:id - Delete table and its seats
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Delete all seat assignments first
     await prisma.seatAssignment.deleteMany({
@@ -90,9 +81,6 @@ export async function DELETE(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting table:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete table' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete table' }, { status: 500 })
   }
 }

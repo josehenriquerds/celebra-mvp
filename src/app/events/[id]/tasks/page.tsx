@@ -70,19 +70,19 @@ function DraggableTask({ task }: { task: Task }) {
       style={style}
       {...listeners}
       {...attributes}
-      className="p-4 bg-white border rounded-xl cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow mb-3"
+      className="mb-3 cursor-grab rounded-xl border bg-white p-4 transition-shadow hover:shadow-md active:cursor-grabbing"
     >
-      <div className="flex items-start justify-between mb-2">
-        <h3 className="font-semibold text-celebre-ink text-sm">{task.title}</h3>
+      <div className="mb-2 flex items-start justify-between">
+        <h3 className="text-sm font-semibold text-celebre-ink">{task.title}</h3>
         {task.dueAt && (
-          <Badge variant={getSLABadgeColor(task.dueAt) as any} className="text-xs ml-2">
+          <Badge variant={getSLABadgeColor(task.dueAt) as any} className="ml-2 text-xs">
             {getSLABadgeColor(task.dueAt) === 'danger' ? 'Atrasada' : 'No prazo'}
           </Badge>
         )}
       </div>
 
       {task.description && (
-        <p className="text-xs text-celebre-muted mb-3 line-clamp-2">{task.description}</p>
+        <p className="mb-3 line-clamp-2 text-xs text-celebre-muted">{task.description}</p>
       )}
 
       <div className="space-y-1">
@@ -139,9 +139,9 @@ function DroppableColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`flex-1 min-w-[300px] bg-celebre-accent/20 rounded-xl p-4 ${isOver ? 'ring-2 ring-celebre-brand' : ''}`}
+      className={`bg-celebre-accent/20 min-w-[300px] flex-1 rounded-xl p-4 ${isOver ? 'ring-celebre-brand ring-2' : ''}`}
     >
-      <div className="flex items-center gap-2 mb-4">
+      <div className="mb-4 flex items-center gap-2">
         <Icon className={`h-5 w-5 ${color}`} />
         <h2 className="font-heading font-semibold text-celebre-ink">{title}</h2>
         <Badge variant="outline" className="ml-auto">
@@ -151,7 +151,7 @@ function DroppableColumn({
 
       <div className="space-y-3">
         {tasks.length === 0 ? (
-          <div className="text-center py-8 text-celebre-muted">
+          <div className="py-8 text-center text-celebre-muted">
             <p className="text-sm">Nenhuma tarefa</p>
           </div>
         ) : (
@@ -280,9 +280,9 @@ export default function TasksPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando tarefas...</p>
         </div>
       </div>
@@ -295,8 +295,8 @@ export default function TasksPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-full px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="max-w-full px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
@@ -305,16 +305,16 @@ export default function TasksPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-3xl font-heading font-bold text-celebre-ink">
+                <h1 className="font-heading text-3xl font-bold text-celebre-ink">
                   Gestão de Tarefas
                 </h1>
-                <p className="text-sm text-celebre-muted mt-1">
+                <p className="mt-1 text-sm text-celebre-muted">
                   {allTasks.length} tarefa{allTasks.length !== 1 ? 's' : ''} no total
                 </p>
               </div>
             </div>
             <Button size="sm" onClick={() => setShowNewTaskForm(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Nova Tarefa
             </Button>
           </div>
@@ -323,7 +323,7 @@ export default function TasksPage() {
 
       {/* New Task Form */}
       {showNewTaskForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <Card className="w-full max-w-md">
             <CardHeader>
               <CardTitle className="font-heading">Nova Tarefa</CardTitle>
@@ -366,7 +366,11 @@ export default function TasksPage() {
                 />
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setShowNewTaskForm(false)} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowNewTaskForm(false)}
+                  className="flex-1"
+                >
                   Cancelar
                 </Button>
                 <Button onClick={handleCreateTask} className="flex-1">
@@ -379,7 +383,7 @@ export default function TasksPage() {
       )}
 
       {/* Kanban Board */}
-      <main className="max-w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-full px-4 py-8 sm:px-6 lg:px-8">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}
@@ -412,8 +416,8 @@ export default function TasksPage() {
 
           <DragOverlay>
             {activeId && activeTask && (
-              <div className="p-4 bg-white border-2 border-celebre-brand rounded-xl shadow-lg">
-                <h3 className="font-semibold text-celebre-ink text-sm">{activeTask.title}</h3>
+              <div className="border-celebre-brand rounded-xl border-2 bg-white p-4 shadow-lg">
+                <h3 className="text-sm font-semibold text-celebre-ink">{activeTask.title}</h3>
               </div>
             )}
           </DragOverlay>

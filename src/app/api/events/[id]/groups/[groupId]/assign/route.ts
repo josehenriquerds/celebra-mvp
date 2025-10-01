@@ -12,10 +12,7 @@ export async function POST(
     const { guestIds } = body
 
     if (!Array.isArray(guestIds) || guestIds.length === 0) {
-      return NextResponse.json(
-        { error: 'guestIds array is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'guestIds array is required' }, { status: 400 })
     }
 
     // Create assignments for each guest (skip if already exists)
@@ -33,9 +30,6 @@ export async function POST(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error assigning guests to group:', error)
-    return NextResponse.json(
-      { error: 'Failed to assign guests' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to assign guests' }, { status: 500 })
   }
 }

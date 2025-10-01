@@ -1,5 +1,5 @@
-import slugify from 'slugify';
-import { prisma } from './prisma';
+import slugify from 'slugify'
+import { prisma } from './prisma'
 
 /**
  * Gera slug único para vendor baseado em nome da empresa e cidade
@@ -9,43 +9,43 @@ export async function generateUniqueSlug(companyName: string, city: string): Pro
     lower: true,
     strict: true,
     locale: 'pt',
-  });
+  })
 
   // Verificar se slug já existe
-  let slug = baseSlug;
-  let counter = 1;
+  let slug = baseSlug
+  let counter = 1
 
   while (await slugExists(slug)) {
-    slug = `${baseSlug}-${counter}`;
-    counter++;
+    slug = `${baseSlug}-${counter}`
+    counter++
   }
 
-  return slug;
+  return slug
 }
 
 async function slugExists(slug: string): Promise<boolean> {
   const existing = await prisma.vendorPartner.findUnique({
     where: { slug },
-  });
-  return !!existing;
+  })
+  return !!existing
 }
 
 /**
  * Normaliza handle do Instagram (@handle ou https://instagram.com/handle)
  */
 export function normalizeInstagramHandle(input: string | undefined): string | undefined {
-  if (!input) return undefined;
+  if (!input) return undefined
 
   // Remove @ se existir
-  let handle = input.trim().replace(/^@/, '');
+  let handle = input.trim().replace(/^@/, '')
 
   // Se for URL, extrai o handle
-  const urlMatch = handle.match(/(?:instagram\.com|instagr\.am)\/([a-zA-Z0-9._]+)/i);
+  const urlMatch = handle.match(/(?:instagram\.com|instagr\.am)\/([a-zA-Z0-9._]+)/i)
   if (urlMatch) {
-    handle = urlMatch[1];
+    handle = urlMatch[1]
   }
 
-  return handle.length > 0 ? handle : undefined;
+  return handle.length > 0 ? handle : undefined
 }
 
 /**
@@ -53,69 +53,69 @@ export function normalizeInstagramHandle(input: string | undefined): string | un
  */
 export function generateWhatsAppUrl(phoneE164: string): string {
   // Remove + do início
-  const phone = phoneE164.replace(/^\+/, '');
-  return `https://wa.me/${phone}`;
+  const phone = phoneE164.replace(/^\+/, '')
+  return `https://wa.me/${phone}`
 }
 
 /**
  * Calcula score do perfil do vendor (0-100)
  */
 export function calculateProfileScore(vendor: {
-  media?: Array<{ type: string }>;
-  descriptionShort?: string | null;
-  descriptionLong?: string | null;
-  instagramHandle?: string | null;
-  websiteUrl?: string | null;
-  phoneE164: string;
-  email: string;
+  media?: Array<{ type: string }>
+  descriptionShort?: string | null
+  descriptionLong?: string | null
+  instagramHandle?: string | null
+  websiteUrl?: string | null
+  phoneE164: string
+  email: string
 }): number {
-  let score = 0;
+  let score = 0
 
   // Logo: 20 pontos
-  if (vendor.media?.some(m => m.type === 'logo')) {
-    score += 20;
+  if (vendor.media?.some((m) => m.type === 'logo')) {
+    score += 20
   }
 
   // Capa: 20 pontos
-  if (vendor.media?.some(m => m.type === 'cover')) {
-    score += 20;
+  if (vendor.media?.some((m) => m.type === 'cover')) {
+    score += 20
   }
 
   // Galeria (≥5 fotos): 30 pontos
-  const galleryCount = vendor.media?.filter(m => m.type === 'gallery').length || 0;
+  const galleryCount = vendor.media?.filter((m) => m.type === 'gallery').length || 0
   if (galleryCount >= 5) {
-    score += 30;
+    score += 30
   } else if (galleryCount >= 3) {
-    score += 20;
+    score += 20
   } else if (galleryCount >= 1) {
-    score += 10;
+    score += 10
   }
 
   // Descrições: 20 pontos
   if (vendor.descriptionShort && vendor.descriptionShort.length >= 50) {
-    score += 5;
+    score += 5
   }
   if (vendor.descriptionLong && vendor.descriptionLong.length >= 100) {
-    score += 15;
+    score += 15
   }
 
   // Contatos (instagram, website): 10 pontos
-  if (vendor.instagramHandle) score += 5;
-  if (vendor.websiteUrl) score += 5;
+  if (vendor.instagramHandle) score += 5
+  if (vendor.websiteUrl) score += 5
 
-  return Math.min(score, 100);
+  return Math.min(score, 100)
 }
 
 /**
  * Formata preço em centavos para string amigável
  */
 export function formatPrice(cents: number | null | undefined): string {
-  if (!cents) return 'Consultar';
-  const reais = cents / 100;
+  if (!cents) return 'Consultar'
+  const reais = cents / 100
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-  }).format(reais);
+  }).format(reais)
 }
 
 /**
@@ -128,13 +128,13 @@ export function isWithinServiceRadius(
   serviceRadiusKm?: number | null
 ): boolean {
   // Normalizar nomes
-  const normalize = (s: string) => s.toLowerCase().trim();
+  const normalize = (s: string) => s.toLowerCase().trim()
 
   if (normalize(vendorCity) === normalize(eventCity)) {
-    return true;
+    return true
   }
 
   // Se tem raio de atendimento, considera que pode atender
   // (implementação real usaria API de geolocalização)
-  return !!serviceRadiusKm && serviceRadiusKm > 0;
+  return !!serviceRadiusKm && serviceRadiusKm > 0
 }

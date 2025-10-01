@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 export async function seedVendorPartners() {
-  console.log('🌱 Seeding vendor partners...');
+  console.log('🌱 Seeding vendor partners...')
 
   // Vendor 1: Rosa Buffet (Aprovado, Completo)
   const rosaBuffet = await prisma.vendorPartner.create({
@@ -31,7 +31,7 @@ export async function seedVendorPartners() {
       consentAt: new Date('2025-01-10'),
       createdAt: new Date('2025-01-10'),
     },
-  });
+  })
 
   await prisma.vendorMedia.createMany({
     data: [
@@ -78,7 +78,7 @@ export async function seedVendorPartners() {
         sortOrder: 5,
       },
     ],
-  });
+  })
 
   await prisma.vendorReview.createMany({
     data: [
@@ -98,7 +98,7 @@ export async function seedVendorPartners() {
         comment: 'Muito bom, apenas o preço um pouco alto.',
       },
     ],
-  });
+  })
 
   await prisma.vendorStatusLog.create({
     data: {
@@ -107,7 +107,7 @@ export async function seedVendorPartners() {
       reason: 'Cadastro inicial',
       createdAt: new Date('2025-01-10'),
     },
-  });
+  })
 
   await prisma.vendorStatusLog.create({
     data: {
@@ -117,7 +117,7 @@ export async function seedVendorPartners() {
       reason: 'Perfil completo e verificado',
       createdAt: new Date('2025-01-11'),
     },
-  });
+  })
 
   // Vendor 2: Studio Click Fotografia (Aprovado)
   const studioClick = await prisma.vendorPartner.create({
@@ -144,7 +144,7 @@ export async function seedVendorPartners() {
       consentAt: new Date('2025-01-12'),
       createdAt: new Date('2025-01-12'),
     },
-  });
+  })
 
   await prisma.vendorMedia.createMany({
     data: [
@@ -179,7 +179,7 @@ export async function seedVendorPartners() {
         sortOrder: 3,
       },
     ],
-  });
+  })
 
   // Vendor 3: DJ Beats (Pendente)
   const djBeats = await prisma.vendorPartner.create({
@@ -205,7 +205,7 @@ export async function seedVendorPartners() {
       consentAt: new Date('2025-01-14'),
       createdAt: new Date('2025-01-14'),
     },
-  });
+  })
 
   await prisma.vendorStatusLog.create({
     data: {
@@ -214,7 +214,7 @@ export async function seedVendorPartners() {
       reason: 'Cadastro inicial',
       createdAt: new Date('2025-01-14'),
     },
-  });
+  })
 
   // Vendor 4: Flores & Cia (Aprovado)
   const floresCia = await prisma.vendorPartner.create({
@@ -242,7 +242,7 @@ export async function seedVendorPartners() {
       consentAt: new Date('2025-01-08'),
       createdAt: new Date('2025-01-08'),
     },
-  });
+  })
 
   await prisma.vendorMedia.createMany({
     data: [
@@ -283,7 +283,7 @@ export async function seedVendorPartners() {
         sortOrder: 4,
       },
     ],
-  });
+  })
 
   // Vendor 5: Espaço Jardim Eventos (Aprovado)
   const espacoJardim = await prisma.vendorPartner.create({
@@ -310,7 +310,7 @@ export async function seedVendorPartners() {
       consentAt: new Date('2025-01-05'),
       createdAt: new Date('2025-01-05'),
     },
-  });
+  })
 
   await prisma.vendorMedia.createMany({
     data: [
@@ -363,7 +363,7 @@ export async function seedVendorPartners() {
         sortOrder: 6,
       },
     ],
-  });
+  })
 
   // Vendor 6: Convites Arte & Papel (Pendente)
   const convitesArte = await prisma.vendorPartner.create({
@@ -389,20 +389,20 @@ export async function seedVendorPartners() {
       consentAt: new Date('2025-01-15'),
       createdAt: new Date('2025-01-15'),
     },
-  });
+  })
 
-  console.log('✅ Vendor partners seeded successfully!');
-  console.log(`   - ${rosaBuffet.companyName} (${rosaBuffet.slug})`);
-  console.log(`   - ${studioClick.companyName} (${studioClick.slug})`);
-  console.log(`   - ${djBeats.companyName} (${djBeats.slug})`);
-  console.log(`   - ${floresCia.companyName} (${floresCia.slug})`);
-  console.log(`   - ${espacoJardim.companyName} (${espacoJardim.slug})`);
-  console.log(`   - ${convitesArte.companyName} (${convitesArte.slug})`);
+  console.log('✅ Vendor partners seeded successfully!')
+  console.log(`   - ${rosaBuffet.companyName} (${rosaBuffet.slug})`)
+  console.log(`   - ${studioClick.companyName} (${studioClick.slug})`)
+  console.log(`   - ${djBeats.companyName} (${djBeats.slug})`)
+  console.log(`   - ${floresCia.companyName} (${floresCia.slug})`)
+  console.log(`   - ${espacoJardim.companyName} (${espacoJardim.slug})`)
+  console.log(`   - ${convitesArte.companyName} (${convitesArte.slug})`)
 }
 
 // Execute if run directly
 if (require.main === module) {
   seedVendorPartners()
     .catch(console.error)
-    .finally(() => prisma.$disconnect());
+    .finally(() => prisma.$disconnect())
 }

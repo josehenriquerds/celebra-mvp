@@ -182,9 +182,9 @@ export default function CheckinPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando check-in...</p>
         </div>
       </div>
@@ -194,8 +194,8 @@ export default function CheckinPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
@@ -204,10 +204,10 @@ export default function CheckinPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-3xl font-heading font-bold text-celebre-ink">
+                <h1 className="font-heading text-3xl font-bold text-celebre-ink">
                   Check-in ao Vivo
                 </h1>
-                <p className="text-sm text-celebre-muted mt-1">
+                <p className="mt-1 text-sm text-celebre-muted">
                   {stats.presentes} de {stats.total} convidados presentes
                 </p>
               </div>
@@ -216,7 +216,7 @@ export default function CheckinPage() {
               variant={scanning ? 'destructive' : 'default'}
               onClick={scanning ? stopScanning : startScanning}
             >
-              <QrCode className="h-4 w-4 mr-2" />
+              <QrCode className="mr-2 h-4 w-4" />
               {scanning ? 'Parar Scanner' : 'Escanear QR Code'}
             </Button>
           </div>
@@ -225,9 +225,9 @@ export default function CheckinPage() {
 
       {/* Last Check-in Toast */}
       {lastCheckin && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-top duration-300">
-          <Card className="shadow-lg border-green-500 border-2">
-            <CardContent className="p-4 flex items-center gap-3">
+        <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 duration-300 animate-in slide-in-from-top">
+          <Card className="border-2 border-green-500 shadow-lg">
+            <CardContent className="flex items-center gap-3 p-4">
               <CheckCircle className="h-8 w-8 text-green-500" />
               <div>
                 <p className="font-semibold text-celebre-ink">Check-in realizado!</p>
@@ -239,47 +239,45 @@ export default function CheckinPage() {
       )}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* QR Scanner */}
         {scanning && (
           <Card className="mb-8">
             <CardContent className="p-6">
-              <div id="qr-reader" className="w-full max-w-md mx-auto"></div>
-              <p className="text-center text-celebre-muted mt-4">
-                Posicione o QR Code na câmera
-              </p>
+              <div id="qr-reader" className="mx-auto w-full max-w-md"></div>
+              <p className="mt-4 text-center text-celebre-muted">Posicione o QR Code na câmera</p>
             </CardContent>
           </Card>
         )}
 
         {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
           <Card>
             <CardContent className="p-6 text-center">
-              <Users className="h-8 w-8 mx-auto mb-2 text-celebre-muted" />
-              <div className="text-3xl font-bold text-celebre-brand">{stats.total}</div>
-              <p className="text-sm text-celebre-muted mt-1">Total Confirmados</p>
+              <Users className="mx-auto mb-2 h-8 w-8 text-celebre-muted" />
+              <div className="text-celebre-brand text-3xl font-bold">{stats.total}</div>
+              <p className="mt-1 text-sm text-celebre-muted">Total Confirmados</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-6 text-center">
-              <CheckCircle className="h-8 w-8 mx-auto mb-2 text-green-500" />
+              <CheckCircle className="mx-auto mb-2 h-8 w-8 text-green-500" />
               <div className="text-3xl font-bold text-green-600">{stats.presentes}</div>
-              <p className="text-sm text-celebre-muted mt-1">Presentes</p>
+              <p className="mt-1 text-sm text-celebre-muted">Presentes</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardContent className="p-6 text-center">
-              <XCircle className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+              <XCircle className="mx-auto mb-2 h-8 w-8 text-gray-400" />
               <div className="text-3xl font-bold text-gray-600">{stats.ausentes}</div>
-              <p className="text-sm text-celebre-muted mt-1">Ausentes</p>
+              <p className="mt-1 text-sm text-celebre-muted">Ausentes</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6 flex items-center justify-center">
+            <CardContent className="flex items-center justify-center p-6">
               <DonutProgress percentage={stats.percentPresentes} size={120} strokeWidth={10} />
             </CardContent>
           </Card>
@@ -289,7 +287,7 @@ export default function CheckinPage() {
         <Card className="mb-6">
           <CardContent className="p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-celebre-muted" />
+              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-celebre-muted" />
               <Input
                 type="text"
                 placeholder="Buscar convidado por nome ou telefone..."
@@ -309,21 +307,21 @@ export default function CheckinPage() {
           <CardContent>
             <div className="space-y-2">
               {filteredGuests.length === 0 ? (
-                <div className="text-center py-8 text-celebre-muted">
-                  <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <div className="py-8 text-center text-celebre-muted">
+                  <Users className="mx-auto mb-2 h-12 w-12 opacity-50" />
                   <p>Nenhum convidado encontrado</p>
                 </div>
               ) : (
                 filteredGuests.map((guest) => (
                   <div
                     key={guest.id}
-                    className={`flex items-center justify-between p-4 rounded-lg border transition-all ${
+                    className={`flex items-center justify-between rounded-lg border p-4 transition-all ${
                       guest.checkin
-                        ? 'bg-green-50 border-green-200'
-                        : 'bg-white hover:bg-celebre-accent/20'
+                        ? 'border-green-200 bg-green-50'
+                        : 'hover:bg-celebre-accent/20 bg-white'
                     }`}
                   >
-                    <div className="flex items-center gap-3 flex-1">
+                    <div className="flex flex-1 items-center gap-3">
                       {guest.checkin ? (
                         <CheckCircle className="h-6 w-6 text-green-500" />
                       ) : (
@@ -331,14 +329,12 @@ export default function CheckinPage() {
                       )}
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-semibold text-celebre-ink">
-                            {guest.contact.fullName}
-                          </p>
+                          <p className="font-semibold text-celebre-ink">{guest.contact.fullName}</p>
                           {guest.contact.isVip && (
-                            <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                            <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                           )}
                         </div>
-                        <div className="flex items-center gap-3 text-xs text-celebre-muted mt-1">
+                        <div className="mt-1 flex items-center gap-3 text-xs text-celebre-muted">
                           <span>{guest.contact.phone}</span>
                           {guest.table && <span>Mesa: {guest.table.label}</span>}
                         </div>
@@ -351,10 +347,7 @@ export default function CheckinPage() {
                           Presente
                         </Badge>
                       ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => handleManualCheckin(guest.id)}
-                        >
+                        <Button size="sm" onClick={() => handleManualCheckin(guest.id)}>
                           Check-in
                         </Button>
                       )}

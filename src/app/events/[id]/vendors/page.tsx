@@ -206,9 +206,9 @@ export default function VendorsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando fornecedores...</p>
         </div>
       </div>
@@ -218,8 +218,8 @@ export default function VendorsPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
@@ -228,16 +228,14 @@ export default function VendorsPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-3xl font-heading font-bold text-celebre-ink">
-                  Fornecedores
-                </h1>
-                <p className="text-sm text-celebre-muted mt-1">
+                <h1 className="font-heading text-3xl font-bold text-celebre-ink">Fornecedores</h1>
+                <p className="mt-1 text-sm text-celebre-muted">
                   {vendors.length} fornecedor{vendors.length !== 1 ? 'es' : ''} cadastrados
                 </p>
               </div>
             </div>
             <Button onClick={openCreateModal}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Novo Fornecedor
             </Button>
           </div>
@@ -246,8 +244,8 @@ export default function VendorsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <Card className="max-h-[90vh] w-full max-w-2xl overflow-y-auto">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="font-heading">
@@ -275,7 +273,7 @@ export default function VendorsPage() {
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                    className="focus:ring-celebre-brand mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -343,11 +341,13 @@ export default function VendorsPage() {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium text-celebre-ink">Status de Pagamento</label>
+                  <label className="text-sm font-medium text-celebre-ink">
+                    Status de Pagamento
+                  </label>
                   <select
                     value={formData.paymentStatus}
                     onChange={(e) => setFormData({ ...formData, paymentStatus: e.target.value })}
-                    className="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                    className="focus:ring-celebre-brand mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                   >
                     <option value="pendente">Pendente</option>
                     <option value="parcial">Parcial</option>
@@ -362,7 +362,7 @@ export default function VendorsPage() {
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                     placeholder="Notas adicionais sobre o fornecedor..."
                     rows={3}
-                    className="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                    className="focus:ring-celebre-brand mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
                   />
                 </div>
               </div>
@@ -381,13 +381,13 @@ export default function VendorsPage() {
       )}
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <DollarSign className="h-8 w-8 text-celebre-brand" />
+                <DollarSign className="text-celebre-brand h-8 w-8" />
                 <div>
                   <p className="text-sm text-celebre-muted">Valor Total Contratado</p>
                   <p className="text-2xl font-bold text-celebre-ink">
@@ -404,9 +404,7 @@ export default function VendorsPage() {
                 <CheckCircle className="h-8 w-8 text-green-500" />
                 <div>
                   <p className="text-sm text-celebre-muted">Total Pago</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {formatCurrency(totalPaid)}
-                  </p>
+                  <p className="text-2xl font-bold text-green-600">{formatCurrency(totalPaid)}</p>
                 </div>
               </div>
             </CardContent>
@@ -430,10 +428,10 @@ export default function VendorsPage() {
         {/* Filters */}
         <Card className="mb-6">
           <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-celebre-muted" />
+                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-celebre-muted" />
                 <Input
                   type="text"
                   placeholder="Buscar fornecedor..."
@@ -447,7 +445,7 @@ export default function VendorsPage() {
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                className="focus:ring-celebre-brand rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
               >
                 <option value="all">Todas as Categorias</option>
                 {CATEGORIES.map((cat) => (
@@ -461,7 +459,7 @@ export default function VendorsPage() {
               <select
                 value={filterPayment}
                 onChange={(e) => setFilterPayment(e.target.value)}
-                className="rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-celebre-brand"
+                className="focus:ring-celebre-brand rounded-xl border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2"
               >
                 <option value="all">Todos os Status</option>
                 <option value="pago">Pago</option>
@@ -475,25 +473,23 @@ export default function VendorsPage() {
         {/* Vendors Grid */}
         {filteredVendors.length === 0 ? (
           <Card>
-            <CardContent className="text-center py-12">
-              <FileText className="h-12 w-12 mx-auto mb-4 text-celebre-muted opacity-50" />
+            <CardContent className="py-12 text-center">
+              <FileText className="mx-auto mb-4 h-12 w-12 text-celebre-muted opacity-50" />
               <p className="text-celebre-muted">Nenhum fornecedor encontrado</p>
               <Button variant="outline" className="mt-4" onClick={openCreateModal}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Adicionar Primeiro Fornecedor
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredVendors.map((vendor) => (
               <Card key={vendor.id} className="hover:shadow-celebre-lg transition-shadow">
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+                  <div className="mb-4 flex items-start justify-between">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-celebre-ink mb-1">
-                        {vendor.name}
-                      </h3>
+                      <h3 className="mb-1 text-lg font-semibold text-celebre-ink">{vendor.name}</h3>
                       <Badge variant="outline" className="text-xs">
                         {vendor.category}
                       </Badge>
@@ -501,20 +497,20 @@ export default function VendorsPage() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => openEditModal(vendor)}
-                        className="p-2 hover:bg-celebre-accent rounded-lg transition-colors"
+                        className="hover:bg-celebre-accent rounded-lg p-2 transition-colors"
                       >
                         <Edit2 className="h-4 w-4 text-celebre-muted" />
                       </button>
                       <button
                         onClick={() => handleDelete(vendor.id)}
-                        className="p-2 hover:bg-red-100 rounded-lg transition-colors"
+                        className="rounded-lg p-2 transition-colors hover:bg-red-100"
                       >
                         <Trash2 className="h-4 w-4 text-red-500" />
                       </button>
                     </div>
                   </div>
 
-                  <div className="space-y-3 mb-4">
+                  <div className="mb-4 space-y-3">
                     <div className="flex items-center gap-2 text-sm text-celebre-muted">
                       <Phone className="h-4 w-4" />
                       <span>{vendor.phone || 'Sem telefone'}</span>
@@ -531,7 +527,7 @@ export default function VendorsPage() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t space-y-2">
+                  <div className="space-y-2 border-t pt-4">
                     <div className="flex justify-between text-sm">
                       <span className="text-celebre-muted">Valor do Contrato</span>
                       <span className="font-semibold text-celebre-ink">
@@ -544,7 +540,7 @@ export default function VendorsPage() {
                         {formatCurrency(vendor.amountPaid)}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <span className="text-sm text-celebre-muted">Status</span>
                       <Badge
                         className={`text-xs ${PAYMENT_STATUS_COLORS[vendor.paymentStatus as keyof typeof PAYMENT_STATUS_COLORS]}`}
@@ -556,7 +552,7 @@ export default function VendorsPage() {
 
                   {/* Progress Bar */}
                   <div className="mt-4">
-                    <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
                       <div
                         className="h-full bg-green-500 transition-all duration-300"
                         style={{

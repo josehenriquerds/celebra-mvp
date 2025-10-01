@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
 export async function POST(
   request: Request,
@@ -9,5 +9,5 @@ export async function POST(
     success: true,
     memberCount: Math.floor(Math.random() * 100),
     lastUpdatedAt: new Date().toISOString(),
-  });
+  })
 }

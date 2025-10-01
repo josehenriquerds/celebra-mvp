@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // GET /api/events/:id/timeline - Get aggregated timeline
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type') // Filter by type
@@ -71,7 +68,7 @@ export async function GET(
 
     // Add timeline entries
     timelineEntries.forEach((entry) => {
-      const meta = entry.metaJson as any || {}
+      const meta = (entry.metaJson as any) || {}
       timeline.push({
         id: `timeline-${entry.id}`,
         type: 'timeline',

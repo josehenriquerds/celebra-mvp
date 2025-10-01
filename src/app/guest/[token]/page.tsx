@@ -126,7 +126,12 @@ export default function GuestPortalPage() {
   }
 
   async function handleOptOut() {
-    if (!confirm('Tem certeza que deseja parar de receber comunicações? Esta ação não pode ser desfeita.')) return
+    if (
+      !confirm(
+        'Tem certeza que deseja parar de receber comunicações? Esta ação não pode ser desfeita.'
+      )
+    )
+      return
 
     try {
       setUpdating(true)
@@ -162,7 +167,12 @@ export default function GuestPortalPage() {
   }
 
   async function handleDeleteData() {
-    if (!confirm('ATENÇÃO: Seus dados serão permanentemente excluídos do sistema. Esta ação é irreversível. Deseja continuar?')) return
+    if (
+      !confirm(
+        'ATENÇÃO: Seus dados serão permanentemente excluídos do sistema. Esta ação é irreversível. Deseja continuar?'
+      )
+    )
+      return
 
     try {
       setUpdating(true)
@@ -184,9 +194,9 @@ export default function GuestPortalPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando...</p>
         </div>
       </div>
@@ -195,11 +205,11 @@ export default function GuestPortalPage() {
 
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
-            <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <p className="text-celebre-ink font-semibold mb-2">{error || 'Link inválido'}</p>
+            <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
+            <p className="mb-2 font-semibold text-celebre-ink">{error || 'Link inválido'}</p>
             <p className="text-sm text-celebre-muted">
               Entre em contato com os organizadores do evento.
             </p>
@@ -211,11 +221,11 @@ export default function GuestPortalPage() {
 
   if (data.guest.optOut) {
     return (
-      <div className="min-h-screen bg-celebre-bg flex items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center bg-celebre-bg p-4">
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
-            <Shield className="h-12 w-12 text-celebre-brand mx-auto mb-4" />
-            <p className="text-celebre-ink font-semibold mb-2">Comunicações Desativadas</p>
+            <Shield className="text-celebre-brand mx-auto mb-4 h-12 w-12" />
+            <p className="mb-2 font-semibold text-celebre-ink">Comunicações Desativadas</p>
             <p className="text-sm text-celebre-muted">
               Você optou por não receber mais comunicações sobre este evento.
             </p>
@@ -228,13 +238,11 @@ export default function GuestPortalPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-3xl font-heading font-bold text-celebre-ink">
-              {data.event.title}
-            </h1>
-            <p className="text-sm text-celebre-muted mt-2">
+            <h1 className="font-heading text-3xl font-bold text-celebre-ink">{data.event.title}</h1>
+            <p className="mt-2 text-sm text-celebre-muted">
               Olá, {data.guest.contact.fullName}! 👋
             </p>
           </div>
@@ -242,7 +250,7 @@ export default function GuestPortalPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {/* Event Info */}
         <Card>
           <CardHeader>
@@ -285,7 +293,7 @@ export default function GuestPortalPage() {
             <CardDescription>Por favor, confirme sua presença no evento</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
               {RSVP_OPTIONS.map((option) => {
                 const Icon = option.icon
                 const isSelected = data.guest.rsvp === option.value
@@ -294,14 +302,18 @@ export default function GuestPortalPage() {
                     key={option.value}
                     onClick={() => handleUpdateRSVP(option.value)}
                     disabled={updating}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    className={`rounded-xl border-2 p-4 transition-all ${
                       isSelected
                         ? 'border-celebre-brand bg-celebre-accent'
-                        : 'border-gray-200 hover:border-celebre-brand hover:bg-gray-50'
+                        : 'hover:border-celebre-brand border-gray-200 hover:bg-gray-50'
                     }`}
                   >
-                    <Icon className={`h-6 w-6 mx-auto mb-2 ${isSelected ? 'text-celebre-brand' : option.color}`} />
-                    <p className={`text-sm font-medium ${isSelected ? 'text-celebre-brand' : 'text-celebre-ink'}`}>
+                    <Icon
+                      className={`mx-auto mb-2 h-6 w-6 ${isSelected ? 'text-celebre-brand' : option.color}`}
+                    />
+                    <p
+                      className={`text-sm font-medium ${isSelected ? 'text-celebre-brand' : 'text-celebre-ink'}`}
+                    >
                       {option.label}
                     </p>
                   </button>
@@ -310,9 +322,10 @@ export default function GuestPortalPage() {
             </div>
 
             {data.guest.rsvp && (
-              <div className="p-3 bg-celebre-accent/20 rounded-lg">
+              <div className="bg-celebre-accent/20 rounded-lg p-3">
                 <p className="text-sm text-celebre-muted">
-                  Seu RSVP atual: <span className="font-semibold text-celebre-ink">{data.guest.rsvp}</span>
+                  Seu RSVP atual:{' '}
+                  <span className="font-semibold text-celebre-ink">{data.guest.rsvp}</span>
                 </p>
               </div>
             )}
@@ -365,17 +378,15 @@ export default function GuestPortalPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-celebre-brand" />
+              <Shield className="text-celebre-brand h-5 w-5" />
               <CardTitle className="font-heading">Privacidade e Dados (LGPD)</CardTitle>
             </div>
-            <CardDescription>
-              Você tem controle total sobre seus dados pessoais
-            </CardDescription>
+            <CardDescription>Você tem controle total sobre seus dados pessoais</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Button variant="outline" className="w-full justify-start" onClick={handleExportData}>
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="mr-2 h-4 w-4" />
                 Baixar Meus Dados (JSON)
               </Button>
               <Button
@@ -384,7 +395,7 @@ export default function GuestPortalPage() {
                 onClick={handleOptOut}
                 disabled={updating}
               >
-                <XCircle className="h-4 w-4 mr-2" />
+                <XCircle className="mr-2 h-4 w-4" />
                 Parar de Receber Comunicações
               </Button>
               <Button
@@ -393,18 +404,20 @@ export default function GuestPortalPage() {
                 onClick={handleDeleteData}
                 disabled={updating}
               >
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
                 Excluir Permanentemente Meus Dados
               </Button>
             </div>
 
             {/* Consent History */}
             {data.consentLogs.length > 0 && (
-              <div className="pt-4 border-t">
-                <h4 className="text-sm font-medium text-celebre-ink mb-3">Histórico de Consentimentos</h4>
+              <div className="border-t pt-4">
+                <h4 className="mb-3 text-sm font-medium text-celebre-ink">
+                  Histórico de Consentimentos
+                </h4>
                 <div className="space-y-2">
                   {data.consentLogs.map((log) => (
-                    <div key={log.id} className="text-xs text-celebre-muted bg-gray-50 p-2 rounded">
+                    <div key={log.id} className="rounded bg-gray-50 p-2 text-xs text-celebre-muted">
                       {log.action} - {log.context} ({formatDate(log.occurredAt)})
                     </div>
                   ))}
@@ -413,10 +426,11 @@ export default function GuestPortalPage() {
             )}
 
             {/* Interaction Stats */}
-            <div className="pt-4 border-t">
-              <h4 className="text-sm font-medium text-celebre-ink mb-2">Estatísticas</h4>
+            <div className="border-t pt-4">
+              <h4 className="mb-2 text-sm font-medium text-celebre-ink">Estatísticas</h4>
               <p className="text-sm text-celebre-muted">
-                Total de interações registradas: <span className="font-semibold">{data.interactions.length}</span>
+                Total de interações registradas:{' '}
+                <span className="font-semibold">{data.interactions.length}</span>
               </p>
             </div>
           </CardContent>
@@ -424,8 +438,8 @@ export default function GuestPortalPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t py-6 mt-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <footer className="mt-12 border-t bg-white py-6">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <p className="text-sm text-celebre-muted">
             Este portal segue as normas da LGPD (Lei Geral de Proteção de Dados)
           </p>

@@ -1,8 +1,8 @@
-export type Role = 'admin' | 'host' | 'cohost' | 'staff' | 'vendor' | 'viewer';
+export type Role = 'admin' | 'host' | 'cohost' | 'staff' | 'vendor' | 'viewer'
 
 export interface Permission {
-  resource: string;
-  action: 'create' | 'read' | 'update' | 'delete';
+  resource: string
+  action: 'create' | 'read' | 'update' | 'delete'
 }
 
 const rolePermissions: Record<Role, Permission[]> = {
@@ -60,36 +60,35 @@ const rolePermissions: Record<Role, Permission[]> = {
     { resource: 'task', action: 'read' },
     { resource: 'report', action: 'read' },
   ],
-};
+}
 
 export function hasPermission(
   role: Role,
   resource: string,
   action: 'create' | 'read' | 'update' | 'delete'
 ): boolean {
-  const permissions = rolePermissions[role];
+  const permissions = rolePermissions[role]
 
   return permissions.some(
     (p) =>
-      (p.resource === '*' || p.resource === resource) &&
-      (p.action === action || p.resource === '*')
-  );
+      (p.resource === '*' || p.resource === resource) && (p.action === action || p.resource === '*')
+  )
 }
 
 export function canCreate(role: Role, resource: string): boolean {
-  return hasPermission(role, resource, 'create');
+  return hasPermission(role, resource, 'create')
 }
 
 export function canRead(role: Role, resource: string): boolean {
-  return hasPermission(role, resource, 'read');
+  return hasPermission(role, resource, 'read')
 }
 
 export function canUpdate(role: Role, resource: string): boolean {
-  return hasPermission(role, resource, 'update');
+  return hasPermission(role, resource, 'update')
 }
 
 export function canDelete(role: Role, resource: string): boolean {
-  return hasPermission(role, resource, 'delete');
+  return hasPermission(role, resource, 'delete')
 }
 
 export function getRoleLabel(role: Role): string {
@@ -100,6 +99,6 @@ export function getRoleLabel(role: Role): string {
     staff: 'Equipe',
     vendor: 'Fornecedor',
     viewer: 'Visualizador',
-  };
-  return labels[role];
+  }
+  return labels[role]
 }

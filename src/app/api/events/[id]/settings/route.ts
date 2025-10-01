@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // GET /api/events/:id/settings - Get event settings
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const event = await prisma.event.findUnique({
       where: { id: params.id },
@@ -55,8 +52,10 @@ export async function GET(
     }
 
     const templates = {
-      rsvpConfirmation: 'Olá {{name}}! Confirmamos sua presença em {{eventTitle}}. Data: {{date}}. Local: {{venue}}.',
-      rsvpReminder: 'Oi {{name}}! Não esqueça: {{eventTitle}} é amanhã às {{time}}. Nos vemos lá! 🎉',
+      rsvpConfirmation:
+        'Olá {{name}}! Confirmamos sua presença em {{eventTitle}}. Data: {{date}}. Local: {{venue}}.',
+      rsvpReminder:
+        'Oi {{name}}! Não esqueça: {{eventTitle}} é amanhã às {{time}}. Nos vemos lá! 🎉',
       thankYou: 'Obrigado por comparecer ao {{eventTitle}}, {{name}}! Foi um prazer te receber. ❤️',
       customMessage: '',
     }
@@ -72,10 +71,7 @@ export async function GET(
 }
 
 // PATCH /api/events/:id/settings - Update event settings
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const { settings, templates } = body

@@ -17,22 +17,23 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="bg-[#FAF5F0] w-64 h-screen px-6 py-8 border-r border-[#EDE6DE] fixed">
-      <h1 className="text-2xl font-serif text-[#2D1F1A] mb-10">Celebre</h1>
+    <aside className="fixed h-screen w-64 border-r border-border bg-[var(--celebre-bg)] px-6 py-8">
+      <h1 className="font-heading mb-10 text-2xl text-[var(--celebre-ink)]">Celebre</h1>
       <nav className="space-y-4">
         {navItems.map(({ name, icon, href }) => {
           const isActive = pathname === href
           return (
-            <Link key={href} href={href} className="block group relative">
-              <div className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all
-                ${isActive ? 'bg-[#E9D8C7] text-[#2D1F1A]' : 'text-[#6B5E57] hover:bg-[#F3EDE7]'}`}>
+            <Link key={href} href={href} className="group relative block">
+              <div
+                className={`flex items-center gap-3 rounded-xl px-4 py-2 transition-all ${isActive ? 'bg-accent text-[var(--celebre-ink)]' : 'text-muted-foreground hover:bg-muted'}`}
+              >
                 <span className="text-lg">{icon}</span>
                 <span className="text-sm font-medium">{name}</span>
               </div>
               {isActive && (
                 <motion.div
                   layoutId="activeSidebar"
-                  className="absolute left-0 top-0 bottom-0 w-1 bg-[#C67C5A] rounded"
+                  className="absolute bottom-0 left-0 top-0 w-1 rounded bg-primary"
                 />
               )}
             </Link>

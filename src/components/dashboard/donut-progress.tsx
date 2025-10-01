@@ -21,7 +21,7 @@ export function DonutProgress({
 
   return (
     <div className="relative inline-flex items-center justify-center">
-      <svg width={size} height={size} className="transform -rotate-90">
+      <svg width={size} height={size} className="-rotate-90 transform">
         {/* Background circle */}
         <circle
           cx={size / 2}
@@ -47,12 +47,8 @@ export function DonutProgress({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold text-celebre-ink">
-          {Math.round(percentage)}%
-        </span>
-        {label && (
-          <span className="text-xs text-celebre-muted mt-1">{label}</span>
-        )}
+        <span className="text-2xl font-bold text-celebre-ink">{Math.round(percentage)}%</span>
+        {label && <span className="mt-1 text-xs text-celebre-muted">{label}</span>}
       </div>
     </div>
   )

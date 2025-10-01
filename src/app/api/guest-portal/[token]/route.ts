@@ -4,7 +4,11 @@ import crypto from 'crypto'
 
 // Helper to generate token from guestId (simple hash)
 function generateToken(guestId: string): string {
-  return crypto.createHash('sha256').update(guestId + process.env.NEXTAUTH_SECRET).digest('hex').substring(0, 32)
+  return crypto
+    .createHash('sha256')
+    .update(guestId + process.env.NEXTAUTH_SECRET)
+    .digest('hex')
+    .substring(0, 32)
 }
 
 // Helper to find guest by token
@@ -25,10 +29,7 @@ async function findGuestByToken(token: string) {
 }
 
 // GET /api/guest-portal/:token - Get guest portal data
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { token: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { token: string } }) {
   try {
     const guestId = await findGuestByToken(params.token)
 
@@ -100,7 +101,9 @@ export async function GET(
         children: guest.children,
         contact: guest.contact,
         household: guest.contact.household,
-        table: guest.seatAssignments[0]?.seat?.table ? { label: guest.seatAssignments[0].seat.table.label } : null,
+        table: guest.seatAssignments[0]?.seat?.table
+          ? { label: guest.seatAssignments[0].seat.table.label }
+          : null,
         optOut: guest.optOut,
       },
       event: guest.event,
@@ -114,10 +117,7 @@ export async function GET(
 }
 
 // PATCH /api/guest-portal/:token - Update guest RSVP
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { token: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { token: string } }) {
   try {
     const guestId = await findGuestByToken(params.token)
 
@@ -156,10 +156,7 @@ export async function PATCH(
 }
 
 // DELETE /api/guest-portal/:token - Delete guest data
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { token: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { token: string } }) {
   try {
     const guestId = await findGuestByToken(params.token)
 

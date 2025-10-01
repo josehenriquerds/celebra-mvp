@@ -23,7 +23,14 @@
       "Bash(curl:*)",
       "Bash(python:*)",
       "Bash(docker:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(dir:*)",
+      "Bash(npx husky init:*)",
+      "Bash(if not exist .husky mkdir .husky)",
+      "Bash(grep:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(if not exist \"src\\schemas\" mkdir \"src\\schemas\")",
+      "Bash(if not exist \"src\\app\\api\\seats\\[id]\" mkdir \"src\\app\\api\\seats\\[id]\")"
     ],
     "deny": [],
     "ask": []

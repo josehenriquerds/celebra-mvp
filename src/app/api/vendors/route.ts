@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { vendorListSchema } from '@/lib/validations/vendor';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { vendorListSchema } from '@/lib/validations/vendor'
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/vendors
@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const searchParams = request.nextUrl.searchParams
 
     // Parse e validar query params
     const query = vendorListSchema.parse({
@@ -27,13 +27,13 @@ export async function GET(request: NextRequest) {
         : undefined,
       page: searchParams.get('page') ? parseInt(searchParams.get('page')!) : 1,
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!) : 20,
-    });
+    })
 
     // Construir filtros
-    const where: any = {};
+    const where: any = {}
 
     if (query.status) {
-      where.status = query.status;
+      where.status = query.status
     }
 
     if (query.q) {
@@ -41,33 +41,33 @@ export async function GET(request: NextRequest) {
         { companyName: { contains: query.q, mode: 'insensitive' } },
         { contactName: { contains: query.q, mode: 'insensitive' } },
         { email: { contains: query.q, mode: 'insensitive' } },
-      ];
+      ]
     }
 
     if (query.city) {
-      where.city = { contains: query.city, mode: 'insensitive' };
+      where.city = { contains: query.city, mode: 'insensitive' }
     }
 
     if (query.state) {
-      where.state = query.state.toUpperCase();
+      where.state = query.state.toUpperCase()
     }
 
     if (query.category) {
-      where.categories = { has: query.category };
+      where.categories = { has: query.category }
     }
 
     if (query.priceFromMin !== undefined || query.priceFromMax !== undefined) {
-      where.priceFromCents = {};
+      where.priceFromCents = {}
       if (query.priceFromMin !== undefined) {
-        where.priceFromCents.gte = query.priceFromMin;
+        where.priceFromCents.gte = query.priceFromMin
       }
       if (query.priceFromMax !== undefined) {
-        where.priceFromCents.lte = query.priceFromMax;
+        where.priceFromCents.lte = query.priceFromMax
       }
     }
 
     // Contar total
-    const total = await prisma.vendorPartner.count({ where });
+    const total = await prisma.vendorPartner.count({ where })
 
     // Buscar vendors
     const vendors = await prisma.vendorPartner.findMany({
@@ -83,13 +83,10 @@ export async function GET(request: NextRequest) {
           },
         },
       },
-      orderBy: [
-        { profileScore: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ profileScore: 'desc' }, { createdAt: 'desc' }],
       skip: (query.page - 1) * query.limit,
       take: query.limit,
-    });
+    })
 
     return NextResponse.json({
       vendors,
@@ -99,20 +96,14 @@ export async function GET(request: NextRequest) {
         total,
         pages: Math.ceil(total / query.limit),
       },
-    });
+    })
   } catch (error) {
-    console.error('Vendors list error:', error);
+    console.error('Vendors list error:', error)
 
     if (error instanceof Error && 'issues' in error) {
-      return NextResponse.json(
-        { error: 'Parâmetros inválidos', details: error },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Parâmetros inválidos', details: error }, { status: 400 })
     }
 
-    return NextResponse.json(
-      { error: 'Erro ao buscar vendors' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Erro ao buscar vendors' }, { status: 500 })
   }
 }

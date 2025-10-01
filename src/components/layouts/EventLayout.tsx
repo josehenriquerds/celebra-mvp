@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import { ReactNode, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { ReactNode, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
@@ -16,13 +16,13 @@ import {
   Menu,
   X,
   ChevronLeft,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface EventLayoutProps {
-  children: ReactNode;
-  eventId: string;
-  eventName: string;
+  children: ReactNode
+  eventId: string
+  eventName: string
 }
 
 const navigation = [
@@ -35,62 +35,60 @@ const navigation = [
   { name: 'Timeline', href: '/timeline', icon: Clock },
   { name: 'Segmentos', href: '/segments', icon: Filter },
   { name: 'Configurações', href: '/settings', icon: Settings },
-];
+]
 
 const mobileNavigation = [
   { name: 'Visão', href: '', icon: LayoutDashboard },
   { name: 'Convidados', href: '/guests', icon: Users },
   { name: 'Tarefas', href: '/tasks', icon: CheckSquare },
   { name: 'Mais', href: '/more', icon: Menu },
-];
+]
 
 export function EventLayout({ children, eventId, eventName }: EventLayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const pathname = usePathname();
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const pathname = usePathname()
 
   const isActive = (href: string) => {
-    const fullPath = `/events/${eventId}${href}`;
-    return pathname === fullPath;
-  };
+    const fullPath = `/events/${eventId}${href}`
+    return pathname === fullPath
+  }
 
   return (
     <div className="min-h-screen bg-[#FAF7F4]">
       {/* Desktop Sidebar */}
       <aside className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-        <div className="flex flex-col flex-grow bg-white border-r border-neutral-200">
+        <div className="flex flex-grow flex-col border-r border-neutral-200 bg-white">
           {/* Logo/Header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-neutral-200">
+          <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-6">
             <Link href="/events" className="flex items-center gap-2">
-              <ChevronLeft className="w-5 h-5 text-neutral-600" />
+              <ChevronLeft className="h-5 w-5 text-neutral-600" />
               <span className="text-sm font-medium text-neutral-600">Eventos</span>
             </Link>
           </div>
 
           {/* Event Name */}
-          <div className="px-6 py-4 border-b border-neutral-200">
-            <h2 className="text-lg font-semibold text-neutral-900 truncate">
-              {eventName}
-            </h2>
+          <div className="border-b border-neutral-200 px-6 py-4">
+            <h2 className="truncate text-lg font-semibold text-neutral-900">{eventName}</h2>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4">
             {navigation.map((item) => {
-              const active = isActive(item.href);
+              const active = isActive(item.href)
               return (
                 <Link
                   key={item.name}
                   href={`/events/${eventId}${item.href}`}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
                     active
                       ? 'bg-[#863F44] text-white shadow-md'
                       : 'text-neutral-700 hover:bg-neutral-100'
                   }`}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="h-5 w-5" />
                   {item.name}
                 </Link>
-              );
+              )
             })}
           </nav>
         </div>
@@ -106,50 +104,44 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white transform transition-transform duration-300 md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white transition-transform duration-300 md:hidden ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-neutral-200">
+          <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-6">
             <h2 className="text-lg font-semibold text-neutral-900">Menu</h2>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="w-5 h-5" />
+            <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
+              <X className="h-5 w-5" />
             </Button>
           </div>
 
           {/* Event Name */}
-          <div className="px-6 py-4 border-b border-neutral-200">
+          <div className="border-b border-neutral-200 px-6 py-4">
             <h3 className="text-sm font-medium text-neutral-600">Evento atual</h3>
-            <p className="mt-1 text-lg font-semibold text-neutral-900 truncate">
-              {eventName}
-            </p>
+            <p className="mt-1 truncate text-lg font-semibold text-neutral-900">{eventName}</p>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4">
             {navigation.map((item) => {
-              const active = isActive(item.href);
+              const active = isActive(item.href)
               return (
                 <Link
                   key={item.name}
                   href={`/events/${eventId}${item.href}`}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
                     active
                       ? 'bg-[#863F44] text-white shadow-md'
                       : 'text-neutral-700 hover:bg-neutral-100'
                   }`}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="h-5 w-5" />
                   {item.name}
                 </Link>
-              );
+              )
             })}
           </nav>
         </div>
@@ -158,20 +150,20 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
       {/* Main Content */}
       <div className="md:pl-64">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 bg-white border-b border-neutral-200 md:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white px-4 md:px-8">
           <Button
             variant="ghost"
             size="sm"
             className="md:hidden"
             onClick={() => setSidebarOpen(true)}
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="h-5 w-5" />
           </Button>
 
-          <div className="flex items-center gap-4 ml-auto">
+          <div className="ml-auto flex items-center gap-4">
             {/* User Avatar */}
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#863F44] rounded-full flex items-center justify-center text-white text-sm font-medium">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#863F44] text-sm font-medium text-white">
                 U
               </div>
             </div>
@@ -183,10 +175,10 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-neutral-200 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-neutral-200 bg-white md:hidden">
         <div className="grid grid-cols-4">
           {mobileNavigation.map((item) => {
-            const active = isActive(item.href);
+            const active = isActive(item.href)
             return (
               <Link
                 key={item.name}
@@ -195,13 +187,13 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
                   active ? 'text-[#863F44]' : 'text-neutral-600'
                 }`}
               >
-                <item.icon className="w-6 h-6" />
+                <item.icon className="h-6 w-6" />
                 {item.name}
               </Link>
-            );
+            )
           })}
         </div>
       </nav>
     </div>
-  );
+  )
 }

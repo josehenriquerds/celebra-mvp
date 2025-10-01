@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/gifts/:id - Update gift
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const { title, price, link, status, buyerContactId } = body
@@ -49,10 +46,7 @@ export async function PATCH(
 }
 
 // DELETE /api/gifts/:id - Delete gift
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await prisma.giftRegistryItem.delete({
       where: { id: params.id },

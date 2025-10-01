@@ -13,12 +13,10 @@ const buttonVariants = cva(
           'bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-white shadow-md hover:shadow-lg hover:from-pastel-lavender-500 hover:to-pastel-lavender-600',
 
         // Soft: fundo pastel suave
-        soft:
-          'bg-pastel-lavender-100 text-pastel-lavender-700 hover:bg-pastel-lavender-200 shadow-sm hover:shadow-md',
+        soft: 'bg-pastel-lavender-100 text-pastel-lavender-700 hover:bg-pastel-lavender-200 shadow-sm hover:shadow-md',
 
         // Ghost: transparente
-        ghost:
-          'hover:bg-pastel-lavender-50 hover:text-pastel-lavender-700',
+        ghost: 'hover:bg-pastel-lavender-50 hover:text-pastel-lavender-700',
 
         // Destructive
         destructive:
@@ -33,8 +31,7 @@ const buttonVariants = cva(
           'border-2 border-pastel-lavender-300 bg-transparent hover:bg-pastel-lavender-50 text-pastel-lavender-700',
 
         // Link
-        link:
-          'text-pastel-lavender-600 underline-offset-4 hover:underline',
+        link: 'text-pastel-lavender-600 underline-offset-4 hover:underline',
 
         // Legacy (compatibilidade)
         default: 'bg-celebre-brand text-white hover:bg-celebre-brand/90 shadow-md',
@@ -66,14 +63,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : 'button'
 
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...props}
-      />
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
     )
   }
 )
 Button.displayName = 'Button'
 
-export { Button, buttonVariants } 
+export { Button, buttonVariants }

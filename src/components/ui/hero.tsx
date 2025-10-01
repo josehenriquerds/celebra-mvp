@@ -18,22 +18,25 @@ interface HeroProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const Hero = React.forwardRef<HTMLElement, HeroProps>(
-  ({
-    className,
-    image = '/placeholder-hero.jpg',
-    imageAlt = 'Hero image',
-    title = 'Bem-vindo ao seu evento',
-    subtitle = 'Gerencie todos os detalhes do seu grande dia',
-    stats = [],
-    ctaLabel = 'Começar',
-    onCtaClick,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      image = '/placeholder-hero.jpg',
+      imageAlt = 'Hero image',
+      title = 'Bem-vindo ao seu evento',
+      subtitle = 'Gerencie todos os detalhes do seu grande dia',
+      stats = [],
+      ctaLabel = 'Começar',
+      onCtaClick,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <section
         ref={ref}
         className={cn(
-          'relative rounded-3xl overflow-hidden',
+          'relative overflow-hidden rounded-3xl',
           'bg-gradient-to-br from-pastel-peach-50 via-pastel-rose-50 to-pastel-lavender-50',
           'shadow-lg',
           'animate-fade-in',
@@ -41,9 +44,9 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
         )}
         {...props}
       >
-        <div className="grid lg:grid-cols-2 gap-8 p-8 lg:p-12">
+        <div className="grid gap-8 p-8 lg:grid-cols-2 lg:p-12">
           {/* Coluna Esquerda: Imagem */}
-          <div className="relative h-[400px] lg:h-[500px] rounded-3xl overflow-hidden shadow-lg">
+          <div className="relative h-[400px] overflow-hidden rounded-3xl shadow-lg lg:h-[500px]">
             <img
               src={image}
               alt={imageAlt}
@@ -55,12 +58,8 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
             {/* Painel translúcido sobre a imagem (opcional) */}
             <div className="absolute bottom-6 left-6 right-6">
               <div className="glass-soft rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  {title}
-                </h2>
-                <p className="text-white/90 text-sm">
-                  {subtitle}
-                </p>
+                <h2 className="mb-2 text-2xl font-bold text-white">{title}</h2>
+                <p className="text-sm text-white/90">{subtitle}</p>
               </div>
             </div>
           </div>
@@ -68,7 +67,7 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
           {/* Coluna Direita: Stats/KPIs */}
           <div className="flex flex-col justify-between gap-6">
             {/* Grid de Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {stats.map((stat, index) => (
                 <div key={index}>
                   <Stat {...stat} />

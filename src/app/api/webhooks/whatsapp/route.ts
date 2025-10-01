@@ -77,8 +77,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Get most recent event for this contact
-    const guest = contact.guests.sort((a, b) =>
-      new Date(b.event.dateTime).getTime() - new Date(a.event.dateTime).getTime()
+    const guest = contact.guests.sort(
+      (a, b) => new Date(b.event.dateTime).getTime() - new Date(a.event.dateTime).getTime()
     )[0]
 
     if (!guest) {
@@ -148,10 +148,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error processing WhatsApp webhook:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -254,11 +251,7 @@ async function handleTimeInfo(eventId: string) {
 }
 
 // Helper: Update engagement score
-async function updateEngagementScore(
-  contactId: string,
-  eventId: string,
-  points: number
-) {
+async function updateEngagementScore(contactId: string, eventId: string, points: number) {
   const existing = await prisma.engagementScore.findUnique({
     where: {
       contactId_eventId: {

@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // GET /api/events/:id/segments - List all segments
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const segments = await prisma.segmentTag.findMany({
       where: { eventId: params.id },
@@ -25,19 +22,13 @@ export async function GET(
 }
 
 // POST /api/events/:id/segments - Create segment
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const { label, description, rules } = body
 
     if (!label || !rules) {
-      return NextResponse.json(
-        { error: 'Missing required fields: label, rules' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields: label, rules' }, { status: 400 })
     }
 
     const segment = await prisma.segmentTag.create({

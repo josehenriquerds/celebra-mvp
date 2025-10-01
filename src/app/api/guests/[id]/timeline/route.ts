@@ -3,10 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const guestId = params.id
 
@@ -24,10 +21,7 @@ export async function GET(
     const timelineEntries = await prisma.timelineEntry.findMany({
       where: {
         eventId: guest.eventId,
-        OR: [
-          { refId: guest.id },
-          { refId: guest.contactId },
-        ],
+        OR: [{ refId: guest.id }, { refId: guest.contactId }],
       },
       orderBy: { occurredAt: 'desc' },
       take: 50,
@@ -104,9 +98,6 @@ export async function GET(
     })
   } catch (error) {
     console.error('Error fetching guest timeline:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -10,28 +10,18 @@ const badgeVariants = cva(
         // Pastel variants (novos)
         default:
           'bg-pastel-lavender-100 text-pastel-lavender-700 border border-pastel-lavender-200',
-        success:
-          'bg-pastel-mint-100 text-pastel-mint-700 border border-pastel-mint-200',
-        warning:
-          'bg-pastel-peach-100 text-pastel-peach-700 border border-pastel-peach-200',
-        danger:
-          'bg-pastel-coral-100 text-pastel-coral-700 border border-pastel-coral-200',
-        info:
-          'bg-pastel-sky-100 text-pastel-sky-700 border border-pastel-sky-200',
+        success: 'bg-pastel-mint-100 text-pastel-mint-700 border border-pastel-mint-200',
+        warning: 'bg-pastel-peach-100 text-pastel-peach-700 border border-pastel-peach-200',
+        danger: 'bg-pastel-coral-100 text-pastel-coral-700 border border-pastel-coral-200',
+        info: 'bg-pastel-sky-100 text-pastel-sky-700 border border-pastel-sky-200',
 
         // Legacy variants
-        secondary:
-          'bg-secondary text-secondary-foreground border-transparent',
-        destructive:
-          'bg-destructive text-destructive-foreground border-transparent',
-        outline:
-          'text-foreground border border-input',
-        bronze:
-          'bg-orange-100 text-orange-800 border border-orange-200',
-        prata:
-          'bg-gray-200 text-gray-800 border border-gray-300',
-        ouro:
-          'bg-yellow-100 text-yellow-900 border border-yellow-200',
+        secondary: 'bg-secondary text-secondary-foreground border-transparent',
+        destructive: 'bg-destructive text-destructive-foreground border-transparent',
+        outline: 'text-foreground border border-input',
+        bronze: 'bg-orange-100 text-orange-800 border border-orange-200',
+        prata: 'bg-gray-200 text-gray-800 border border-gray-300',
+        ouro: 'bg-yellow-100 text-yellow-900 border border-yellow-200',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs',
@@ -51,12 +41,7 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 function Badge({ className, variant, size, ...props }: BadgeProps) {
-  return (
-    <div
-      className={cn(badgeVariants({ variant, size }), className)}
-      {...props}
-    />
-  )
+  return <div className={cn(badgeVariants({ variant, size }), className)} {...props} />
 }
 
 export { Badge, badgeVariants }

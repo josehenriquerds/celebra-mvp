@@ -58,7 +58,13 @@ export default function ExportsPage() {
         g.contact.fullName,
         g.contact.phone,
         g.contact.email || '-',
-        g.rsvp === 'sim' ? 'Confirmado' : g.rsvp === 'nao' ? 'Recusou' : g.rsvp === 'talvez' ? 'Talvez' : 'Pendente',
+        g.rsvp === 'sim'
+          ? 'Confirmado'
+          : g.rsvp === 'nao'
+            ? 'Recusou'
+            : g.rsvp === 'talvez'
+              ? 'Talvez'
+              : 'Pendente',
         g.table?.label || 'Não alocado',
         g.household?.label || '-',
       ])
@@ -113,7 +119,7 @@ export default function ExportsPage() {
         Crianças: g.children,
         Mesa: g.table?.label || '',
         Família: g.household?.label || '',
-        'Restrições': g.contact.restrictions || '',
+        Restrições: g.contact.restrictions || '',
       }))
       const ws1 = XLSX.utils.json_to_sheet(guestsData)
       XLSX.utils.book_append_sheet(wb, ws1, 'Convidados')
@@ -317,8 +323,8 @@ export default function ExportsPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="bg-white shadow-celebre border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="shadow-celebre border-b bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <Link href={`/events/${eventId}`}>
               <Button variant="ghost" size="icon">
@@ -326,10 +332,8 @@ export default function ExportsPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-heading font-bold text-celebre-ink">
-                Exportações
-              </h1>
-              <p className="text-sm text-celebre-muted mt-1">
+              <h1 className="font-heading text-3xl font-bold text-celebre-ink">Exportações</h1>
+              <p className="mt-1 text-sm text-celebre-muted">
                 Baixe relatórios e documentos do seu evento
               </p>
             </div>
@@ -338,8 +342,8 @@ export default function ExportsPage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {exports.map((exp) => {
             const Icon = exp.icon
             return (
@@ -347,7 +351,7 @@ export default function ExportsPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`p-3 rounded-xl bg-gray-100 ${exp.color}`}>
+                      <div className={`rounded-xl bg-gray-100 p-3 ${exp.color}`}>
                         <Icon className="h-6 w-6" />
                       </div>
                       <div>
@@ -358,19 +362,15 @@ export default function ExportsPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <Button
-                    onClick={exp.handler}
-                    disabled={loading !== null}
-                    className="w-full"
-                  >
+                  <Button onClick={exp.handler} disabled={loading !== null} className="w-full">
                     {loading === exp.id ? (
                       <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Exportando...
                       </>
                     ) : (
                       <>
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="mr-2 h-4 w-4" />
                         Baixar
                       </>
                     )}
@@ -382,12 +382,14 @@ export default function ExportsPage() {
         </div>
 
         {/* Info Box */}
-        <Card className="mt-8 bg-celebre-accent/20 border-celebre-accent">
+        <Card className="bg-celebre-accent/20 border-celebre-accent mt-8">
           <CardContent className="p-6">
-            <h3 className="font-semibold text-celebre-ink mb-2">ℹ️ Informações</h3>
-            <ul className="text-sm text-celebre-muted space-y-1">
+            <h3 className="mb-2 font-semibold text-celebre-ink">ℹ️ Informações</h3>
+            <ul className="space-y-1 text-sm text-celebre-muted">
               <li>• Os arquivos são gerados no momento e não ficam armazenados</li>
-              <li>• O Excel contém múltiplas abas: Convidados, Tarefas, Fornecedores e Presentes</li>
+              <li>
+                • O Excel contém múltiplas abas: Convidados, Tarefas, Fornecedores e Presentes
+              </li>
               <li>• As etiquetas estão formatadas para impressão em folhas A4</li>
               <li>• Os QR codes podem ser impressos e distribuídos para check-in</li>
             </ul>

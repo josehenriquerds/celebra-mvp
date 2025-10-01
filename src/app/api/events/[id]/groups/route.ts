@@ -4,22 +4,19 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 // GET: Fetch all groups for event with guest counts
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const eventId = params.id
 
     const groups = await prisma.segmentTag.findMany({
       where: {
         eventId,
-        isDynamic: false // Only static groups created by users
+        isDynamic: false, // Only static groups created by users
       },
       include: {
         _count: {
-          select: { guests: true }
-        }
+          select: { guests: true },
+        },
       },
       orderBy: { name: 'asc' },
     })
@@ -33,28 +30,19 @@ export async function GET(
     return NextResponse.json(formattedGroups)
   } catch (error) {
     console.error('Error fetching groups:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // POST: Create a new group
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const eventId = params.id
     const body = await request.json()
     const { name } = body
 
     if (!name?.trim()) {
-      return NextResponse.json(
-        { error: 'Group name is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Group name is required' }, { status: 400 })
     }
 
     const group = await prisma.segmentTag.create({
@@ -73,9 +61,6 @@ export async function POST(
     })
   } catch (error) {
     console.error('Error creating group:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

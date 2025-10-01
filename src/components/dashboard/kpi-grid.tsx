@@ -1,26 +1,26 @@
-import { StatCard } from './stat-card';
-import { DonutChart } from '@/components/ui/donut-chart';
-import { Users, DollarSign, CheckSquare, Calendar } from 'lucide-react';
+import { StatCard } from './stat-card'
+import { DonutChart } from '@/components/ui/donut-chart'
+import { Users, DollarSign, CheckSquare, Calendar } from 'lucide-react'
 
 interface KPIData {
   rsvps: {
-    yes: number;
-    no: number;
-    pending: number;
-  };
+    yes: number
+    no: number
+    pending: number
+  }
   budget: {
-    total: number;
-    used: number;
-  };
+    total: number
+    used: number
+  }
   tasks: {
-    done: number;
-    total: number;
-  };
-  totalGuests: number;
+    done: number
+    total: number
+  }
+  totalGuests: number
 }
 
 interface KPIGridProps {
-  data: KPIData;
+  data: KPIData
 }
 
 export function KPIGrid({ data }: KPIGridProps) {
@@ -28,23 +28,20 @@ export function KPIGrid({ data }: KPIGridProps) {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-    }).format(cents / 100);
-  };
+    }).format(cents / 100)
+  }
 
-  const rsvpPercentage = data.totalGuests > 0
-    ? Math.round((data.rsvps.yes / data.totalGuests) * 100)
-    : 0;
+  const rsvpPercentage =
+    data.totalGuests > 0 ? Math.round((data.rsvps.yes / data.totalGuests) * 100) : 0
 
-  const budgetPercentage = data.budget.total > 0
-    ? Math.round((data.budget.used / data.budget.total) * 100)
-    : 0;
+  const budgetPercentage =
+    data.budget.total > 0 ? Math.round((data.budget.used / data.budget.total) * 100) : 0
 
-  const tasksPercentage = data.tasks.total > 0
-    ? Math.round((data.tasks.done / data.tasks.total) * 100)
-    : 0;
+  const tasksPercentage =
+    data.tasks.total > 0 ? Math.round((data.tasks.done / data.tasks.total) * 100) : 0
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       <StatCard
         icon={Users}
         title="Confirmações"
@@ -73,5 +70,5 @@ export function KPIGrid({ data }: KPIGridProps) {
         description={`${data.rsvps.pending} aguardando resposta`}
       />
     </div>
-  );
+  )
 }

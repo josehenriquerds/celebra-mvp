@@ -1,35 +1,35 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
-export type TaskStatus = 'aberta' | 'em_andamento' | 'concluida' | 'atrasada';
+export type TaskStatus = 'aberta' | 'em_andamento' | 'concluida' | 'atrasada'
 
 export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  status: TaskStatus;
-  assigneeUserId?: string;
-  dueAt?: Date;
-  slaHours?: number;
-  relatedVendorId?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  id: string
+  title: string
+  description?: string
+  status: TaskStatus
+  assigneeUserId?: string
+  dueAt?: Date
+  slaHours?: number
+  relatedVendorId?: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 interface TasksState {
-  tasks: Task[];
-  activeTaskId: string | null;
-  filterAssignee: string | null;
-  filterDate: Date | null;
+  tasks: Task[]
+  activeTaskId: string | null
+  filterAssignee: string | null
+  filterDate: Date | null
 
   // Actions
-  setTasks: (tasks: Task[]) => void;
-  addTask: (task: Task) => void;
-  updateTask: (id: string, updates: Partial<Task>) => void;
-  moveTask: (taskId: string, newStatus: TaskStatus) => void;
-  deleteTask: (id: string) => void;
-  setActiveTaskId: (id: string | null) => void;
-  setFilterAssignee: (userId: string | null) => void;
-  setFilterDate: (date: Date | null) => void;
+  setTasks: (tasks: Task[]) => void
+  addTask: (task: Task) => void
+  updateTask: (id: string, updates: Partial<Task>) => void
+  moveTask: (taskId: string, newStatus: TaskStatus) => void
+  deleteTask: (id: string) => void
+  setActiveTaskId: (id: string | null) => void
+  setFilterAssignee: (userId: string | null) => void
+  setFilterDate: (date: Date | null) => void
 }
 
 export const useTasksStore = create<TasksState>((set) => ({
@@ -47,9 +47,7 @@ export const useTasksStore = create<TasksState>((set) => ({
 
   updateTask: (id, updates) =>
     set((state) => ({
-      tasks: state.tasks.map((task) =>
-        task.id === id ? { ...task, ...updates } : task
-      ),
+      tasks: state.tasks.map((task) => (task.id === id ? { ...task, ...updates } : task)),
     })),
 
   moveTask: (taskId, newStatus) =>
@@ -69,4 +67,4 @@ export const useTasksStore = create<TasksState>((set) => ({
   setFilterAssignee: (userId) => set({ filterAssignee: userId }),
 
   setFilterDate: (date) => set({ filterDate: date }),
-}));
+}))

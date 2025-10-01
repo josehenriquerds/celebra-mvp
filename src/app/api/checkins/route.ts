@@ -8,10 +8,7 @@ export async function POST(request: NextRequest) {
     const { guestId, eventId, method = 'manual' } = body
 
     if (!guestId || !eventId) {
-      return NextResponse.json(
-        { error: 'Missing guestId or eventId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing guestId or eventId' }, { status: 400 })
     }
 
     // Check if guest exists

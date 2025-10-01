@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const eventId = params.id
 
@@ -116,7 +113,15 @@ export async function GET(
       },
       {
         segmento: 'Geral',
-        taxa: totalGuests > 0 ? Math.round(((totalGuests - (await prisma.guest.count({ where: { eventId, rsvp: 'pendente' } }))) / totalGuests) * 100) : 0,
+        taxa:
+          totalGuests > 0
+            ? Math.round(
+                ((totalGuests -
+                  (await prisma.guest.count({ where: { eventId, rsvp: 'pendente' } }))) /
+                  totalGuests) *
+                  100
+              )
+            : 0,
       },
     ]
 

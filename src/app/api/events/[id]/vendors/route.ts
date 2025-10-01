@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // GET /api/events/:id/vendors - List all vendors for event
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const vendors = await prisma.vendor.findMany({
       where: { eventId: params.id },
@@ -25,10 +22,7 @@ export async function GET(
 }
 
 // POST /api/events/:id/vendors - Create new vendor
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const {

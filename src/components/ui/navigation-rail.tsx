@@ -40,7 +40,7 @@ const NavigationRail = React.forwardRef<HTMLElement, NavigationRailProps>(
         )}
       >
         {/* Rail principal (ícones) */}
-        <div className="flex w-20 flex-col items-center gap-4 bg-white/80 backdrop-blur-xl border-r border-pastel-lavender-100 py-6 shadow-elevation-2">
+        <div className="flex w-20 flex-col items-center gap-4 border-r border-pastel-lavender-100 bg-white/80 py-6 shadow-elevation-2 backdrop-blur-xl">
           {sections.map((section) => {
             const isActive = activeSection === section.id
             const Icon = section.items[0].icon
@@ -50,7 +50,7 @@ const NavigationRail = React.forwardRef<HTMLElement, NavigationRailProps>(
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
                 className={cn(
-                  'relative flex h-12 w-12 items-center justify-center rounded-2xl transition-smooth',
+                  'transition-smooth relative flex h-12 w-12 items-center justify-center rounded-2xl',
                   isActive
                     ? 'bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-white shadow-elevation-2'
                     : 'text-celebre-muted hover:bg-pastel-lavender-50 hover:text-pastel-lavender-600'
@@ -74,15 +74,15 @@ const NavigationRail = React.forwardRef<HTMLElement, NavigationRailProps>(
             opacity: activeSection ? 1 : 0,
           }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="overflow-hidden bg-white/90 backdrop-blur-xl border-r border-pastel-lavender-50 shadow-elevation-1"
+          className="overflow-hidden border-r border-pastel-lavender-50 bg-white/90 shadow-elevation-1 backdrop-blur-xl"
         >
-          <div className="flex h-full flex-col py-6 px-4">
+          <div className="flex h-full flex-col px-4 py-6">
             {sections.map((section) => {
               if (section.id !== activeSection) return null
 
               return (
                 <div key={section.id} className="space-y-2">
-                  <p className="px-4 text-xs font-semibold uppercase tracking-wider text-celebre-muted mb-4">
+                  <p className="mb-4 px-4 text-xs font-semibold uppercase tracking-wider text-celebre-muted">
                     {section.label}
                   </p>
                   {section.items.map((item) => {
@@ -94,9 +94,9 @@ const NavigationRail = React.forwardRef<HTMLElement, NavigationRailProps>(
                         key={item.href}
                         href={item.href}
                         className={cn(
-                          'flex items-center gap-3 rounded-2xl px-4 py-3 transition-smooth focus-ring',
+                          'transition-smooth focus-ring flex items-center gap-3 rounded-2xl px-4 py-3',
                           isItemActive
-                            ? 'bg-pastel-lavender-100 text-pastel-lavender-700 font-medium shadow-elevation-1'
+                            ? 'bg-pastel-lavender-100 font-medium text-pastel-lavender-700 shadow-elevation-1'
                             : 'text-celebre-muted hover:bg-pastel-lavender-50 hover:text-celebre-ink'
                         )}
                       >

@@ -4,13 +4,11 @@ import Image from 'next/image'
 
 export default function Header() {
   return (
-    <header className="fixed top-0 left-64 right-0 h-20 px-8 flex items-center justify-between bg-[#FFF9F6] border-b border-[#EDE6DE] z-10">
-      <div>
-        {/* Espaço para título da página, se necessário */}
-      </div>
+    <header className="fixed left-64 right-0 top-0 z-10 flex h-20 items-center justify-between border-b border-[#EDE6DE] bg-[#FFF9F6] px-8">
+      <div>{/* Espaço para título da página, se necessário */}</div>
       <div className="flex items-center gap-4">
         <span className="text-sm text-[#6B5E57]">Ana & João</span>
-        <div className="w-10 h-10 rounded-full overflow-hidden border border-[#E0D4C9]">
+        <div className="h-10 w-10 overflow-hidden rounded-full border border-[#E0D4C9]">
           <Image
             src="/avatars/noiva-noivo.png"
             alt="Avatar do casal"

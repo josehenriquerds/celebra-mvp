@@ -27,18 +27,25 @@ const icons = {
   chat: <FiMessageCircle />,
 }
 
-export default function DashboardCard({ title, value, description, color, href, icon = 'task' }: Props) {
+export default function DashboardCard({
+  title,
+  value,
+  description,
+  color,
+  href,
+  icon = 'task',
+}: Props) {
   return (
     <Link href={href}>
       <motion.div
         whileHover={{ scale: 1.03 }}
-        className={`p-6 rounded-2xl shadow-sm transition-all cursor-pointer ${colors[color]}`}
+        className={`cursor-pointer rounded-2xl p-6 shadow-sm transition-all ${colors[color]}`}
       >
-        <div className="flex items-center gap-4 mb-3 text-2xl">
+        <div className="mb-3 flex items-center gap-4 text-2xl">
           <div>{icons[icon]}</div>
           <h3 className="font-serif font-semibold">{title}</h3>
         </div>
-        {value && <p className="text-3xl font-bold mb-1">{value}</p>}
+        {value && <p className="mb-1 text-3xl font-bold">{value}</p>}
         <p className="text-sm">{description}</p>
       </motion.div>
     </Link>

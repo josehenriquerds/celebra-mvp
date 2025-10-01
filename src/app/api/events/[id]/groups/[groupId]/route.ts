@@ -22,9 +22,6 @@ export async function DELETE(
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting group:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete group' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete group' }, { status: 500 })
   }
 }

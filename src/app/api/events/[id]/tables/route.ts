@@ -4,10 +4,7 @@ import { prisma } from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 // GET: Fetch all tables with seats and assignments
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const eventId = params.id
 
@@ -39,14 +36,16 @@ export async function GET(
     // Format response
     const formattedTables = tables.map((table) => ({
       id: table.id,
+      eventId: table.eventId,
       label: table.label,
       capacity: table.capacity,
-      zone: table.zone,
+      shape: table.shape,
       x: table.x,
       y: table.y,
-      rotation: table.rotation,
-      shape: table.shape,
       radius: 80, // Add radius field
+      color: '#C7B7F3', // Default color
+      createdAt: table.createdAt,
+      updatedAt: table.updatedAt,
       seats: table.seats.map((seat) => ({
         id: seat.id,
         index: seat.index,
@@ -85,10 +84,7 @@ export async function GET(
           },
         },
       },
-      orderBy: [
-        { contact: { household: { label: 'asc' } } },
-        { contact: { fullName: 'asc' } },
-      ],
+      orderBy: [{ contact: { household: { label: 'asc' } } }, { contact: { fullName: 'asc' } }],
     })
 
     const formattedUnassigned = unassignedGuests.map((guest) => ({
@@ -114,18 +110,12 @@ export async function GET(
     })
   } catch (error) {
     console.error('Error fetching tables:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // POST: Create a new table
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const eventId = params.id
     const body = await request.json()
@@ -171,9 +161,6 @@ export async function POST(
     })
   } catch (error) {
     console.error('Error creating table:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

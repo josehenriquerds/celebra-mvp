@@ -1,30 +1,19 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
-function Skeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn(
-        'animate-pulse rounded-xl bg-secondary/50',
-        className
-      )}
-      {...props}
-    />
-  );
+function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('animate-pulse rounded-xl bg-secondary/50', className)} {...props} />
 }
 
 // Presets comuns
 function SkeletonCard() {
   return (
-    <div className="bg-card rounded-2xl p-6 space-y-4">
+    <div className="space-y-4 rounded-2xl bg-card p-6">
       <Skeleton className="h-4 w-1/3" />
       <Skeleton className="h-8 w-1/2" />
       <Skeleton className="h-3 w-full" />
       <Skeleton className="h-3 w-2/3" />
     </div>
-  );
+  )
 }
 
 function SkeletonTable() {
@@ -41,7 +30,7 @@ function SkeletonTable() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
-export { Skeleton, SkeletonCard, SkeletonTable };
+export { Skeleton, SkeletonCard, SkeletonTable }

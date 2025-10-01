@@ -6,22 +6,24 @@
 @layer base {
   :root {
     /* Celebre Design System Tokens */
-    --celebre-bg: #FAF7F4;
-    --celebre-card: #FFFFFF;
-    --celebre-ink: #2A221F;
-    --celebre-muted: #8E7B73;
-    --celebre-accent: #F1D7C8;
-    --celebre-accent-2: #EADFD7;
-    --celebre-success: #DDF2E4;
-    --celebre-danger: #FCE8E8;
-    --celebre-brand: #863F44;
+    --celebre-bg: #faf7f4;
+    --celebre-card: #ffffff;
+    --celebre-ink: #2a221f;
+    --celebre-muted: #8e7b73;
+    --celebre-accent: #f1d7c8;
+    --celebre-accent-2: #eadfd7;
+    --celebre-success: #ddf2e4;
+    --celebre-danger: #fce8e8;
+    --celebre-brand: #863f44;
 
     /* Gradientes suaves */
-    --gradient-app: linear-gradient(135deg,
+    --gradient-app: linear-gradient(
+      135deg,
       rgba(245, 244, 255, 0.4) 0%,
       rgba(230, 244, 255, 0.3) 25%,
       rgba(255, 245, 243, 0.4) 75%,
-      rgba(255, 238, 243, 0.3) 100%);
+      rgba(255, 238, 243, 0.3) 100%
+    );
 
     /* Glass effect */
     --glass-bg: rgba(255, 255, 255, 0.7);
@@ -78,8 +80,10 @@
   }
 
   body {
-    @apply bg-[#FAF7F4] text-foreground font-sans antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    @apply bg-[#FAF7F4] font-sans text-foreground antialiased;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 }
 
@@ -107,12 +111,24 @@
   }
 
   /* Grid 8pt system helpers */
-  .spacing-8 { @apply p-2; }
-  .spacing-16 { @apply p-4; }
-  .spacing-24 { @apply p-6; }
-  .spacing-32 { @apply p-8; }
-  .spacing-40 { @apply p-10; }
-  .spacing-48 { @apply p-12; }
+  .spacing-8 {
+    @apply p-2;
+  }
+  .spacing-16 {
+    @apply p-4;
+  }
+  .spacing-24 {
+    @apply p-6;
+  }
+  .spacing-32 {
+    @apply p-8;
+  }
+  .spacing-40 {
+    @apply p-10;
+  }
+  .spacing-48 {
+    @apply p-12;
+  }
 
   /* Container responsivo 8pt */
   .container-8pt {

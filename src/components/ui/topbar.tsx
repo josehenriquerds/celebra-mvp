@@ -23,15 +23,18 @@ interface TopbarProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
-  ({
-    className,
-    searchPlaceholder = 'Buscar...',
-    userName = 'Usuário',
-    userEmail = 'usuario@email.com',
-    userAvatar,
-    notificationCount = 0,
-    ...props
-  }, ref) => {
+  (
+    {
+      className,
+      searchPlaceholder = 'Buscar...',
+      userName = 'Usuário',
+      userEmail = 'usuario@email.com',
+      userAvatar,
+      notificationCount = 0,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <motion.header
         ref={ref}
@@ -48,15 +51,15 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
       >
         <div className="flex items-center justify-between gap-4">
           {/* Busca */}
-          <div className="flex-1 max-w-md">
+          <div className="max-w-md flex-1">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-celebre-muted" />
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-celebre-muted" />
               <input
                 type="search"
                 placeholder={searchPlaceholder}
                 className={cn(
-                  'w-full h-10 pl-11 pr-4 rounded-2xl',
-                  'bg-white/60 border border-pastel-lavender-100',
+                  'h-10 w-full rounded-2xl pl-11 pr-4',
+                  'border border-pastel-lavender-100 bg-white/60',
                   'text-sm text-celebre-ink placeholder:text-celebre-muted',
                   'transition-smooth focus-ring',
                   'focus:bg-white'
@@ -76,19 +79,14 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
             >
               <Bell className="h-5 w-5" />
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-pastel-coral-400 text-xs font-semibold text-white">
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-pastel-coral-400 text-xs font-semibold text-white">
                   {notificationCount > 9 ? '9+' : notificationCount}
                 </span>
               )}
             </Button>
 
             {/* Configurações */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-2xl"
-              aria-label="Configurações"
-            >
+            <Button variant="ghost" size="icon" className="rounded-2xl" aria-label="Configurações">
               <Settings className="h-5 w-5" />
             </Button>
 
@@ -98,11 +96,11 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
                 <button
                   className={cn(
                     'flex items-center gap-3 rounded-2xl px-3 py-2',
-                    'bg-white/60 hover:bg-white transition-smooth focus-ring',
+                    'transition-smooth focus-ring bg-white/60 hover:bg-white',
                     'border border-pastel-lavender-100'
                   )}
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-white font-semibold text-sm">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-sm font-semibold text-white">
                     {userAvatar ? (
                       <img
                         src={userAvatar}
@@ -113,7 +111,7 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
                       <User className="h-4 w-4" />
                     )}
                   </div>
-                  <span className="hidden md:block text-sm font-medium text-celebre-ink">
+                  <span className="hidden text-sm font-medium text-celebre-ink md:block">
                     {userName}
                   </span>
                 </button>
@@ -129,9 +127,7 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
                 <DropdownMenuItem>Perfil</DropdownMenuItem>
                 <DropdownMenuItem>Configurações</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-pastel-coral-600">
-                  Sair
-                </DropdownMenuItem>
+                <DropdownMenuItem className="text-pastel-coral-600">Sair</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

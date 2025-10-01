@@ -1,11 +1,11 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 interface GuestState {
-  selectedGuests: string[];
-  toggleGuest: (id: string) => void;
-  clearSelection: () => void;
-  selectAll: (ids: string[]) => void;
-  isSelected: (id: string) => boolean;
+  selectedGuests: string[]
+  toggleGuest: (id: string) => void
+  clearSelection: () => void
+  selectAll: (ids: string[]) => void
+  isSelected: (id: string) => boolean
 }
 
 export const useGuestStore = create<GuestState>((set, get) => ({
@@ -23,4 +23,4 @@ export const useGuestStore = create<GuestState>((set, get) => ({
   selectAll: (ids) => set({ selectedGuests: ids }),
 
   isSelected: (id) => get().selectedGuests.includes(id),
-}));
+}))
