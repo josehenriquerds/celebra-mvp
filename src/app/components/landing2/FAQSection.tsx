@@ -1,55 +1,60 @@
 'use client';
 
-import * as Accordion from '@radix-ui/react-accordion';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react'; // ou outro ícone de sua preferência
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
-const FAQS = [
-  { question: "Posso mudar de plano?", answer: "Sim, você pode trocar de plano a qualquer momento, sem burocracia." },
-  { question: "Meus dados são seguros?", answer: "Sim! Utilizamos criptografia avançada e seguimos as melhores práticas do setor." },
-  { question: "Tem suporte no dia?", answer: "Claro! Nosso suporte é dedicado e acompanha seu evento de perto." }
+const faqs = [
+  {
+    question: "O Celebre é realmente gratuito?",
+    answer: "Sim! Você pode usar todas as funcionalidades principais (convites, RSVP, dashboard) gratuitamente. Cobramos apenas 3% sobre presentes vendidos através da nossa lista de presentes integrada."
+  },
+  {
+    question: "Quantos convidados posso adicionar?",
+    answer: "Não há limite! Você pode adicionar quantos convidados quiser, sem custos adicionais. Nosso sistema é escalável e suporta desde eventos pequenos até grandes celebrações."
+  },
+  {
+    question: "Como funcionam os convites pelo WhatsApp?",
+    answer: "Você cria o convite na plataforma e nós enviamos automaticamente para seus convidados via WhatsApp. Eles recebem um link personalizado com todas as informações do evento e podem confirmar presença com um clique."
+  },
+  {
+    question: "Posso personalizar o convite?",
+    answer: "Sim! Oferecemos templates prontos que você pode personalizar com suas cores, fotos e textos. Também é possível criar do zero usando nosso editor visual."
+  },
+  {
+    question: "Como funciona a lista de presentes?",
+    answer: "Você adiciona produtos de qualquer loja (com link) ou cria um item PIX. Seus convidados escolhem e compram diretamente. Cobramos 3% sobre cada presente vendido através da plataforma."
+  },
+  {
+    question: "Preciso de conhecimento técnico?",
+    answer: "Não! Nossa plataforma foi desenhada para ser simples e intuitiva. Se você sabe usar WhatsApp, vai conseguir usar o Celebre sem problemas."
+  },
+  {
+    question: "Os dados dos meus convidados estão seguros?",
+    answer: "Sim! Seguimos rigorosamente a LGPD. Seus dados e dos seus convidados são criptografados e armazenados com segurança. Nunca compartilhamos informações com terceiros."
+  },
+  {
+    question: "Posso usar para qualquer tipo de evento?",
+    answer: "Sim! Embora seja perfeito para casamentos, você pode usar para aniversários, formaturas, bodas, chá de bebê e qualquer celebração."
+  }
 ];
 
 export default function FAQAccordion() {
   return (
-    <Accordion.Root type="single" collapsible className="space-y-2 w-full" defaultValue="">
-      {FAQS.map((item, idx) => (
-        <Accordion.Item key={idx} value={`item-${idx}`} className="overflow-hidden rounded-xl border border-gray-200 bg-white transition-shadow shadow-sm hover:shadow-lg">
-          <Accordion.Header>
-            <Accordion.Trigger asChild>
-              <button
-                className="flex w-full items-center justify-between gap-2 p-4 text-lg font-semibold text-[#863F44] transition-colors hover:bg-pink-50 focus:outline-none"
-                aria-expanded="false"
-              >
-                {item.question}
-                <Accordion.Trigger asChild>
-                  <motion.span
-                    initial={false}
-                    animate={{ rotate: [0, 180] }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ChevronDown className="h-5 w-5 text-[#863F44]" />
-                  </motion.span>
-                </Accordion.Trigger>
-              </button>
-            </Accordion.Trigger>
-          </Accordion.Header>
-          <Accordion.Content asChild>
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={`answer-${idx}`}
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.35, ease: 'easeInOut' }}
-                className="pl-4 pr-6 pb-4 text-base text-gray-600"
-              >
-                {item.answer}
-              </motion.div>
-            </AnimatePresence>
-          </Accordion.Content>
-        </Accordion.Item>
+    <Accordion type="single" collapsible className="w-full">
+      {faqs.map((faq, index) => (
+        <AccordionItem key={index} value={`item-${index}`}>
+          <AccordionTrigger className="text-left">
+            {faq.question}
+          </AccordionTrigger>
+          <AccordionContent className="text-muted-foreground">
+            {faq.answer}
+          </AccordionContent>
+        </AccordionItem>
       ))}
-    </Accordion.Root>
+    </Accordion>
   );
 }

@@ -1,0 +1,148 @@
+{
+  "name": "Celebre - Check-in QR Code",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "checkin",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-checkin",
+      "name": "Webhook Check-in",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "checkin-qr"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT g.id as \"guestId\", g.\"eventId\", c.\"fullName\", c.phone, e.title FROM \"Guest\" g JOIN \"Contact\" c ON g.\"contactId\" = c.id JOIN \"Event\" e ON g.\"eventId\" = e.id WHERE g.id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.body.guestId }}"
+        }
+      },
+      "id": "get-guest",
+      "name": "Get Guest Info",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.guestId }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "check-guest-exists",
+      "name": "Guest Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"Checkin\" (id, \"eventId\", \"guestId\", status, method, \"occurredAt\") VALUES (gen_random_uuid(), $1, $2, 'presente', 'qr_code', NOW()) ON CONFLICT (\"eventId\", \"guestId\") DO UPDATE SET status = 'presente', method = 'qr_code', \"occurredAt\" = NOW() RETURNING id",
+        "additionalFields": {
+          "queryParameters": "={{ $json.eventId }},{{ $json.guestId }}"
+        }
+      },
+      "id": "create-checkin",
+      "name": "Create Check-in",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [850, 250]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"TimelineEntry\" (id, \"eventId\", \"contactId\", type, title, \"occurredAt\") SELECT gen_random_uuid(), g.\"eventId\", g.\"contactId\", 'checkin', 'Check-in realizado via QR Code', NOW() FROM \"Guest\" g WHERE g.id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.guestId }}"
+        }
+      },
+      "id": "log-timeline",
+      "name": "Log Timeline",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1050, 250]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"EngagementScore\" (id, \"eventId\", \"contactId\", value, tier, \"lastDecayAt\") SELECT gen_random_uuid(), g.\"eventId\", g.\"contactId\", 10, 'bronze', NOW() FROM \"Guest\" g WHERE g.id = $1 ON CONFLICT (\"eventId\", \"contactId\") DO UPDATE SET value = \"EngagementScore\".value + 10, tier = CASE WHEN \"EngagementScore\".value + 10 >= 50 THEN 'ouro' WHEN \"EngagementScore\".value + 10 >= 25 THEN 'prata' ELSE 'bronze' END",
+        "additionalFields": {
+          "queryParameters": "={{ $json.guestId }}"
+        }
+      },
+      "id": "update-engagement",
+      "name": "Update Engagement (+10)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1250, 250]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: `Check-in confirmado para ${$json.fullName}!`, checkinId: $json.id } }}"
+      },
+      "id": "success-response",
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 250]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: 'Convidado não encontrado' } }}",
+        "options": {
+          "responseCode": 404
+        }
+      },
+      "id": "error-response",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [850, 400]
+    }
+  ],
+  "connections": {
+    "Webhook Check-in": {
+      "main": [[{ "node": "Get Guest Info", "type": "main", "index": 0 }]]
+    },
+    "Get Guest Info": {
+      "main": [[{ "node": "Guest Exists?", "type": "main", "index": 0 }]]
+    },
+    "Guest Exists?": {
+      "main": [
+        [{ "node": "Create Check-in", "type": "main", "index": 0 }],
+        [{ "node": "Error Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Create Check-in": {
+      "main": [[{ "node": "Log Timeline", "type": "main", "index": 0 }]]
+    },
+    "Log Timeline": {
+      "main": [[{ "node": "Update Engagement (+10)", "type": "main", "index": 0 }]]
+    },
+    "Update Engagement (+10)": {
+      "main": [[{ "node": "Success Response", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-29T00:00:00.000Z",
+  "versionId": "1"
+}

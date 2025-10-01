@@ -1,0 +1,132 @@
+{
+  "name": "Celebre - Convite e RSVP WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-invites",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "convite-rsvp"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT g.id, c.fullName, c.phone, e.title, e.dateTime, e.venueName, e.address FROM \"Guest\" g JOIN \"Contact\" c ON g.\"contactId\" = c.id JOIN \"Event\" e ON g.\"eventId\" = e.id WHERE g.\"eventId\" = $1 AND g.\"inviteStatus\" = 'pendente' AND g.\"optOut\" = false",
+        "additionalFields": {
+          "queryParameters": "={{ $json.body.eventId }}"
+        }
+      },
+      "id": "get-pending-guests",
+      "name": "Get Pending Guests",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const guests = items.map(item => item.json);\nconst messages = [];\n\nfor (const guest of guests) {\n  const eventDate = new Date(guest.dateTime).toLocaleDateString('pt-BR', {\n    day: '2-digit',\n    month: 'long',\n    year: 'numeric'\n  });\n  \n  const eventTime = new Date(guest.dateTime).toLocaleTimeString('pt-BR', {\n    hour: '2-digit',\n    minute: '2-digit'\n  });\n\n  messages.push({\n    to: guest.phone,\n    guestId: guest.id,\n    message: `🎉 Olá ${guest.fullName}!\\n\\nVocê está convidado(a) para: *${guest.title}*\\n\\n📅 Data: ${eventDate}\\n🕐 Horário: ${eventTime}\\n📍 Local: ${guest.venueName}\\n${guest.address}\\n\\nPor favor, confirme sua presença respondendo:\\n✅ SIM - Confirmo presença\\n❌ NÃO - Não poderei comparecer\\n🤔 TALVEZ - Ainda não tenho certeza\\n\\nAguardamos sua resposta! 💕`\n  });\n}\n\nreturn messages.map(m => ({ json: m }));",
+        "options": {}
+      },
+      "id": "format-messages",
+      "name": "Format WhatsApp Messages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v17.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.to }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.message }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-whatsapp",
+      "name": "Send WhatsApp Message",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-token",
+          "name": "WhatsApp Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE \"Guest\" SET \"inviteStatus\" = 'enviado', \"updatedAt\" = NOW() WHERE id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.guestId }}"
+        }
+      },
+      "id": "update-invite-status",
+      "name": "Update Invite Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"Interaction\" (id, \"eventId\", \"contactId\", type, direction, channel, \"messageSnippet\", \"occurredAt\") SELECT gen_random_uuid(), g.\"eventId\", g.\"contactId\", 'whatsapp_message', 'outbound', 'whatsapp', 'Convite enviado', NOW() FROM \"Guest\" g WHERE g.id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.guestId }}"
+        }
+      },
+      "id": "log-interaction",
+      "name": "Log Interaction",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, sent: $items().length } }}"
+      },
+      "id": "response",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [[{ "node": "Get Pending Guests", "type": "main", "index": 0 }]]
+    },
+    "Get Pending Guests": {
+      "main": [[{ "node": "Format WhatsApp Messages", "type": "main", "index": 0 }]]
+    },
+    "Format WhatsApp Messages": {
+      "main": [[{ "node": "Send WhatsApp Message", "type": "main", "index": 0 }]]
+    },
+    "Send WhatsApp Message": {
+      "main": [[{ "node": "Update Invite Status", "type": "main", "index": 0 }]]
+    },
+    "Update Invite Status": {
+      "main": [[{ "node": "Log Interaction", "type": "main", "index": 0 }]]
+    },
+    "Log Interaction": {
+      "main": [[{ "node": "Response", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-29T00:00:00.000Z",
+  "versionId": "1"
+}

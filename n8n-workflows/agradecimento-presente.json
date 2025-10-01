@@ -1,0 +1,149 @@
+{
+  "name": "Celebre - Agradecimento de Presente",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gift-received",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-gift",
+      "name": "Webhook Gift Received",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "gift-received"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT gr.id, gr.title, gr.price, g.id as \"guestId\", g.\"eventId\", c.\"fullName\", c.phone, e.title as \"eventTitle\" FROM \"GiftRegistryItem\" gr JOIN \"Guest\" g ON gr.\"guestId\" = g.id JOIN \"Contact\" c ON g.\"contactId\" = c.id JOIN \"Event\" e ON g.\"eventId\" = e.id WHERE gr.id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.body.giftId }}"
+        }
+      },
+      "id": "get-gift-info",
+      "name": "Get Gift Info",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE \"GiftRegistryItem\" SET status = 'recebido', \"updatedAt\" = NOW() WHERE id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.id }}"
+        }
+      },
+      "id": "update-gift-status",
+      "name": "Update Gift Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const gift = items[0].json;\n\nconst message = `💝 Olá ${gift.fullName}!\\n\\nRecebemos seu presente: *${gift.title}*\\n\\nMuito obrigado(a) pelo carinho e generosidade! 🙏\\n\\nSeu gesto significa muito para nós e faz parte das nossas memórias especiais de ${gift.eventTitle}.\\n\\nCom amor e gratidão! ❤️`;\n\nreturn [{\n  json: {\n    to: gift.phone,\n    guestId: gift.guestId,\n    eventId: gift.eventId,\n    message\n  }\n}];",
+        "options": {}
+      },
+      "id": "format-thank-you",
+      "name": "Format Thank You Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v17.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.to }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.message }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-thank-you",
+      "name": "Send Thank You",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1050, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-token",
+          "name": "WhatsApp Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"TimelineEntry\" (id, \"eventId\", \"contactId\", type, title, description, \"occurredAt\") SELECT gen_random_uuid(), g.\"eventId\", g.\"contactId\", 'gift_received', 'Presente recebido e agradecido', gr.title, NOW() FROM \"Guest\" g JOIN \"GiftRegistryItem\" gr ON g.id = gr.\"guestId\" WHERE g.id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.guestId }}"
+        }
+      },
+      "id": "log-gift-timeline",
+      "name": "Log Gift Timeline",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"Interaction\" (id, \"eventId\", \"contactId\", type, direction, channel, \"messageSnippet\", \"occurredAt\") SELECT gen_random_uuid(), $1, g.\"contactId\", 'whatsapp_message', 'outbound', 'whatsapp', 'Agradecimento de presente', NOW() FROM \"Guest\" g WHERE g.id = $2",
+        "additionalFields": {
+          "queryParameters": "={{ $json.eventId }},{{ $json.guestId }}"
+        }
+      },
+      "id": "log-interaction",
+      "name": "Log Interaction",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, message: 'Agradecimento enviado com sucesso!' } }}"
+      },
+      "id": "response",
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1650, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Gift Received": {
+      "main": [[{ "node": "Get Gift Info", "type": "main", "index": 0 }]]
+    },
+    "Get Gift Info": {
+      "main": [[{ "node": "Update Gift Status", "type": "main", "index": 0 }]]
+    },
+    "Update Gift Status": {
+      "main": [[{ "node": "Format Thank You Message", "type": "main", "index": 0 }]]
+    },
+    "Format Thank You Message": {
+      "main": [[{ "node": "Send Thank You", "type": "main", "index": 0 }]]
+    },
+    "Send Thank You": {
+      "main": [[{ "node": "Log Gift Timeline", "type": "main", "index": 0 }]]
+    },
+    "Log Gift Timeline": {
+      "main": [[{ "node": "Log Interaction", "type": "main", "index": 0 }]]
+    },
+    "Log Interaction": {
+      "main": [[{ "node": "Response", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-29T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,0 +1,112 @@
+{
+  "name": "Vendor Submitted - Notificar Admin",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vendor-submitted",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook - Vendor Submitted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "vendor-submitted"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "to": "5527999999999",
+        "template": "novo_parceiro_pendente",
+        "components": {
+          "body": [
+            {
+              "type": "text",
+              "text": "={{$json.companyName}}"
+            },
+            {
+              "type": "text",
+              "text": "={{$json.contactName}}"
+            },
+            {
+              "type": "text",
+              "text": "={{$json.categories.join(', ')}}"
+            },
+            {
+              "type": "text",
+              "text": "={{$json.city}}/={{$json.state}}"
+            }
+          ],
+          "button": [
+            {
+              "type": "url",
+              "url": "https://celebre.com/dashboard/vendors?status=pending_review"
+            }
+          ]
+        }
+      },
+      "name": "WhatsApp - Notificar Admin",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "1",
+          "name": "WhatsApp Business API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@celebre.com",
+        "toEmail": "admin@celebre.com",
+        "subject": "Novo Parceiro Aguardando Aprovação: ={{$json.companyName}}",
+        "text": "Um novo parceiro se cadastrou na plataforma Celebre:\n\nEmpresa: ={{$json.companyName}}\nResponsável: ={{$json.contactName}}\nE-mail: ={{$json.email}}\nTelefone: ={{$json.phoneE164}}\nCategorias: ={{$json.categories.join(', ')}}\nLocalização: ={{$json.city}}/={{$json.state}}\n\nAcesse o painel para aprovar: https://celebre.com/dashboard/vendors?status=pending_review",
+        "options": {}
+      },
+      "name": "Email - Notificar Admin",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [450, 500],
+      "credentials": {
+        "smtp": {
+          "id": "2",
+          "name": "SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Vendor Submitted": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Notificar Admin",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email - Notificar Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 3600,
+    "timezone": "America/Sao_Paulo"
+  },
+  "staticData": null,
+  "tags": ["vendor", "notification"],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-15T10:00:00.000Z",
+  "versionId": "1"
+}

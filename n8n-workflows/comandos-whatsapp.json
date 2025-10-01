@@ -1,0 +1,221 @@
+{
+  "name": "Celebre - Processador Comandos WhatsApp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "whatsapp-webhook",
+      "name": "WhatsApp Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "whatsapp-commands"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract message from WhatsApp webhook payload\nconst body = items[0].json.body;\n\nif (!body.entry || !body.entry[0].changes || !body.entry[0].changes[0].value.messages) {\n  return [];\n}\n\nconst messages = body.entry[0].changes[0].value.messages;\nconst message = messages[0];\n\nreturn [{\n  json: {\n    messageId: message.id,\n    from: message.from,\n    text: message.text?.body || '',\n    timestamp: message.timestamp\n  }\n}];",
+        "options": {}
+      },
+      "id": "parse-message",
+      "name": "Parse WhatsApp Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT g.id as \"guestId\", g.\"eventId\", g.rsvp, c.id as \"contactId\", c.\"fullName\", e.title as \"eventTitle\" FROM \"Guest\" g JOIN \"Contact\" c ON g.\"contactId\" = c.id JOIN \"Event\" e ON g.\"eventId\" = e.id WHERE c.phone = $1 AND g.\"optOut\" = false LIMIT 1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.from }}"
+        }
+      },
+      "id": "find-guest",
+      "name": "Find Guest by Phone",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.guestId }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "guest-found",
+      "name": "Guest Found?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const text = $input.first().json.text.toUpperCase().trim();\nconst guest = $input.first().json;\n\nlet command = 'unknown';\nlet response = '';\n\n// RSVP Commands\nif (['SIM', 'YES', 'CONFIRMO', 'CONFIRMADO'].includes(text)) {\n  command = 'rsvp_sim';\n  response = `✅ Presença confirmada para ${guest.eventTitle}! Obrigado, ${guest.fullName}! 🎉`;\n} else if (['NAO', 'NÃO', 'NO', 'RECUSO'].includes(text)) {\n  command = 'rsvp_nao';\n  response = `❌ Entendemos que não poderá comparecer. Sentiremos sua falta!`;\n} else if (['TALVEZ', 'MAYBE', 'NAO SEI', 'NÃO SEI'].includes(text)) {\n  command = 'rsvp_talvez';\n  response = `🤔 Ok, entendemos! Quando souber, nos avise!`;\n}\n// Info Commands\nelse if (['MESA', 'TABLE', 'ONDE', 'WHERE'].includes(text)) {\n  command = 'info_mesa';\n  response = `📍 Sua mesa ainda será definida. Enviaremos em breve!`;\n} else if (['ENDERECO', 'ENDEREÇO', 'LOCAL', 'ADDRESS'].includes(text)) {\n  command = 'info_endereco';\n  response = `📍 O evento será em: [Local do evento]\\n[Endereço completo]`;\n} else if (['HORARIO', 'HORÁRIO', 'HORA', 'TIME'].includes(text)) {\n  command = 'info_horario';\n  response = `🕐 O evento começa às [horário]. Chegue com antecedência!`;\n}\n// Opt-out\nelse if (['PARAR', 'SAIR', 'STOP', 'CANCELAR'].includes(text)) {\n  command = 'opt_out';\n  response = `🚫 Você não receberá mais mensagens. Para voltar a receber, envie VOLTAR.`;\n} else if (['VOLTAR', 'RETORNAR', 'START'].includes(text)) {\n  command = 'opt_in';\n  response = `✅ Bem-vindo(a) de volta! Você voltará a receber atualizações.`;\n}\n// Help\nelse if (['AJUDA', 'HELP', 'COMANDOS', '?'].includes(text)) {\n  command = 'help';\n  response = `ℹ️ *Comandos disponíveis:*\\n\\n*RSVP:*\\nSIM - Confirmar presença\\nNÃO - Recusar convite\\nTALVEZ - Ainda não sabe\\n\\n*Info:*\\nMESA - Ver sua mesa\\nENDEREÇO - Local do evento\\nHORÁRIO - Hora do evento\\n\\n*Outros:*\\nPARAR - Parar mensagens\\nVOLTAR - Voltar a receber\\nAJUDA - Ver comandos`;\n} else {\n  command = 'unknown';\n  response = `❓ Não entendi seu comando. Envie AJUDA para ver os comandos disponíveis.`;\n}\n\nreturn [{\n  json: {\n    ...guest,\n    command,\n    response,\n    originalText: text\n  }\n}];",
+        "options": {}
+      },
+      "id": "parse-command",
+      "name": "Parse Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [1050, 250]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.command }}",
+              "operation": "contains",
+              "value2": "rsvp_"
+            }
+          ]
+        }
+      },
+      "id": "is-rsvp-command",
+      "name": "Is RSVP Command?",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [1250, 250]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE \"Guest\" SET rsvp = CASE WHEN $2 = 'rsvp_sim' THEN 'sim' WHEN $2 = 'rsvp_nao' THEN 'nao' WHEN $2 = 'rsvp_talvez' THEN 'talvez' END, \"updatedAt\" = NOW() WHERE id = $1",
+        "additionalFields": {
+          "queryParameters": "={{ $json.guestId }},={{ $json.command }}"
+        }
+      },
+      "id": "update-rsvp",
+      "name": "Update RSVP",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"EngagementScore\" (id, \"eventId\", \"contactId\", value, tier, \"lastDecayAt\") VALUES (gen_random_uuid(), $1, $2, 10, 'bronze', NOW()) ON CONFLICT (\"eventId\", \"contactId\") DO UPDATE SET value = \"EngagementScore\".value + 10, tier = CASE WHEN \"EngagementScore\".value + 10 >= 50 THEN 'ouro' WHEN \"EngagementScore\".value + 10 >= 25 THEN 'prata' ELSE 'bronze' END",
+        "additionalFields": {
+          "queryParameters": "={{ $json.eventId }},={{ $json.contactId }}"
+        }
+      },
+      "id": "add-engagement",
+      "name": "Add Engagement Points",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1650, 200]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v17.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.from }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.response }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-response",
+      "name": "Send Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1850, 250],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-token",
+          "name": "WhatsApp Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"Interaction\" (id, \"eventId\", \"contactId\", type, direction, channel, \"messageSnippet\", \"occurredAt\") VALUES (gen_random_uuid(), $1, $2, 'whatsapp_message', 'inbound', 'whatsapp', $3, NOW())",
+        "additionalFields": {
+          "queryParameters": "={{ $json.eventId }},={{ $json.contactId }},={{ $json.originalText }}"
+        }
+      },
+      "id": "log-interaction",
+      "name": "Log Interaction",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [2050, 250]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: true, command: $json.command } }}"
+      },
+      "id": "webhook-response",
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2250, 250]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: false, error: 'Telefone não encontrado' } }}"
+      },
+      "id": "not-found-response",
+      "name": "Not Found Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1050, 400]
+    }
+  ],
+  "connections": {
+    "WhatsApp Webhook": {
+      "main": [[{ "node": "Parse WhatsApp Message", "type": "main", "index": 0 }]]
+    },
+    "Parse WhatsApp Message": {
+      "main": [[{ "node": "Find Guest by Phone", "type": "main", "index": 0 }]]
+    },
+    "Find Guest by Phone": {
+      "main": [[{ "node": "Guest Found?", "type": "main", "index": 0 }]]
+    },
+    "Guest Found?": {
+      "main": [
+        [{ "node": "Parse Command", "type": "main", "index": 0 }],
+        [{ "node": "Not Found Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Parse Command": {
+      "main": [[{ "node": "Is RSVP Command?", "type": "main", "index": 0 }]]
+    },
+    "Is RSVP Command?": {
+      "main": [
+        [{ "node": "Update RSVP", "type": "main", "index": 0 }],
+        [{ "node": "Send Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Update RSVP": {
+      "main": [[{ "node": "Add Engagement Points", "type": "main", "index": 0 }]]
+    },
+    "Add Engagement Points": {
+      "main": [[{ "node": "Send Response", "type": "main", "index": 0 }]]
+    },
+    "Send Response": {
+      "main": [[{ "node": "Log Interaction", "type": "main", "index": 0 }]]
+    },
+    "Log Interaction": {
+      "main": [[{ "node": "Webhook Response", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-29T00:00:00.000Z",
+  "versionId": "1"
+}

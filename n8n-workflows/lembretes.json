@@ -1,0 +1,120 @@
+{
+  "name": "Celebre - Lembretes Automáticos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT e.id as \"eventId\", e.title, e.\"dateTime\", e.\"venueName\", e.address, g.id as \"guestId\", c.\"fullName\", c.phone FROM \"Event\" e JOIN \"Guest\" g ON e.id = g.\"eventId\" JOIN \"Contact\" c ON g.\"contactId\" = c.id WHERE e.\"dateTime\" BETWEEN NOW() + INTERVAL '7 days' AND NOW() + INTERVAL '8 days' AND g.rsvp = 'sim' AND g.\"optOut\" = false"
+      },
+      "id": "get-confirmed-guests-7d",
+      "name": "Get Confirmed Guests (7 days)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 250]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT e.id as \"eventId\", e.title, e.\"dateTime\", e.\"venueName\", e.address, g.id as \"guestId\", c.\"fullName\", c.phone FROM \"Event\" e JOIN \"Guest\" g ON e.id = g.\"eventId\" JOIN \"Contact\" c ON g.\"contactId\" = c.id WHERE e.\"dateTime\" BETWEEN NOW() + INTERVAL '1 day' AND NOW() + INTERVAL '2 days' AND g.rsvp = 'sim' AND g.\"optOut\" = false"
+      },
+      "id": "get-confirmed-guests-1d",
+      "name": "Get Confirmed Guests (1 day)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "const guests = items.map(item => item.json);\nconst messages = [];\n\nfor (const guest of guests) {\n  const eventDate = new Date(guest.dateTime).toLocaleDateString('pt-BR', {\n    day: '2-digit',\n    month: 'long'\n  });\n  \n  const eventTime = new Date(guest.dateTime).toLocaleTimeString('pt-BR', {\n    hour: '2-digit',\n    minute: '2-digit'\n  });\n\n  const daysUntil = Math.ceil((new Date(guest.dateTime) - new Date()) / (1000 * 60 * 60 * 24));\n\n  let message = '';\n  if (daysUntil === 7) {\n    message = `📅 Olá ${guest.fullName}!\\n\\nLembrete: faltam *7 dias* para ${guest.title}!\\n\\n🗓️ ${eventDate} às ${eventTime}\\n📍 ${guest.venueName}\\n\\nEstamos ansiosos para te ver lá! 💕`;\n  } else if (daysUntil === 1) {\n    message = `⏰ Olá ${guest.fullName}!\\n\\n*Amanhã* é o grande dia: ${guest.title}!\\n\\n🕐 ${eventTime}\\n📍 ${guest.venueName}\\n${guest.address}\\n\\nNos vemos em breve! 🎉`;\n  }\n\n  if (message) {\n    messages.push({\n      to: guest.phone,\n      guestId: guest.guestId,\n      eventId: guest.eventId,\n      message\n    });\n  }\n}\n\nreturn messages.map(m => ({ json: m }));",
+        "options": {}
+      },
+      "id": "format-reminders",
+      "name": "Format Reminders",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v17.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.to }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.message }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-reminder",
+      "name": "Send Reminder",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-token",
+          "name": "WhatsApp Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"Interaction\" (id, \"eventId\", \"contactId\", type, direction, channel, \"messageSnippet\", \"occurredAt\") SELECT gen_random_uuid(), $1, g.\"contactId\", 'whatsapp_message', 'outbound', 'whatsapp', 'Lembrete enviado', NOW() FROM \"Guest\" g WHERE g.id = $2",
+        "additionalFields": {
+          "queryParameters": "={{ $json.eventId }},{{ $json.guestId }}"
+        }
+      },
+      "id": "log-reminder",
+      "name": "Log Reminder",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Cron Trigger": {
+      "main": [
+        [
+          { "node": "Get Confirmed Guests (7 days)", "type": "main", "index": 0 },
+          { "node": "Get Confirmed Guests (1 day)", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Get Confirmed Guests (7 days)": {
+      "main": [[{ "node": "Format Reminders", "type": "main", "index": 0 }]]
+    },
+    "Get Confirmed Guests (1 day)": {
+      "main": [[{ "node": "Format Reminders", "type": "main", "index": 0 }]]
+    },
+    "Format Reminders": {
+      "main": [[{ "node": "Send Reminder", "type": "main", "index": 0 }]]
+    },
+    "Send Reminder": {
+      "main": [[{ "node": "Log Reminder", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-29T00:00:00.000Z",
+  "versionId": "1"
+}

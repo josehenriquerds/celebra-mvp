@@ -1,0 +1,122 @@
+{
+  "name": "Celebre - Monitor SLA Tarefas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 */6 * * *"
+            }
+          ]
+        }
+      },
+      "id": "cron-every-6h",
+      "name": "Cron Every 6 Hours",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT t.id, t.title, t.status, t.\"dueAt\", t.\"slaHours\", t.\"assignedTo\", e.id as \"eventId\", e.title as \"eventTitle\", e.hosts FROM \"Task\" t JOIN \"Event\" e ON t.\"eventId\" = e.id WHERE t.status IN ('aberta', 'em_andamento') AND t.\"dueAt\" IS NOT NULL AND t.\"dueAt\" < NOW() + INTERVAL '8 hours'"
+      },
+      "id": "get-urgent-tasks",
+      "name": "Get Urgent Tasks",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const tasks = items.map(item => item.json);\nconst alerts = [];\n\nfor (const task of tasks) {\n  const dueAt = new Date(task.dueAt);\n  const now = new Date();\n  const hoursRemaining = (dueAt - now) / (1000 * 60 * 60);\n  \n  let severity = 'warning';\n  let emoji = '⚠️';\n  let message = '';\n\n  if (hoursRemaining < 0) {\n    severity = 'critical';\n    emoji = '🚨';\n    message = `${emoji} *TAREFA ATRASADA*\\n\\nEvento: ${task.eventTitle}\\nTarefa: *${task.title}*\\nStatus: ${task.status}\\nPrazo: ${dueAt.toLocaleString('pt-BR')}\\nAtraso: ${Math.abs(Math.round(hoursRemaining))} horas`;\n  } else if (hoursRemaining < 8) {\n    emoji = '⏰';\n    message = `${emoji} *TAREFA URGENTE*\\n\\nEvento: ${task.eventTitle}\\nTarefa: *${task.title}*\\nStatus: ${task.status}\\nPrazo: ${dueAt.toLocaleString('pt-BR')}\\nTempo restante: ${Math.round(hoursRemaining)} horas`;\n  }\n\n  if (message && task.hosts && task.hosts.length > 0) {\n    // Send to all event hosts\n    task.hosts.forEach(phone => {\n      alerts.push({\n        to: phone,\n        taskId: task.id,\n        eventId: task.eventId,\n        severity,\n        message\n      });\n    });\n  }\n}\n\nreturn alerts.map(a => ({ json: a }));",
+        "options": {}
+      },
+      "id": "format-alerts",
+      "name": "Format SLA Alerts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $items().length }}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      },
+      "id": "check-has-alerts",
+      "name": "Has Alerts?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v17.0/{{ $env.WHATSAPP_PHONE_ID }}/messages",
+        "jsonParameters": true,
+        "bodyParametersJson": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $json.to }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"{{ $json.message }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "send-alert",
+      "name": "Send Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [1050, 250],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "whatsapp-token",
+          "name": "WhatsApp Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO \"EventLog\" (id, \"eventId\", type, \"payloadJson\", \"occurredAt\") VALUES (gen_random_uuid(), $1, 'sla_alert', json_build_object('taskId', $2, 'severity', $3), NOW())",
+        "additionalFields": {
+          "queryParameters": "={{ $json.eventId }},={{ $json.taskId }},={{ $json.severity }}"
+        }
+      },
+      "id": "log-alert",
+      "name": "Log SLA Alert",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1250, 250]
+    }
+  ],
+  "connections": {
+    "Cron Every 6 Hours": {
+      "main": [[{ "node": "Get Urgent Tasks", "type": "main", "index": 0 }]]
+    },
+    "Get Urgent Tasks": {
+      "main": [[{ "node": "Format SLA Alerts", "type": "main", "index": 0 }]]
+    },
+    "Format SLA Alerts": {
+      "main": [[{ "node": "Has Alerts?", "type": "main", "index": 0 }]]
+    },
+    "Has Alerts?": {
+      "main": [[{ "node": "Send Alert", "type": "main", "index": 0 }]]
+    },
+    "Send Alert": {
+      "main": [[{ "node": "Log SLA Alert", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-09-29T00:00:00.000Z",
+  "versionId": "1"
+}

@@ -1,7 +1,29 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(git checkout:*)",
+      "Bash(test:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(docker exec:*)",
+      "Bash(set DATABASE_URL=\"postgresql://postgres:senha@localhost:5432/celebre_db\")",
+      "Bash(npx prisma:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(timeout:*)",
+      "Bash(docker cp:*)",
+      "Bash(npx tsx:*)",
+      "Bash(node:*)",
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(docker:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": []

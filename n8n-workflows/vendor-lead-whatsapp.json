@@ -1,0 +1,91 @@
+{
+  "name": "Vendor Lead - Log WhatsApp Click",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vendor-lead-whatsapp",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook - WhatsApp Click",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "vendor-lead-whatsapp"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO vendor_interactions (vendor_id, host_contact_id, event_id, interaction_type, occurred_at) VALUES ('={{$json.vendorId}}', '={{$json.hostContactId}}', '={{$json.eventId}}', 'whatsapp_click', NOW())",
+        "options": {}
+      },
+      "name": "Postgres - Log Interaction",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [450, 300],
+      "credentials": {
+        "postgres": {
+          "id": "3",
+          "name": "Postgres Celebre"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "to": "={{$json.vendorPhoneE164}}",
+        "message": "🔔 *Novo lead no Celebre!*\n\nUm anfitrião acabou de clicar no seu WhatsApp através do portfólio *={{$json.vendorCompanyName}}*.\n\nEvento: ={{$json.eventTitle}}\nData: ={{$json.eventDate}}\n\nResponda rapidamente para aumentar suas chances de fechar o negócio! 🚀",
+        "options": {}
+      },
+      "name": "WhatsApp - Notificar Vendor",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "1",
+          "name": "WhatsApp Business API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - WhatsApp Click": {
+      "main": [
+        [
+          {
+            "node": "Postgres - Log Interaction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres - Log Interaction": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Notificar Vendor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 3600,
+    "timezone": "America/Sao_Paulo"
+  },
+  "staticData": null,
+  "tags": ["vendor", "lead", "tracking"],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-15T10:00:00.000Z",
+  "versionId": "1"
+}

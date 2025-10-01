@@ -1,0 +1,104 @@
+{
+  "name": "Vendor Approved - Notificar Parceiro",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "vendor-approved",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook - Vendor Approved",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "vendor-approved"
+    },
+    {
+      "parameters": {
+        "operation": "sendTemplate",
+        "to": "={{$json.phoneE164}}",
+        "template": "parceiro_aprovado",
+        "components": {
+          "body": [
+            {
+              "type": "text",
+              "text": "={{$json.contactName}}"
+            },
+            {
+              "type": "text",
+              "text": "={{$json.companyName}}"
+            }
+          ],
+          "button": [
+            {
+              "type": "url",
+              "url": "https://celebre.com/p/={{$json.slug}}"
+            }
+          ]
+        }
+      },
+      "name": "WhatsApp - Notificar Parceiro",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "1",
+          "name": "WhatsApp Business API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "parceiros@celebre.com",
+        "toEmail": "={{$json.email}}",
+        "subject": "🎉 Parabéns! Seu perfil foi aprovado no Celebre",
+        "html": "<html>\n<body style=\"font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;\">\n  <div style=\"background: linear-gradient(135deg, #863F44, #a855f7); padding: 40px; text-align: center; border-radius: 12px;\">\n    <h1 style=\"color: white; margin: 0;\">Bem-vindo ao Celebre! 🎉</h1>\n  </div>\n  \n  <div style=\"padding: 40px 20px;\">\n    <p>Olá, <strong>={{$json.contactName}}</strong>!</p>\n    \n    <p>Temos uma ótima notícia: seu perfil <strong>={{$json.companyName}}</strong> foi aprovado e já está disponível publicamente!</p>\n    \n    <p>A partir de agora, anfitriões de eventos em toda a região poderão encontrar e contratar seus serviços através do Celebre.</p>\n    \n    <div style=\"background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;\">\n      <p style=\"margin: 0;\"><strong>Seu portfólio público:</strong></p>\n      <a href=\"https://celebre.com/p/={{$json.slug}}\" style=\"color: #863F44; font-size: 18px;\">celebre.com/p/={{$json.slug}}</a>\n    </div>\n    \n    <p><strong>Próximos passos:</strong></p>\n    <ul>\n      <li>Compartilhe seu link nas redes sociais</li>\n      <li>Aguarde contatos de anfitriões interessados</li>\n      <li>Responda rapidamente para aumentar suas chances</li>\n    </ul>\n    \n    <p>Qualquer dúvida, estamos à disposição!</p>\n    \n    <p>Equipe Celebre 💜</p>\n  </div>\n</body>\n</html>",
+        "options": {}
+      },
+      "name": "Email - Notificar Parceiro",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [450, 500],
+      "credentials": {
+        "smtp": {
+          "id": "2",
+          "name": "SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Vendor Approved": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp - Notificar Parceiro",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email - Notificar Parceiro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 3600,
+    "timezone": "America/Sao_Paulo"
+  },
+  "staticData": null,
+  "tags": ["vendor", "notification"],
+  "triggerCount": 1,
+  "updatedAt": "2025-01-15T10:00:00.000Z",
+  "versionId": "1"
+}

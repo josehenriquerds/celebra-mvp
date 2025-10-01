@@ -1,0 +1,424 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import Link from 'next/link'
+import {
+  DndContext,
+  DragOverlay,
+  closestCorners,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragStartEvent,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import { useDroppable, useDraggable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
+import {
+  ArrowLeft,
+  Plus,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Calendar,
+  User,
+  DollarSign,
+} from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { formatDate, formatTime, getSLABadgeColor } from '@/lib/utils'
+
+interface Task {
+  id: string
+  title: string
+  description: string | null
+  status: 'aberta' | 'em_andamento' | 'concluida'
+  dueAt: string | null
+  slaHours: number | null
+  assignedTo: string | null
+  vendor: {
+    id: string
+    name: string
+  } | null
+  cost: number | null
+}
+
+interface TasksData {
+  aberta: Task[]
+  em_andamento: Task[]
+  concluida: Task[]
+}
+
+// Draggable Task Card
+function DraggableTask({ task }: { task: Task }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: task.id,
+    data: { type: 'task', task },
+  })
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className="p-4 bg-white border rounded-xl cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow mb-3"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="font-semibold text-celebre-ink text-sm">{task.title}</h3>
+        {task.dueAt && (
+          <Badge variant={getSLABadgeColor(task.dueAt) as any} className="text-xs ml-2">
+            {getSLABadgeColor(task.dueAt) === 'danger' ? 'Atrasada' : 'No prazo'}
+          </Badge>
+        )}
+      </div>
+
+      {task.description && (
+        <p className="text-xs text-celebre-muted mb-3 line-clamp-2">{task.description}</p>
+      )}
+
+      <div className="space-y-1">
+        {task.dueAt && (
+          <div className="flex items-center gap-2 text-xs text-celebre-muted">
+            <Calendar className="h-3 w-3" />
+            <span>
+              {formatDate(task.dueAt)} às {formatTime(task.dueAt)}
+            </span>
+          </div>
+        )}
+        {task.assignedTo && (
+          <div className="flex items-center gap-2 text-xs text-celebre-muted">
+            <User className="h-3 w-3" />
+            <span>{task.assignedTo}</span>
+          </div>
+        )}
+        {task.vendor && (
+          <div className="flex items-center gap-2 text-xs text-celebre-muted">
+            <span>🏢</span>
+            <span>{task.vendor.name}</span>
+          </div>
+        )}
+        {task.cost && (
+          <div className="flex items-center gap-2 text-xs text-celebre-muted">
+            <DollarSign className="h-3 w-3" />
+            <span>R$ {task.cost.toFixed(2)}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Droppable Column
+function DroppableColumn({
+  status,
+  tasks,
+  title,
+  icon: Icon,
+  color,
+}: {
+  status: string
+  tasks: Task[]
+  title: string
+  icon: any
+  color: string
+}) {
+  const { setNodeRef, isOver } = useDroppable({
+    id: status,
+    data: { type: 'column', status },
+  })
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={`flex-1 min-w-[300px] bg-celebre-accent/20 rounded-xl p-4 ${isOver ? 'ring-2 ring-celebre-brand' : ''}`}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <Icon className={`h-5 w-5 ${color}`} />
+        <h2 className="font-heading font-semibold text-celebre-ink">{title}</h2>
+        <Badge variant="outline" className="ml-auto">
+          {tasks.length}
+        </Badge>
+      </div>
+
+      <div className="space-y-3">
+        {tasks.length === 0 ? (
+          <div className="text-center py-8 text-celebre-muted">
+            <p className="text-sm">Nenhuma tarefa</p>
+          </div>
+        ) : (
+          tasks.map((task) => <DraggableTask key={task.id} task={task} />)
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default function TasksPage() {
+  const params = useParams()
+  const eventId = params.id as string
+
+  const [data, setData] = useState<TasksData>({
+    aberta: [],
+    em_andamento: [],
+    concluida: [],
+  })
+  const [loading, setLoading] = useState(true)
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [showNewTaskForm, setShowNewTaskForm] = useState(false)
+  const [newTask, setNewTask] = useState({
+    title: '',
+    description: '',
+    dueAt: '',
+    assignedTo: '',
+  })
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  )
+
+  useEffect(() => {
+    fetchTasks()
+  }, [eventId])
+
+  async function fetchTasks() {
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/events/${eventId}/tasks`)
+      const tasks = await res.json()
+
+      // Group by status
+      const grouped: TasksData = {
+        aberta: [],
+        em_andamento: [],
+        concluida: [],
+      }
+
+      tasks.forEach((task: Task) => {
+        if (task.status in grouped) {
+          grouped[task.status].push(task)
+        }
+      })
+
+      setData(grouped)
+    } catch (error) {
+      console.error('Error fetching tasks:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    setActiveId(event.active.id as string)
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    setActiveId(null)
+
+    if (!over) return
+
+    const taskId = active.id as string
+    const newStatus = over.id as string
+
+    // Find the task
+    const allTasks = [...data.aberta, ...data.em_andamento, ...data.concluida]
+    const task = allTasks.find((t) => t.id === taskId)
+
+    if (!task || task.status === newStatus) return
+
+    try {
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+
+      if (res.ok) {
+        await fetchTasks()
+      }
+    } catch (error) {
+      console.error('Error updating task:', error)
+    }
+  }
+
+  async function handleCreateTask() {
+    if (!newTask.title) return
+
+    try {
+      const res = await fetch(`/api/events/${eventId}/tasks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newTask,
+          status: 'aberta',
+          dueAt: newTask.dueAt ? new Date(newTask.dueAt).toISOString() : null,
+        }),
+      })
+
+      if (res.ok) {
+        setNewTask({ title: '', description: '', dueAt: '', assignedTo: '' })
+        setShowNewTaskForm(false)
+        await fetchTasks()
+      }
+    } catch (error) {
+      console.error('Error creating task:', error)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-celebre-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-celebre-brand mx-auto mb-4"></div>
+          <p className="text-celebre-muted">Carregando tarefas...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const allTasks = [...data.aberta, ...data.em_andamento, ...data.concluida]
+  const activeTask = allTasks.find((t) => t.id === activeId)
+
+  return (
+    <div className="min-h-screen bg-celebre-bg">
+      {/* Header */}
+      <header className="bg-white shadow-celebre border-b">
+        <div className="max-w-full px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link href={`/events/${eventId}`}>
+                <Button variant="ghost" size="icon">
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-3xl font-heading font-bold text-celebre-ink">
+                  Gestão de Tarefas
+                </h1>
+                <p className="text-sm text-celebre-muted mt-1">
+                  {allTasks.length} tarefa{allTasks.length !== 1 ? 's' : ''} no total
+                </p>
+              </div>
+            </div>
+            <Button size="sm" onClick={() => setShowNewTaskForm(true)}>
+              <Plus className="h-4 w-4 mr-2" />
+              Nova Tarefa
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* New Task Form */}
+      {showNewTaskForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="font-heading">Nova Tarefa</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-celebre-ink">Título</label>
+                <Input
+                  value={newTask.title}
+                  onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                  placeholder="Ex: Confirmar buffet"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-celebre-ink">Descrição</label>
+                <Input
+                  value={newTask.description}
+                  onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                  placeholder="Detalhes da tarefa..."
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-celebre-ink">Prazo</label>
+                <Input
+                  type="datetime-local"
+                  value={newTask.dueAt}
+                  onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })}
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-celebre-ink">Responsável</label>
+                <Input
+                  value={newTask.assignedTo}
+                  onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+                  placeholder="Nome do responsável"
+                  className="mt-1"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setShowNewTaskForm(false)} className="flex-1">
+                  Cancelar
+                </Button>
+                <Button onClick={handleCreateTask} className="flex-1">
+                  Criar Tarefa
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Kanban Board */}
+      <main className="max-w-full px-4 sm:px-6 lg:px-8 py-8">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCorners}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="flex gap-6 overflow-x-auto pb-4">
+            <DroppableColumn
+              status="aberta"
+              tasks={data.aberta}
+              title="Aberta"
+              icon={Clock}
+              color="text-gray-600"
+            />
+            <DroppableColumn
+              status="em_andamento"
+              tasks={data.em_andamento}
+              title="Em Andamento"
+              icon={AlertCircle}
+              color="text-yellow-600"
+            />
+            <DroppableColumn
+              status="concluida"
+              tasks={data.concluida}
+              title="Concluída"
+              icon={CheckCircle}
+              color="text-green-600"
+            />
+          </div>
+
+          <DragOverlay>
+            {activeId && activeTask && (
+              <div className="p-4 bg-white border-2 border-celebre-brand rounded-xl shadow-lg">
+                <h3 className="font-semibold text-celebre-ink text-sm">{activeTask.title}</h3>
+              </div>
+            )}
+          </DragOverlay>
+        </DndContext>
+      </main>
+    </div>
+  )
+}

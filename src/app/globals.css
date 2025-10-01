@@ -1,187 +1,152 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Nova+Slim&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Celebre Design System Tokens */
+    --celebre-bg: #FAF7F4;
+    --celebre-card: #FFFFFF;
+    --celebre-ink: #2A221F;
+    --celebre-muted: #8E7B73;
+    --celebre-accent: #F1D7C8;
+    --celebre-accent-2: #EADFD7;
+    --celebre-success: #DDF2E4;
+    --celebre-danger: #FCE8E8;
+    --celebre-brand: #863F44;
 
+    /* Gradientes suaves */
+    --gradient-app: linear-gradient(135deg,
+      rgba(245, 244, 255, 0.4) 0%,
+      rgba(230, 244, 255, 0.3) 25%,
+      rgba(255, 245, 243, 0.4) 75%,
+      rgba(255, 238, 243, 0.3) 100%);
+
+    /* Glass effect */
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.25);
+
+    /* Shadcn Tokens */
+    --background: 30 20% 98%;
+    --foreground: 15 12% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
- 
+    --card-foreground: 15 12% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
- 
-    --radius: 0.5rem;
+    --popover-foreground: 15 12% 14%;
+    --primary: 355 38% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 24 33% 91%;
+    --secondary-foreground: 15 12% 14%;
+    --muted: 24 33% 91%;
+    --muted-foreground: 20 13% 52%;
+    --accent: 18 46% 88%;
+    --accent-foreground: 15 12% 14%;
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 24 20% 88%;
+    --input: 24 20% 88%;
+    --ring: 355 38% 38%;
+    --radius: 1.5rem;
   }
- 
+
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
- 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
- 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
- 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
- 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
- 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --background: 15 12% 14%;
+    --foreground: 0 0% 98%;
+    --card: 15 12% 16%;
+    --card-foreground: 0 0% 98%;
+    --popover: 15 12% 16%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 18 46% 88%;
+    --primary-foreground: 15 12% 14%;
+    --secondary: 20 13% 22%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 20 13% 22%;
+    --muted-foreground: 20 13% 70%;
+    --accent: 20 13% 22%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 75% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 20 13% 22%;
+    --input: 20 13% 22%;
+    --ring: 18 46% 88%;
   }
 }
- 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[#FAF7F4] text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #f3f3f3;
-    --foreground: #aa0808;
+@layer utilities {
+  /* Glassmorphism utilities */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
-}
-
-/* Melhorias de responsividade geral */
-* {
-  box-sizing: border-box;
-}
-
-/* Espaçamento responsivo */
-.container-responsive {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-@media (min-width: 640px) {
-  .container-responsive {
-    padding: 0 1.5rem;
+  .glass-soft {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
-}
 
-@media (min-width: 768px) {
-  .container-responsive {
-    padding: 0 2rem;
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
   }
-}
 
-@media (min-width: 1024px) {
-  .container-responsive {
-    padding: 0 2.5rem;
+  /* Grid 8pt system helpers */
+  .spacing-8 { @apply p-2; }
+  .spacing-16 { @apply p-4; }
+  .spacing-24 { @apply p-6; }
+  .spacing-32 { @apply p-8; }
+  .spacing-40 { @apply p-10; }
+  .spacing-48 { @apply p-12; }
+
+  /* Container responsivo 8pt */
+  .container-8pt {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem; /* 16px mobile */
   }
-}
 
-/* Text responsivo */
-.text-responsive {
-  font-size: 0.875rem;
-}
-
-@media (min-width: 640px) {
-  .text-responsive {
-    font-size: 1rem;
+  @media (min-width: 640px) {
+    .container-8pt {
+      padding: 0 1.5rem; /* 24px */
+    }
   }
-}
 
-@media (min-width: 768px) {
-  .text-responsive {
-    font-size: 1.125rem;
+  @media (min-width: 768px) {
+    .container-8pt {
+      padding: 0 2rem; /* 32px */
+    }
   }
-}
 
-/* Botões responsivos */
-.btn-responsive {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-}
-
-@media (min-width: 768px) {
-  .btn-responsive {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+  @media (min-width: 1024px) {
+    .container-8pt {
+      padding: 0 3rem; /* 48px */
+    }
   }
-}
 
-/* Grid responsivo */
-.grid-responsive {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 640px) {
-  .grid-responsive {
-    gap: 1.5rem;
-    grid-template-columns: repeat(2, 1fr);
+  /* Scroll suave */
+  .scroll-smooth {
+    scroll-behavior: smooth;
   }
-}
 
-@media (min-width: 768px) {
-  .grid-responsive {
-    gap: 2rem;
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid-responsive {
-    gap: 2.5rem;
-    grid-template-columns: repeat(4, 1fr);
+  /* Focus visible (A11y) */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 }
