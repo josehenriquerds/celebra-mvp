@@ -1,6 +1,6 @@
-'use client'
-
-import { motion, AnimatePresence } from 'framer-motion'
+﻿'use client'
+import * as React from 'react'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import {
   Home,
   Users,
@@ -22,13 +22,16 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import * as React from 'react'
+
+
+
+// ⚠️ Corrige o import do shadcn (normalmente é este caminho)
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
-} from '@/app/components/ui/tooltip'
+} from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 interface EventLayoutProps {
@@ -57,9 +60,13 @@ const navigation: Item[] = [
 export default function EventLayout({ children, params }: EventLayoutProps) {
   const pathname = usePathname()
   const eventId = params.id
+  const prefersReducedMotion = useReducedMotion()
 
+  // Drawer mobile
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
-  const [pinned, setPinned] = React.useState(false) // “fixar” a sidebar expandida no desktop
+
+  // Rail desktop
+  const [pinned, setPinned] = React.useState(false)   // fixa expandida
   const [hovering, setHovering] = React.useState(false)
 
   const isActive = React.useCallback(
@@ -70,71 +77,93 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
     [pathname, eventId]
   )
 
-  const collapsed = !(pinned || hovering) // colapsa por padrão; expande ao hover ou se “fixar”
-  const width = collapsed ? 80 : 264
+  // Colapsa por padrão; expande ao hover ou se “fixar”
+  const collapsed = !(pinned || hovering)
+  const width = collapsed ? 80 : 268
+
   const layoutStyle = {
-    "--rail-width": `${width}px`,
+    '--rail-width': `${width}px`,
   } as React.CSSProperties
 
   return (
-    <TooltipProvider delayDuration={150}>
-      <div className="min-h-dvh bg-[#FAF7F4] text-[var(--ink)]" style={layoutStyle}>
-        {/* --- Desktop Sidebar (rail pastel + pill) --- */}
+    <TooltipProvider delayDuration={120}>
+      <div
+        className={cn(
+          'min-h-dvh',
+          // Fundo sem “faixa branca”; use um tom suave pastel de base do produto
+          'bg-[hsl(var(--background))]'
+        )}
+        style={layoutStyle}
+      >
+        {/* === SIDEBAR DESKTOP (FIXED, tela toda) === */}
         <aside
           className="fixed inset-y-0 left-0 z-50 hidden lg:block"
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
+          aria-label="Barra lateral"
         >
-          {/* camada de fundo (coral/peach) que remete às referências */}
-          <div className="absolute inset-y-6 -left-6 w-24 rounded-3xl bg-pastel-peach-200/70 blur-[1px]" />
+          {/* Glow pastel atrás do rail (sem bloco branco) */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-y-10 -left-6 w-24 rounded-3xl bg-pastel-peach-200/60 blur-[2px]"
+          />
+
           <motion.div
             layout
             style={{ width }}
+            transition={
+              prefersReducedMotion
+                ? { duration: 0 }
+                : { type: 'spring', stiffness: 380, damping: 32 }
+            }
             className={cn(
-              'relative my-6 mr-4 h-[calc(100dvh-3rem)] rounded-3xl',
-              'border border-black/5 bg-white/80 shadow-elevation-2 backdrop-blur-sm'
+              'relative my-6 mr-4 h-[calc(100dvh-3rem)]',
+              'rounded-3xl border border-black/5',
+              // Vidro suave (sem placa branca sólida)
+              'bg-white/60 shadow-glass backdrop-blur-lg supports-[backdrop-filter]:bg-white/45'
             )}
           >
-            {/* header do rail */}
+            {/* Header do rail */}
             <div className="flex items-center justify-between px-3 pb-2 pt-3">
-              {!collapsed && (
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex-1"
-                >
-                  <h1 className="font-heading text-celebre-brand text-xl font-bold">Celebre</h1>
-                  <p className="mt-0.5 text-xs text-celebre-muted">Gestão de Eventos</p>
-                </motion.div>
-              )}
+              <AnimatePresence initial={false}>
+                {!collapsed && (
+                  <motion.div
+                    key="brand"
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -8 }}
+                    transition={{ duration: 0.18, ease: 'easeOut' }}
+                    className="flex min-w-0 flex-1 flex-col"
+                  >
+                    <h1 className="truncate text-xl font-bold text-foreground">Celebre</h1>
+                    <span className="mt-0.5 text-xs text-muted-foreground">Gestão de Eventos</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               <motion.button
                 onClick={() => setPinned(!pinned)}
                 aria-pressed={pinned}
-                aria-label={pinned ? 'Retrair menu' : 'Expandir menu'}
+                aria-expanded={!collapsed}
+                aria-label={pinned ? 'Retrair menu' : 'Expandir e fixar menu'}
                 className={cn(
                   'rounded-xl p-2 text-xs font-medium transition-all',
                   'border border-black/5 bg-white/70 shadow-sm hover:bg-white',
                   'hover:shadow-md active:scale-95'
                 )}
                 whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.96 }}
               >
-                {collapsed ? (
-                  <ChevronRight className="size-4" />
-                ) : (
-                  <ChevronLeft className="size-4" />
-                )}
+                {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
               </motion.button>
             </div>
 
-            {/* nav */}
+            {/* Navegação */}
             <nav
               aria-label="Navegação Principal"
-              className="custom-scrollbar mt-2 h-[calc(100vh-12rem)] overflow-y-auto overflow-x-hidden"
+              className="custom-scrollbar mt-1 h-[calc(100%-7.25rem)] overflow-y-auto overflow-x-hidden px-2 pb-16"
             >
-              <ul className="space-y-0.5 px-2">
+              <ul className="space-y-0.5">
                 {navigation.map((item) => {
                   const href = `/events/${eventId}${item.href}`
                   const active = isActive(item.href)
@@ -151,38 +180,45 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
               </ul>
             </nav>
 
-            {/* rodapé utilitário */}
+            {/* Usuário (rodapé) */}
             <div className="absolute inset-x-0 bottom-3 px-3">
               <motion.div
                 className={cn(
-                  'rounded-2xl border border-black/5 bg-gradient-to-br from-white to-pastel-mint-50',
-                  'shadow-[0_6px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)]',
-                  'flex cursor-pointer items-center gap-3 px-3 py-2.5 transition-all'
+                  'group flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2.5',
+                  'border border-black/5 bg-gradient-to-br from-white/80 to-pastel-mint-50/80',
+                  'shadow-[0_6px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_28px_rgba(0,0,0,0.10)]'
                 )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-pastel-mint-200 to-pastel-mint-300">
-                  <span className="text-celebre-brand text-sm font-bold">J</span>
+                <div className="flex size-9 items-center justify-center rounded-full bg-primary/15 ring-1 ring-primary/20">
+                  <span className="text-sm font-bold text-primary">JH</span>
                 </div>
-                {!collapsed && (
-                  <motion.div
-                    className="min-w-0 flex-1 text-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.1 }}
-                  >
-                    <p className="truncate font-semibold leading-none text-celebre-ink">Jack</p>
-                    <p className="mt-0.5 text-xs text-celebre-muted">Organizador</p>
-                  </motion.div>
-                )}
+
+                <AnimatePresence initial={false}>
+                  {!collapsed && (
+                    <motion.div
+                      key="user-info"
+                      className="min-w-0 flex-1"
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -8 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                    >
+                      <p className="truncate text-sm font-semibold leading-none text-foreground">
+                        José Henrique
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">Organizador</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             </div>
           </motion.div>
         </aside>
 
-        {/* --- Mobile header --- */}
-        <div className="sticky top-0 z-40 flex items-center gap-x-6 border-b border-border bg-white px-4 py-3 shadow-sm lg:hidden">
+        {/* === TOPBAR MOBILE === */}
+        <div className="sticky top-0 z-40 flex items-center gap-x-6 border-b border-border bg-background/95 px-4 py-3 shadow-elevation-1 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden">
           <button
             type="button"
             className="-m-2.5 p-2.5 text-foreground"
@@ -194,57 +230,82 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
           <div className="flex-1 text-sm font-semibold leading-6">Celebre</div>
         </div>
 
-        {/* --- Mobile Drawer --- */}
-        {mobileMenuOpen && (
-          <div className="relative z-50 lg:hidden" role="dialog" aria-modal="true">
-            <div className="fixed inset-0 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
-            <div className="fixed inset-y-0 left-0 w-full max-w-sm bg-white px-6 pb-6 pt-4 shadow-elevation-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-primary">Menu</span>
-                <button
-                  className="-m-2.5 rounded-md p-2.5"
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="Fechar menu"
-                >
-                  <X className="size-6" />
-                </button>
-              </div>
-              <nav className="mt-6">
-                <ul className="space-y-2">
-                  {navigation.map((item) => {
-                    const href = `/events/${eventId}${item.href}`
-                    const active = isActive(item.href)
-                    return (
-                      <li key={item.name}>
-                        <Link
-                          href={href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={cn(
-                            'group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium',
-                            active
-                              ? 'bg-primary text-white'
-                              : 'text-muted-foreground hover:bg-[#FAF7F4] hover:text-foreground'
-                          )}
-                        >
-                          <item.icon className={cn('h-5 w-5', active && 'text-white')} />
-                          {item.name}
-                        </Link>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </nav>
-            </div>
-          </div>
-        )}
+        {/* === DRAWER MOBILE === */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              <motion.div
+                key="scrim"
+                className="fixed inset-0 z-50 bg-black/50 lg:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+              />
+              <motion.div
+                key="drawer"
+                className="fixed inset-y-0 left-0 z-50 w-full max-w-sm bg-background px-6 pb-6 pt-4 shadow-elevation-4 lg:hidden"
+                initial={{ x: -24, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -24, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Menu"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-bold text-foreground">Menu</span>
+                  <button
+                    className="-m-2.5 rounded-md p-2.5"
+                    onClick={() => setMobileMenuOpen(false)}
+                    aria-label="Fechar menu"
+                  >
+                    <X className="size-6" />
+                  </button>
+                </div>
 
-        {/* --- Main content --- */}
-        <main className="pl-0 lg:pl-[calc(var(--rail-width)+1rem)]">
-          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
+                <nav className="mt-6">
+                  <ul className="space-y-2">
+                    {navigation.map((item) => {
+                      const href = `/events/${eventId}${item.href}`
+                      const active = isActive(item.href)
+                      return (
+                        <li key={item.name}>
+                          <Link
+                            href={href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={cn(
+                              'group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium',
+                              active
+                                ? 'bg-primary text-primary-foreground'
+                                : 'text-muted-foreground hover:bg-primary/10 hover:text-foreground'
+                            )}
+                          >
+                            <item.icon className={cn('h-5 w-5', active && 'text-primary-foreground')} />
+                            {item.name}
+                          </Link>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </nav>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* === CONTEÚDO === */}
+        <main
+          className={cn(
+            'transition-[padding] duration-300 ease-smooth',
+            'pl-0 lg:pl-[calc(var(--rail-width)+1rem)]'
+          )}
+        >
+          <div className="px-4 pb-20 pt-6 sm:px-6 lg:px-8 lg:pb-8">{children}</div>
         </main>
 
-        {/* --- Mobile bottom navigation --- */}
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white/95 shadow-elevation-2 backdrop-blur-lg supports-[backdrop-filter]:bg-white/80 lg:hidden">
+        {/* === BOTTOM NAV MOBILE (atalhos) === */}
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 shadow-elevation-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden">
           <nav className="grid grid-cols-5 px-2">
             {navigation.slice(0, 5).map((item) => {
               const href = `/events/${eventId}${item.href}`
@@ -255,20 +316,20 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
                   href={href}
                   className={cn(
                     'relative flex flex-col items-center gap-1 px-2 py-2.5 text-[10px] font-medium transition-all',
-                    active ? 'text-celebre-brand' : 'text-muted-foreground hover:text-foreground'
+                    active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
                   {active && (
                     <motion.div
                       layoutId="mobile-indicator"
-                      className="bg-celebre-brand absolute left-1/2 top-0 h-0.5 w-8 -translate-x-1/2 rounded-full"
+                      className="absolute left-1/2 top-0 h-0.5 w-8 -translate-x-1/2 rounded-full bg-primary"
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
                   <item.icon
                     className={cn(
                       'h-5 w-5 transition-transform',
-                      active && 'text-celebre-brand scale-110'
+                      active ? 'scale-110' : 'group-hover:scale-105'
                     )}
                   />
                   <span className="w-full truncate text-center">{item.name.split(' ')[0]}</span>
@@ -282,7 +343,7 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
   )
 }
 
-/* ---------- Subcomponentes ---------- */
+/* ======= SUBCOMPONENTES ======= */
 
 function SidebarItem({
   item,
@@ -304,47 +365,58 @@ function SidebarItem({
       className={cn(
         'group relative flex items-center gap-3 rounded-xl px-3 py-2 transition-all duration-200',
         active
-          ? 'text-celebre-brand font-semibold'
-          : 'text-[var(--ink)]/60 hover:bg-white/50 hover:text-[var(--ink)]'
+          ? 'font-semibold text-foreground'
+          : 'text-foreground/70 hover:text-foreground'
       )}
     >
-      {/* pill animada do item ativo */}
+      {/* Pílula do item ativo, acompanhando o tema */}
       <AnimatePresence>
         {active && (
           <motion.span
             layoutId="sb-pill"
-            className="absolute inset-0 rounded-xl bg-gradient-to-r from-pastel-peach-200 to-pastel-peach-100 shadow-sm"
-            initial={{ opacity: 0, scale: 0.95 }}
+            className="absolute inset-0 rounded-xl bg-primary/10 ring-1 ring-primary/15"
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 30 }}
           />
         )}
       </AnimatePresence>
 
+      {/* Ícone com “bolha” que muda de cor conforme o tema */}
       <motion.div
-        whileHover={{ scale: 1.1, rotate: active ? 0 : 5 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+        whileHover={{ scale: 1.06, rotate: active ? 0 : 3 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: 'spring', stiffness: 420, damping: 18 }}
+        className="relative z-10"
       >
-        <Icon
+        <span
           className={cn(
-            'relative z-10 size-5 shrink-0 transition-colors',
-            active && 'text-celebre-brand'
+            'inline-grid size-8 place-items-center rounded-lg',
+            active
+              ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
+              : 'bg-transparent text-foreground/80 group-hover:bg-primary/10 group-hover:text-primary'
           )}
-        />
+        >
+          <Icon className="size-[18px]" />
+        </span>
       </motion.div>
 
-      {!collapsed && (
-        <motion.span
-          className="relative z-10 truncate text-sm"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -10 }}
-          transition={{ duration: 0.15, ease: 'easeOut' }}
-        >
-          {item.name}
-        </motion.span>
-      )}
+      {/* Label visível só quando expandida */}
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.span
+            key="label"
+            className="relative z-10 truncate text-sm"
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -8 }}
+            transition={{ duration: 0.16, ease: 'easeOut' }}
+          >
+            {item.name}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </Link>
   )
 
@@ -353,7 +425,12 @@ function SidebarItem({
       {collapsed ? (
         <Tooltip>
           <TooltipTrigger asChild>{link}</TooltipTrigger>
-          <TooltipContent side="right">{item.name}</TooltipContent>
+          <TooltipContent
+            side="right"
+            className="bg-foreground text-background"
+          >
+            {item.name}
+          </TooltipContent>
         </Tooltip>
       ) : (
         link
