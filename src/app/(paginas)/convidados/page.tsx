@@ -1,10 +1,10 @@
 'use client'
-import Sidebar from '../../components/Sidebar'
+import { motion } from 'framer-motion'
+import { Calendar, Users, Gift, Mail, Plus, Edit3, CheckCircle, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
 import DashboardCard from '../../components/DashboardCard'
 import QuickActionButton from '../../components/QuickActionButton'
-import { Calendar, Users, Gift, Mail, Plus, Edit3, CheckCircle, AlertCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
-import { useState } from 'react'
+import Sidebar from '../../components/Sidebar'
 
 const EVENTO = {
   nome: 'Casamento de Davi & Bia',

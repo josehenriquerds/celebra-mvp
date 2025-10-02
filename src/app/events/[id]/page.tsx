@@ -1,15 +1,13 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { Search, Users, CheckCircle, Calendar as CalendarIcon, Clock } from 'lucide-react'
 import Link from 'next/link'
-import { Home, Calendar as CalendarIcon, Users, CheckCircle, Clock, TrendingUp } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { DonutProgress } from '@/components/dashboard/donut-progress'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import Sidebar from '@/app/components/Sidebar'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency, formatDate, formatTime, getDaysUntil, getSLABadgeColor } from '@/lib/utils'
 
 type Task = {
@@ -45,16 +43,14 @@ export default function EventDashboard() {
   const eventId = id as string
   const [data, setData] = useState<EventSummary | null>(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState(0) // Day tabs (apenas visual, no estilo das refs)
 
   useEffect(() => {
     async function fetchEventSummary() {
       try {
         const res = await fetch(`/api/events/${eventId}/summary`)
         const json = await res.json().catch(() => null)
-        if (!res.ok || !json || json.error) {
-          setData(null)
-        } else setData(json)
+        if (!res.ok || !json || json.error) setData(null)
+        else setData(json)
       } catch {
         setData(null)
       } finally {
@@ -68,7 +64,7 @@ export default function EventDashboard() {
     return (
       <div className="grid h-dvh place-items-center bg-[#FAF7F4]">
         <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
+          <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-b-2 border-primary" />
           <p className="text-muted-foreground">Carregando evento…</p>
         </div>
       </div>
@@ -90,285 +86,282 @@ export default function EventDashboard() {
     )
   }
 
-  // calendário do mês do evento
-  const eventDate = new Date(data.dateTime)
-  const monthLabel = eventDate.toLocaleString('pt-BR', { month: 'long' })
-  const yearLabel = eventDate.getFullYear()
-  const mStart = new Date(eventDate.getFullYear(), eventDate.getMonth(), 1)
-  const mEnd = new Date(eventDate.getFullYear(), eventDate.getMonth() + 1, 0)
-  const gridStart = new Date(mStart)
-  gridStart.setDate(mStart.getDate() - mStart.getDay())
-  const gridEnd = new Date(mEnd)
-  gridEnd.setDate(mEnd.getDate() + (6 - mEnd.getDay()))
-  const days: Array<{ d: Date; inMonth: boolean; isEventDay: boolean }> = []
-  for (let dt = new Date(gridStart); dt <= gridEnd; dt.setDate(dt.getDate() + 1)) {
-    const cur = new Date(dt)
-    days.push({
-      d: cur,
-      inMonth: cur.getMonth() === eventDate.getMonth(),
-      isEventDay: cur.toDateString() === eventDate.toDateString(),
-    })
-  }
-
+  // datas e métricas
   const daysUntil = getDaysUntil(data.dateTime)
   const rsvpTotal = data.rsvps.sim + data.rsvps.nao + data.rsvps.talvez
   const responseRate =
     data.stats.totalGuests > 0 ? Math.round((rsvpTotal / data.stats.totalGuests) * 100) : 0
   const firstHost = data.hosts?.[0] ?? 'Anfitrião(ã)'
 
-  return (
-    <div className="relative bg-[#FAF7F4]">
-      <div className="grid h-dvh grid-cols-1 lg:grid-cols-[264px_minmax(0,1fr)_360px]">
-        {/* Rail pastel (Sidebar) */}
-        <div className="relative hidden md:block"></div>
+  // calendário (apenas cabeçalho visual)
+  const eventDate = new Date(data.dateTime)
+  const monthLabel = eventDate.toLocaleString('pt-BR', { month: 'long' })
+  const yearLabel = eventDate.getFullYear()
 
-        {/* COLUNA CENTRAL (sem scroll externo) */}
-        <section className="relative overflow-hidden p-4 md:p-6">
-          {/* Tabs dia (estilo léxico das refs com pílula animada) */}
-          <div className="mb-4 flex items-center gap-2 rounded-2xl bg-white/60 p-1 shadow-elevation-1">
-            {['Dia 1', 'Dia 2', 'Dia 3', 'Dia 4'].map((label, i) => (
-              <button
-                key={label}
-                onClick={() => setActiveTab(i)}
-                className="relative rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground"
-              >
-                {activeTab === i && (
-                  <motion.span
-                    layoutId="day-pill"
-                    className="absolute inset-0 rounded-xl bg-pastel-sky-100"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span className="relative">{label}</span>
-              </button>
-            ))}
+  // imagem de capa (substitua pela sua – aqui tem fallback)
+  const coverUrl =
+    (typeof window !== 'undefined' && (window as any).__cele_cover_url__) ||
+    // fallback leve (unsplash): troque por sua asset/local
+    'public/illustrations/renomear.png'
+
+  return (
+    <div className="min-h-dvh w-full bg-[#FAF7F4]">
+      {/* GRID 2 COLUNAS: ESQ = CINZA / DIR = BRANCO */}
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-0 lg:grid-cols-[1.1fr_0.9fr]">
+        {/* COLUNA ESQUERDA — FUNDO “CINZA” (off-white) */}
+        <section className="bg-[#FAF7F4] px-4 pb-8 pt-4 md:px-6 md:pt-6">
+          {/* SEARCH BAR no topo (igual ref) */}
+          <div className="mx-auto mb-4 max-w-[720px]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                placeholder="Search…"
+                className="w-full rounded-2xl border border-transparent bg-white/90 px-10 py-3 text-sm shadow-elevation-1 outline-none placeholder:text-muted-foreground focus:border-pastel-rose-300 focus:ring-2 focus:ring-pastel-rose-200"
+              />
+            </div>
           </div>
 
-          {/* GRID INTERNA: hero + KPIs + calendário */}
-          <div className="grid h-[calc(100%-3.25rem)] grid-rows-[auto_auto_1fr] gap-4 overflow-hidden">
-            {/* HERO (Welcome + progresso) */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_320px]"
-            >
-              <Card className="rounded-3xl border-none bg-sky-50 shadow-elevation-2">
-                <CardContent className="flex items-center justify-between p-6">
-                  <div>
-                    <p className="text-sm text-sky-700/80">Olá, {firstHost}!</p>
-                    <h2 className="text-2xl font-semibold text-sky-900">Welcome back 👋</h2>
-                    <p className="mt-1 text-sm text-sky-700/70">
-                      {data.title} — {formatDate(data.dateTime, 'long')} às{' '}
-                      {formatTime(data.dateTime)} • {data.venueName}
-                    </p>
-                  </div>
-                  <div className="hidden md:block">
-                    <DonutProgress
-                      percentage={data.progress * 100}
-                      size={120}
-                      strokeWidth={10}
-                      label="Progresso"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-3xl border-none bg-indigo-50 shadow-elevation-2">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-indigo-900">Últimos resultados</CardTitle>
-                  <CardDescription className="text-indigo-700/80">
-                    Resumo rápido do evento
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="grid grid-cols-3 gap-3 pt-0 text-sm">
-                  <Kpi label="Confirmados" value={data.rsvps.sim} tone="indigo" />
-                  <Kpi label="Taxa de resposta" value={`${responseRate}%`} tone="indigo" />
-                  <Kpi
-                    label="Orçamento gasto"
-                    value={formatCurrency(data.budget.spent)}
-                    tone="indigo"
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* AÇÕES RÁPIDAS */}
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-3"
-            >
-              <QuickAction
-                href={`/events/${eventId}/guests`}
-                icon={<Users className="h-5 w-5 text-emerald-600" />}
-                label="Convidados"
-                sub={`${data.stats.totalGuests} no total`}
-                bg="bg-emerald-50"
+          {/* CARD DE CAPA COM IMAGEM + SOBREPOSIÇÃO ROSE */}
+          <div className="mx-auto grid max-w-[720px] gap-4">
+            <div className="relative overflow-hidden rounded-3xl shadow-elevation-2">
+              <img
+                src={coverUrl}
+                alt="Capa do evento"
+                className="h-[220px] w-full object-cover md:h-[260px]"
+                onError={(e) => {
+                  ;(e.currentTarget as HTMLImageElement).style.display = 'none'
+                }}
               />
-              <QuickAction
-                href={`/events/${eventId}/tasks`}
-                icon={<CheckCircle className="h-5 w-5 text-amber-600" />}
-                label="Tarefas"
-                sub={`${data.nextTasks.filter((t) => t.status !== 'concluida').length} pendentes`}
-                bg="bg-amber-50"
-              />
-              <QuickAction
-                href={`/events/${eventId}/timeline`}
-                icon={<CalendarIcon className="h-5 w-5 text-cyan-600" />}
-                label="Timeline"
-                sub={daysUntil > 0 ? `${daysUntil} dias restantes` : 'É hoje! 🎉'}
-                bg="bg-cyan-50"
-              />
-            </motion.div>
+              {/* overlay rose com título, igual à ref */}
+              <div className="pointer-events-none absolute inset-x-4 bottom-4">
+                <div className="inline-flex max-w-full items-center rounded-2xl bg-pastel-rose-300/90 px-5 py-3">
+                  <p className="text-pastel-rose-900 truncate text-sm font-semibold">
+                    {data.title} • {formatDate(data.dateTime, 'long')}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <Card className="rounded-2xl border-none bg-rose-200 shadow-elevation-2">
+              {' '}
+              <CardContent className="flex items-center justify-between p-6">
+                {' '}
+                <div>
+                  {' '}
+                  <p className="text-sm text-sky-700/80">Que bom te ver novamente</p>{' '}
+                  <h2 className="text-2xl font-semibold text-rose-50">Olá, {firstHost}</h2>{' '}
+                  <p className="mt-1 text-sm text-sky-700/70">
+                    {' '}
+                    {data.title} — {formatDate(data.dateTime, 'long')} às{' '}
+                    {formatTime(data.dateTime)} • {data.venueName}{' '}
+                  </p>{' '}
+                </div>{' '}
+                <div className="hidden md:block">
+                  {' '}
+                  <DonutProgress
+                    percentage={data.progress * 100}
+                    size={120}
+                    strokeWidth={10}
+                    label="Progresso"
+                  />{' '}
+                </div>{' '}
+              </CardContent>{' '}
+            </Card>
+            {/* FAIXA DE CARDS MENORES (estilo “Jams & Preserves”) */}
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              {[
+                { k: 'Convidados', v: `${data.stats.totalGuests}`, tint: 'mint' },
+                { k: 'Confirmados', v: `${data.rsvps.sim}`, tint: 'sky' },
+                { k: 'Resposta', v: `${responseRate}%`, tint: 'lavender' },
+                { k: 'Orçamento', v: formatCurrency(data.budget.spent), tint: 'rose' },
+              ].map((c) => (
+                <Card
+                  key={c.k}
+                  className={`rounded-2xl border-none shadow-elevation-1 ${
+                    c.tint === 'rose'
+                      ? 'bg-pastel-rose-50'
+                      : c.tint === 'lavender'
+                        ? 'bg-pastel-lavender-50'
+                        : c.tint === 'sky'
+                          ? 'bg-pastel-sky-50'
+                          : 'bg-pastel-mint-50'
+                  }`}
+                >
+                  <CardContent className="p-4">
+                    <p className="text-xs text-muted-foreground">{c.k}</p>
+                    <p className="text-xl font-semibold">{c.v}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-            {/* CALENDÁRIO (preenche o restante) */}
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-              <Card className="h-full overflow-hidden rounded-3xl border-none bg-white shadow-elevation-2">
-                <CardHeader className="flex flex-row items-center justify-between pb-0">
-                  <div>
-                    <CardTitle className="font-heading capitalize">
-                      {monthLabel} {yearLabel}
-                    </CardTitle>
-                    <CardDescription>
-                      {data.title} • {data.venueName}
-                    </CardDescription>
-                  </div>
-                </CardHeader>
-                <CardContent className="h-full pt-4">
-                  <div className="grid h-full grid-rows-[auto_1fr]">
-                    <div className="mb-2 grid grid-cols-7 text-center text-xs text-muted-foreground">
-                      {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((d) => (
-                        <div key={d} className="py-1">
-                          {d}
-                        </div>
-                      ))}
+            {/* CALENDÁRIO compact (título + chips de dias) */}
+            <Card className="rounded-3xl border-none bg-white shadow-elevation-2">
+              <CardHeader className="pb-0">
+                <CardTitle className="capitalize">
+                  {monthLabel} {yearLabel}
+                </CardTitle>
+                <CardDescription>
+                  {data.venueName} • {data.address}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <div className="grid grid-cols-7 gap-2 text-center text-xs text-muted-foreground">
+                  {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map((d) => (
+                    <div key={d} className="py-1">
+                      {d}
                     </div>
-                    <div className="grid h-[calc(100%-1.5rem)] grid-cols-7 grid-rows-6 gap-2">
-                      {days.map(({ d, inMonth, isEventDay }) => (
-                        <div
-                          key={d.toISOString()}
-                          className={[
-                            'flex items-start justify-between rounded-xl border px-2 py-2 text-sm transition',
-                            inMonth
-                              ? 'border-transparent bg-[#FAF7F4]/60'
-                              : 'border-dashed bg-white/60 text-muted-foreground/60',
-                            isEventDay
-                              ? 'bg-primary/10 ring-2 ring-primary/70'
-                              : 'hover:shadow-elevation-1',
-                          ].join(' ')}
-                        >
-                          <span className="font-medium">{d.getDate()}</span>
-                          {isEventDay && (
-                            <span className="rounded-full bg-primary/15 px-2 text-[10px] font-semibold text-primary">
-                              Evento
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                  ))}
+                </div>
+                {/* Apenas linha de chips para lembrar a estética da ref */}
+                <div className="mt-2 grid grid-cols-7 gap-2">
+                  {Array.from({ length: 14 }).map((_, i) => {
+                    const isEvent = i === 9
+                    return (
+                      <div
+                        key={i}
+                        className={[
+                          'rounded-xl px-0.5 py-3 text-center text-sm',
+                          isEvent
+                            ? 'bg-pastel-rose-100 ring-2 ring-pastel-rose-300'
+                            : 'bg-[#FAF7F4]',
+                        ].join(' ')}
+                      >
+                        {i + 1}
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
-        {/* PAINEL DIREITO (scroll interno) */}
-        <aside className="hidden grid-rows-[auto_auto_1fr] gap-4 overflow-hidden p-4 md:p-6 lg:grid">
-          {/* Perfil / saudação */}
-          <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}>
-            <Card className="rounded-3xl border-none bg-white shadow-elevation-2">
-              <CardContent className="flex items-center gap-4 p-6">
-                <div className="grid h-14 w-14 place-items-center rounded-full bg-pastel-rose-100 text-lg font-semibold text-pastel-rose-700">
-                  {firstHost?.slice(0, 1) ?? 'A'}
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{firstHost}</p>
-                  <p className="truncate text-xs text-muted-foreground">{data.address}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+        {/* COLUNA DIREITA — FUNDO BRANCO (agenda & cards) */}
+        <aside className="bg-white px-4 pb-8 pt-4 md:px-6 md:pt-6">
+          {/* Cabeçalho “Today’s Schedule” + avatar/mascote */}
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">Today’s Schedule</h2>
+              <p className="text-sm text-muted-foreground">Check all your activities</p>
+            </div>
+            <div className="text-pastel-rose-900 grid size-10 place-items-center rounded-full bg-pastel-rose-200">
+              {firstHost.slice(0, 1)}
+            </div>
+          </div>
 
-          {/* Cartão “nível” no estilo Beginner das refs */}
-          <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }}>
-            <Card className="rounded-3xl border-none bg-pastel-lavender-50 shadow-elevation-2">
-              <CardHeader className="pb-1">
-                <CardTitle className="text-base">Seu nível</CardTitle>
-                <CardDescription>Engajamento do evento</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-0">
+          {/* Lista de tarefas no estilo “chips” grandes */}
+          <div className="space-y-3">
+            {data.nextTasks.slice(0, 3).map((t, idx) => (
+              <div
+                key={t.id}
+                className={[
+                  'rounded-2xl p-4 shadow-elevation-1',
+                  idx === 0
+                    ? 'bg-pastel-rose-200/60'
+                    : idx === 1
+                      ? 'bg-pastel-sky-100'
+                      : 'bg-pastel-lavender-100',
+                ].join(' ')}
+              >
                 <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium">{t.title}</p>
+                  <Badge variant={getSLABadgeColor(t.dueAt) as any}>
+                    {t.status === 'aberta'
+                      ? 'Aberta'
+                      : t.status === 'em_andamento'
+                        ? 'Em andamento'
+                        : 'Atrasada'}
+                  </Badge>
+                </div>
+                {t.dueAt && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    <Clock className="mr-1 inline size-3" />
+                    {formatDate(t.dueAt)} às {formatTime(t.dueAt)}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Card “Product / Revenue” (adaptado p/ Progresso do Evento) */}
+          <Card className="mt-4 rounded-3xl border-none bg-[#FAF7F4] shadow-elevation-2">
+            <CardContent className="flex items-center justify-between p-5">
+              <div>
+                <p className="text-sm text-muted-foreground">Progresso do Evento</p>
+                <div className="mt-2 flex gap-6 text-sm">
                   <div>
-                    <p className="text-3xl font-bold text-pastel-lavender-700">BEGINNER</p>
-                    <p className="text-xs text-muted-foreground">1021 pts</p>
+                    <p className="text-muted-foreground">Growth</p>
+                    <p className="font-semibold">
+                      {Math.max(0, Math.round(data.progress * 100 - 10))}%
+                    </p>
                   </div>
-                  <div className="hidden sm:block">
-                    <DonutProgress
-                      percentage={Math.min(99, data.progress * 100)}
-                      size={80}
-                      strokeWidth={8}
-                    />
+                  <div>
+                    <p className="text-muted-foreground">Monthly</p>
+                    <p className="font-semibold">24.6%</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Delay</p>
+                    <p className="font-semibold">5.41%</p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </div>
+              <DonutProgress
+                percentage={Math.min(99, data.progress * 100)}
+                size={90}
+                strokeWidth={8}
+              />
+            </CardContent>
+          </Card>
 
-          {/* Lembretes / Tarefas */}
-          <motion.div
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="min-h-0"
-          >
-            <Card className="h-full overflow-hidden rounded-3xl border-none bg-white shadow-elevation-2">
+          {/* Bloco “Próximos passos” estilo cartões */}
+          <div className="mt-4 grid grid-cols-1 gap-3">
+            <Card className="rounded-3xl border-none shadow-elevation-1">
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Lembretes</CardTitle>
-                <CardDescription>Próximas tarefas</CardDescription>
+                <CardTitle className="text-base">Ações rápidas</CardTitle>
+                <CardDescription>Gerencie itens do evento</CardDescription>
               </CardHeader>
-              <CardContent className="h-full space-y-3 overflow-auto pt-0">
-                {data.nextTasks.length === 0 ? (
-                  <div className="py-8 text-center text-muted-foreground">
-                    <CheckCircle className="mx-auto mb-2 h-12 w-12 opacity-50" />
-                    <p>Tudo em dia! ✨</p>
-                  </div>
-                ) : (
-                  <>
-                    {data.nextTasks.slice(0, 8).map((task) => (
-                      <motion.div
-                        key={task.id}
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="rounded-xl border bg-[#FAF7F4]/60 p-3"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="text-sm font-medium">{task.title}</p>
-                          <Badge variant={getSLABadgeColor(task.dueAt) as any}>
-                            {task.status === 'aberta'
-                              ? 'Aberta'
-                              : task.status === 'em_andamento'
-                                ? 'Em andamento'
-                                : 'Atrasada'}
-                          </Badge>
-                        </div>
-                        {task.dueAt && (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            <Clock className="mr-1 inline h-3 w-3" />
-                            {formatDate(task.dueAt)} às {formatTime(task.dueAt)}
-                          </p>
-                        )}
-                      </motion.div>
-                    ))}
-                    <Link href={`/events/${eventId}/tasks`}>
-                      <Button variant="outline" className="mt-1 w-full">
-                        Ver todas
-                      </Button>
-                    </Link>
-                  </>
-                )}
+              <CardContent className="grid grid-cols-3 gap-3 pt-0">
+                <QuickChip
+                  href={`/events/${eventId}/guests`}
+                  label="Convidados"
+                  icon={<Users className="size-4" />}
+                />
+                <QuickChip
+                  href={`/events/${eventId}/tasks`}
+                  label="Tarefas"
+                  icon={<CheckCircle className="size-4" />}
+                />
+                <QuickChip
+                  href={`/events/${eventId}/timeline`}
+                  label="Timeline"
+                  icon={<CalendarIcon className="size-4" />}
+                />
               </CardContent>
             </Card>
-          </motion.div>
+
+            {/* “Sticky” card em tom rose, como canto inferior na ref */}
+            <div className="rounded-3xl bg-pastel-rose-200/80 p-5 shadow-elevation-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-pastel-rose-900 text-sm font-semibold">
+                    Evento em {daysUntil} dias
+                  </p>
+                  <p className="text-pastel-rose-900/80 text-xs">
+                    {data.title} — {formatDate(data.dateTime)} · {formatTime(data.dateTime)}
+                  </p>
+                </div>
+                <Link href={`/events/${eventId}/tasks`}>
+                  <Button
+                    size="sm"
+                    className="bg-pastel-rose-600 text-white hover:bg-pastel-rose-700"
+                  >
+                    Ver tarefas
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
@@ -377,52 +370,13 @@ export default function EventDashboard() {
 
 /* -------------------- auxiliares -------------------- */
 
-function Kpi({
-  label,
-  value,
-  tone,
-}: {
-  label: string
-  value: React.ReactNode
-  tone: 'indigo' | 'emerald' | 'sky'
-}) {
+function QuickChip({ href, label, icon }: { href: string; label: string; icon: React.ReactNode }) {
   return (
-    <div className="rounded-xl bg-white/70 p-3 transition hover:shadow-elevation-1">
-      <p className="text-muted-foreground">{label}</p>
-      <p className="text-xl font-semibold">{value}</p>
-    </div>
-  )
-}
-
-function QuickAction({
-  href,
-  icon,
-  label,
-  sub,
-  bg,
-}: {
-  href: string
-  icon: React.ReactNode
-  label: string
-  sub: string
-  bg: string
-}) {
-  return (
-    <Link href={href}>
-      <motion.div
-        whileHover={{ y: -2 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      >
-        <Card className={`rounded-3xl border-none shadow-elevation-2 ${bg}`}>
-          <CardContent className="flex items-center gap-3 p-5">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-white">{icon}</div>
-            <div>
-              <p className="font-medium">{label}</p>
-              <p className="text-xs text-muted-foreground">{sub}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+    <Link href={href} className="group">
+      <div className="flex items-center gap-2 rounded-xl bg-[#FAF7F4] px-3 py-2 text-sm transition hover:shadow-elevation-1">
+        <span className="grid size-7 place-items-center rounded-lg bg-white">{icon}</span>
+        <span className="font-medium">{label}</span>
+      </div>
     </Link>
   )
 }

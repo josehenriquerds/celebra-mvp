@@ -1,0 +1,6 @@
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.csproj.AssemblyReference.cache
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.AssemblyInfoInputs.cache
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.AssemblyInfo.cs
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.csproj.CoreCompileInputs.cache
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.sourcelink.json

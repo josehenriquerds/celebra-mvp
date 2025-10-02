@@ -30,7 +30,16 @@
       "Bash(grep:*)",
       "Bash(npm run typecheck:*)",
       "Bash(if not exist \"src\\schemas\" mkdir \"src\\schemas\")",
-      "Bash(if not exist \"src\\app\\api\\seats\\[id]\" mkdir \"src\\app\\api\\seats\\[id]\")"
+      "Bash(if not exist \"src\\app\\api\\seats\\[id]\" mkdir \"src\\app\\api\\seats\\[id]\")",
+      "Bash(dotnet new:*)",
+      "Bash(if exist Celebre.sln rmdir /s /q Celebre.sln)",
+      "Bash(del backendCelebre.sln)",
+      "Bash(dotnet sln add:*)",
+      "Bash(dotnet add reference:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(dotnet add:*)",
+      "Bash(tree:*)",
+      "Bash(dotnet build)"
     ],
     "deny": [],
     "ask": []
