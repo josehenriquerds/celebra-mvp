@@ -66,7 +66,7 @@ public class N8nService : IN8nService
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 _logger.LogError("Failed to send message via N8n. Status: {StatusCode}, Error: {Error}",
                     response.StatusCode, errorContent);
-                return Result.Failure(new[] { $"Failed to send message: {response.StatusCode}" });
+                return Result.Failure($"Failed to send message: {response.StatusCode}");
             }
 
             _logger.LogInformation("Message sent successfully via N8n to {PhoneNumber} for Event {EventId}",
@@ -105,7 +105,7 @@ public class N8nService : IN8nService
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 _logger.LogError("Failed to notify gift received via N8n. Status: {StatusCode}, Error: {Error}",
                     response.StatusCode, errorContent);
-                return Result.Failure(new[] { $"Failed to notify gift received: {response.StatusCode}" });
+                return Result.Failure($"Failed to notify gift received: {response.StatusCode}");
             }
 
             _logger.LogInformation("Gift received notification sent successfully via N8n for Gift {GiftId} in Event {EventId}",
@@ -143,7 +143,7 @@ public class N8nService : IN8nService
                 var errorContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 _logger.LogError("Failed to notify vendor submitted via N8n. Status: {StatusCode}, Error: {Error}",
                     response.StatusCode, errorContent);
-                return Result.Failure(new[] { $"Failed to notify vendor submitted: {response.StatusCode}" });
+                return Result.Failure($"Failed to notify vendor submitted: {response.StatusCode}");
             }
 
             _logger.LogInformation("Vendor submitted notification sent successfully via N8n for Vendor {VendorId}",

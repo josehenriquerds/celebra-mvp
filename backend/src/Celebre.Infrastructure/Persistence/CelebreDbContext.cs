@@ -2,6 +2,7 @@ using Celebre.Application.Common.Interfaces;
 using Celebre.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using TaskEntity = Celebre.Domain.Entities.Task;
 
 namespace Celebre.Infrastructure.Persistence;
 
@@ -20,7 +21,7 @@ public class CelebreDbContext : DbContext, IApplicationDbContext
     public DbSet<Interaction> Interactions => Set<Interaction>();
     public DbSet<EngagementScore> EngagementScores => Set<EngagementScore>();
     public DbSet<TimelineEntry> TimelineEntries => Set<TimelineEntry>();
-    public DbSet<Task> Tasks => Set<Task>();
+    public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
     public DbSet<Vendor> Vendors => Set<Vendor>();
     public DbSet<VendorPartner> VendorPartners => Set<VendorPartner>();
     public DbSet<VendorMedia> VendorMedia => Set<VendorMedia>();
@@ -56,7 +57,7 @@ public class CelebreDbContext : DbContext, IApplicationDbContext
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override System.Threading.Tasks.Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         // Automatically set UpdatedAt for modified entities
         var entries = ChangeTracker.Entries()

@@ -100,9 +100,9 @@ export default function EventDashboard() {
 
   // imagem de capa (substitua pela sua – aqui tem fallback)
   const coverUrl =
-    (typeof window !== 'undefined' && (window as any).__cele_cover_url__) ||
-    // fallback leve (unsplash): troque por sua asset/local
-    'public/illustrations/renomear.png'
+  (typeof window !== 'undefined' && (window as any).__cele_cover_url__) ||
+  '/referencias/illustrations/casamento.png'
+
 
   return (
     <div className="min-h-dvh w-full bg-[#FAF7F4]">
@@ -148,23 +148,15 @@ export default function EventDashboard() {
                 {' '}
                 <div>
                   {' '}
-                  <p className="text-sm text-sky-700/80">Que bom te ver novamente</p>{' '}
-                  <h2 className="text-2xl font-semibold text-rose-50">Olá, {firstHost}</h2>{' '}
-                  <p className="mt-1 text-sm text-sky-700/70">
+                  <p className="text-md text-peach-50">Que bom te ver novamente</p>{' '}
+                  <h2 className="text-4xl font-bold text-rose-50">Olá, {firstHost}</h2>{' '}
+                  <p className="mt-1 text-sm text-sky-50">
                     {' '}
                     {data.title} — {formatDate(data.dateTime, 'long')} às{' '}
                     {formatTime(data.dateTime)} • {data.venueName}{' '}
                   </p>{' '}
                 </div>{' '}
-                <div className="hidden md:block">
-                  {' '}
-                  <DonutProgress
-                    percentage={data.progress * 100}
-                    size={120}
-                    strokeWidth={10}
-                    label="Progresso"
-                  />{' '}
-                </div>{' '}
+                
               </CardContent>{' '}
             </Card>
             {/* FAIXA DE CARDS MENORES (estilo “Jams & Preserves”) */}
@@ -238,7 +230,7 @@ export default function EventDashboard() {
         </section>
 
         {/* COLUNA DIREITA — FUNDO BRANCO (agenda & cards) */}
-        <aside className="bg-white px-4 pb-8 pt-4 md:px-6 md:pt-6">
+        <aside className="bg-white px-4 pb-8 pt-4 md:px-6 md:pt-6 lg:rounded-tl-[56px] ">
           {/* Cabeçalho “Today’s Schedule” + avatar/mascote */}
           <div className="mb-4 flex items-center justify-between">
             <div>

@@ -4,3 +4,17 @@ C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations
 C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.AssemblyInfo.cs
 C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.csproj.CoreCompileInputs.cache
 C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.sourcelink.json
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Integrations.deps.json
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Integrations.dll
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Integrations.pdb
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Application.dll
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Domain.dll
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Shared.dll
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Shared.pdb
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Domain.pdb
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\bin\Debug\net8.0\Celebre.Application.pdb
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre..62133CCA.Up2Date
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.dll
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\refint\Celebre.Integrations.dll
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\Celebre.Integrations.pdb
+C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Integrations\obj\Debug\net8.0\ref\Celebre.Integrations.dll

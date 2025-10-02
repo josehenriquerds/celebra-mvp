@@ -1,8 +1,6 @@
 'use client'
 
-import * as React from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Home,
   Users,
@@ -21,14 +19,16 @@ import {
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import * as React from 'react'
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
   TooltipProvider,
 } from '@/app/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 
 interface EventLayoutProps {
   children: React.ReactNode
@@ -81,7 +81,7 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
           onMouseLeave={() => setHovering(false)}
         >
           {/* camada de fundo (coral/peach) que remete às referências */}
-          <div className="absolute -left-6 bottom-6 top-6 w-24 rounded-3xl bg-pastel-peach-200/70 blur-[1px]" />
+          <div className="absolute inset-y-6 -left-6 w-24 rounded-3xl bg-pastel-peach-200/70 blur-[1px]" />
           <motion.div
             layout
             style={{ width }}
@@ -117,9 +117,9 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
                 whileTap={{ scale: 0.95 }}
               >
                 {collapsed ? (
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="size-4" />
                 ) : (
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className="size-4" />
                 )}
               </motion.button>
             </div>
@@ -147,7 +147,7 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
             </nav>
 
             {/* rodapé utilitário */}
-            <div className="absolute bottom-3 left-0 right-0 px-3">
+            <div className="absolute inset-x-0 bottom-3 px-3">
               <motion.div
                 className={cn(
                   'rounded-2xl border border-black/5 bg-gradient-to-br from-white to-pastel-mint-50',
@@ -184,7 +184,7 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Abrir menu"
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="size-6" />
           </button>
           <div className="flex-1 text-sm font-semibold leading-6">Celebre</div>
         </div>
@@ -201,7 +201,7 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label="Fechar menu"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="size-6" />
                 </button>
               </div>
               <nav className="mt-6">
@@ -235,11 +235,11 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
 
         {/* --- Main content --- */}
         <main className="lg:pl-[264px]">
-          <div className="px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+          <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
 
         {/* --- Mobile bottom navigation --- */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-white/95 shadow-elevation-2 backdrop-blur-lg supports-[backdrop-filter]:bg-white/80 lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-white/95 shadow-elevation-2 backdrop-blur-lg supports-[backdrop-filter]:bg-white/80 lg:hidden">
           <nav className="grid grid-cols-5 px-2">
             {navigation.slice(0, 5).map((item) => {
               const href = `/events/${eventId}${item.href}`

@@ -2,12 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Celebre.Domain.Entities;
 using Celebre.Domain.Enums;
+using TaskEntity = Celebre.Domain.Entities.Task;
 
 namespace Celebre.Infrastructure.Persistence.Configurations;
 
-public class TaskConfiguration : IEntityTypeConfiguration<Task>
+public class TaskConfiguration : IEntityTypeConfiguration<TaskEntity>
 {
-    public void Configure(EntityTypeBuilder<Task> builder)
+    public void Configure(EntityTypeBuilder<TaskEntity> builder)
     {
         builder.ToTable("tasks");
 
@@ -38,7 +39,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<Task>
         builder.Property(t => t.Status)
             .IsRequired()
             .HasConversion<string>()
-            .HasDefaultValue(TaskStatus.aberta);
+            .HasDefaultValue(Domain.Enums.TaskStatus.aberta);
 
         builder.Property(t => t.SlaHours)
             .HasColumnName("sla_hours");

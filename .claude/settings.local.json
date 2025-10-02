@@ -39,7 +39,8 @@
       "Bash(dotnet add package:*)",
       "Bash(dotnet add:*)",
       "Bash(tree:*)",
-      "Bash(dotnet build)"
+      "Bash(dotnet build)",
+      "Bash(dotnet ef migrations add:*)"
     ],
     "deny": [],
     "ask": []

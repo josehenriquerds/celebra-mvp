@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Celebre.Domain\Celebre.Domain.csproj" />
     <ProjectReference Include="..\Celebre.Shared\Celebre.Shared.csproj" />
+    <ProjectReference Include="..\Celebre.Application\Celebre.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -11,6 +12,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
   </ItemGroup>
 

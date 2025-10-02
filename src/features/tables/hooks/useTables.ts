@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import type { Table, TableInput, TablePlannerData, TableUpdate, SeatAssignment } from '@/schemas'
+import type { TableInput, TablePlannerData, TableUpdate, SeatAssignment } from '@/schemas'
 import {
   assignGuestToSeat,
   bulkUpdateTablePositions,
@@ -21,50 +21,94 @@ export const tablesKeys = {
   planner: (eventId: string) => [...tablesKeys.all, 'planner', eventId] as const,
 }
 
+function normalizeEventId(id: string | string[] | undefined): string | undefined {
+  if (!id) return undefined
+  return Array.isArray(id) ? id[0] : id
+}
+
+function useEventId(): string {
+  const params = useParams()
+  const eventId = normalizeEventId(params.id)
+
+  if (!eventId) {
+    throw new Error('Event id is required to use table planner hooks')
+  }
+
+  return eventId
+}
+
+function usePlannerMutationHelpers() {
+  const queryClient = useQueryClient()
+  const eventId = useEventId()
+  const plannerKey = tablesKeys.planner(eventId)
+
+  const invalidatePlanner = () =>
+    queryClient.invalidateQueries({
+      queryKey: plannerKey,
+    })
+
+  const cancelPlannerQueries = () =>
+    queryClient.cancelQueries({
+      queryKey: plannerKey,
+    })
+
+  const getPlannerData = () => queryClient.getQueryData<TablePlannerData>(plannerKey)
+
+  const setPlannerData = (data: TablePlannerData) =>
+    queryClient.setQueryData<TablePlannerData>(plannerKey, data)
+
+  return {
+    eventId,
+    plannerKey,
+    queryClient,
+    invalidatePlanner,
+    cancelPlannerQueries,
+    getPlannerData,
+    setPlannerData,
+  }
+}
+
 // Hook to fetch table planner data
 export function useTablePlannerData(eventId?: string) {
   const params = useParams()
-  const id = eventId || (params.id as string)
+  const resolvedId = eventId ?? normalizeEventId(params.id)
+  const plannerKey = resolvedId ? tablesKeys.planner(resolvedId) : [...tablesKeys.all, 'planner', 'pending'] as const
 
   return useQuery({
-    queryKey: tablesKeys.planner(id),
-    queryFn: () => fetchTablePlannerData(id),
-    enabled: !!id,
+    queryKey: plannerKey,
+    queryFn: () => fetchTablePlannerData(resolvedId!),
+    enabled: !!resolvedId,
   })
 }
 
 // Hook to create table
 export function useCreateTable() {
-  const queryClient = useQueryClient()
-  const params = useParams()
-  const eventId = params.id as string
+  const { eventId, invalidatePlanner } = usePlannerMutationHelpers()
 
   return useMutation({
     mutationFn: (data: TableInput) => createTable(eventId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
-    },
+    onSuccess: invalidatePlanner,
   })
 }
 
 // Hook to update table
 export function useUpdateTable() {
-  const queryClient = useQueryClient()
-  const params = useParams()
-  const eventId = params.id as string
+  const {
+    cancelPlannerQueries,
+    getPlannerData,
+    setPlannerData,
+    invalidatePlanner,
+  } = usePlannerMutationHelpers()
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: TableUpdate }) => updateTable(id, data),
     onMutate: async ({ id, data }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: tablesKeys.planner(eventId) })
+      await cancelPlannerQueries()
 
-      // Snapshot previous value
-      const previousData = queryClient.getQueryData<TablePlannerData>(tablesKeys.planner(eventId))
+      const previousData = getPlannerData()
 
-      // Optimistically update
       if (previousData) {
-        queryClient.setQueryData<TablePlannerData>(tablesKeys.planner(eventId), {
+        setPlannerData({
           ...previousData,
           tables: previousData.tables.map((table) =>
             table.id === id ? { ...table, ...data } : table
@@ -74,33 +118,33 @@ export function useUpdateTable() {
 
       return { previousData }
     },
-    onError: (err, variables, context) => {
-      // Rollback on error
+    onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData(tablesKeys.planner(eventId), context.previousData)
+        setPlannerData(context.previousData)
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
-    },
+    onSettled: invalidatePlanner,
   })
 }
 
 // Hook to delete table
 export function useDeleteTable() {
-  const queryClient = useQueryClient()
-  const params = useParams()
-  const eventId = params.id as string
+  const {
+    cancelPlannerQueries,
+    getPlannerData,
+    setPlannerData,
+    invalidatePlanner,
+  } = usePlannerMutationHelpers()
 
   return useMutation({
     mutationFn: (id: string) => deleteTable(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: tablesKeys.planner(eventId) })
+      await cancelPlannerQueries()
 
-      const previousData = queryClient.getQueryData<TablePlannerData>(tablesKeys.planner(eventId))
+      const previousData = getPlannerData()
 
       if (previousData) {
-        queryClient.setQueryData<TablePlannerData>(tablesKeys.planner(eventId), {
+        setPlannerData({
           ...previousData,
           tables: previousData.tables.filter((table) => table.id !== id),
         })
@@ -108,73 +152,43 @@ export function useDeleteTable() {
 
       return { previousData }
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       if (context?.previousData) {
-        queryClient.setQueryData(tablesKeys.planner(eventId), context.previousData)
+        setPlannerData(context.previousData)
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
-    },
+    onSettled: invalidatePlanner,
   })
 }
 
 // Hook to assign guest to seat
 export function useAssignGuestToSeat() {
-  const queryClient = useQueryClient()
-  const params = useParams()
-  const eventId = params.id as string
+  const { invalidatePlanner } = usePlannerMutationHelpers()
 
   return useMutation({
     mutationFn: ({ tableId, data }: { tableId: string; data: SeatAssignment }) =>
       assignGuestToSeat(tableId, data),
-    onMutate: async ({ tableId, data }) => {
-      await queryClient.cancelQueries({ queryKey: tablesKeys.planner(eventId) })
-
-      const previousData = queryClient.getQueryData<TablePlannerData>(tablesKeys.planner(eventId))
-
-      // Optimistic update will be handled by the component for better UX
-      return { previousData }
-    },
-    onError: (err, variables, context) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(tablesKeys.planner(eventId), context.previousData)
-      }
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
-    },
+    onSettled: invalidatePlanner,
   })
 }
 
 // Hook to unassign guest from seat
 export function useUnassignGuestFromSeat() {
-  const queryClient = useQueryClient()
-  const params = useParams()
-  const eventId = params.id as string
+  const { invalidatePlanner } = usePlannerMutationHelpers()
 
   return useMutation({
     mutationFn: (seatId: string) => unassignGuestFromSeat(seatId),
-    onError: () => {
-      // Rollback handled by component
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
-    },
+    onSettled: invalidatePlanner,
   })
 }
 
 // Hook to bulk update table positions
 export function useBulkUpdateTablePositions() {
-  const queryClient = useQueryClient()
-  const params = useParams()
-  const eventId = params.id as string
+  const { invalidatePlanner } = usePlannerMutationHelpers()
 
   return useMutation({
     mutationFn: (updates: Array<{ id: string; x: number; y: number; rotation?: number }>) =>
       bulkUpdateTablePositions(updates),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
-    },
+    onSettled: invalidatePlanner,
   })
 }

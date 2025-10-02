@@ -69,7 +69,7 @@ function findFreeSpot(
   y: number,
   r: number
 ): { x: number; y: number } {
-  let candidate = { x: snap(x), y: snap(y) }
+  const candidate = { x: snap(x), y: snap(y) }
   const others = tables.filter((t) => t.id !== movingId)
 
   const inBounds = (cx: number, cy: number) =>
@@ -443,7 +443,7 @@ export default function TablePlannerPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando planner de mesas...</p>
         </div>
       </div>
@@ -454,12 +454,12 @@ export default function TablePlannerPage() {
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
       <header className="shadow-celebre border-b bg-white">
-        <div className="mx-auto max-w-[95vw] px-4 py-4">
+        <div className="mx-auto max-w-[95vw] p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -492,7 +492,7 @@ export default function TablePlannerPage() {
               <div className="flex items-center justify-between">
                 <CardTitle className="font-heading">Editar Mesa</CardTitle>
                 <Button variant="ghost" size="icon" onClick={() => setEditingTable(null)}>
-                  <X className="h-4 w-4" />
+                  <X className="size-4" />
                 </Button>
               </div>
             </CardHeader>
@@ -561,7 +561,7 @@ export default function TablePlannerPage() {
               <Card className="sticky top-4">
                 <CardHeader className="pb-3">
                   <CardTitle className="font-heading text-lg">
-                    <Users className="mr-2 inline h-5 w-5" />
+                    <Users className="mr-2 inline size-5" />
                     Convidados ({unassigned.length})
                   </CardTitle>
                 </CardHeader>
@@ -604,7 +604,7 @@ export default function TablePlannerPage() {
                         className="w-20 text-sm"
                       />
                       <Button size="sm" onClick={handleCreateTable}>
-                        <Plus className="mr-1 h-4 w-4" />
+                        <Plus className="mr-1 size-4" />
                         Mesa
                       </Button>
                     </div>
@@ -637,7 +637,7 @@ export default function TablePlannerPage() {
               <div className="border-celebre-brand rounded-lg border-2 bg-white p-3 shadow-lg">
                 {activeId.startsWith('guest-') && (
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
+                    <Users className="size-4" />
                     <span className="text-sm font-medium">
                       {unassigned.find((g) => `guest-${g.id}` === activeId)?.contact.fullName ||
                         'Convidado'}
@@ -653,7 +653,7 @@ export default function TablePlannerPage() {
                 )}
                 {activeId.startsWith('assignment-') && (
                   <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
+                    <Users className="size-4" />
                     <span className="text-sm font-medium">Movendo convidado</span>
                   </div>
                 )}

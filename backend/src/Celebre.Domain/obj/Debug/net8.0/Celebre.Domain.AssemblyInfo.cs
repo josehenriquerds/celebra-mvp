@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Celebre.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b80a8c7172ef213e4b3cf10ee999c14229270b8f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5fb35cdd7a6ef8925bf1a06a60502bdd7cb574ce")]
 [assembly: System.Reflection.AssemblyProductAttribute("Celebre.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Celebre.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
