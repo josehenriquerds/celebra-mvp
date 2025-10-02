@@ -1,5 +1,5 @@
-import { Card } from '@/components/ui/card'
 import { Sparkles } from 'lucide-react'
+import { Card } from '@/components/ui/card'
 
 interface WelcomeCardProps {
   eventName: string
@@ -19,7 +19,7 @@ export function WelcomeCard({
       <div className="flex items-start justify-between">
         <div>
           <div className="mb-2 flex items-center gap-2">
-            <Sparkles className="h-5 w-5" />
+            <Sparkles className="size-5" />
             <p className="text-sm font-medium opacity-90">Bem-vindo(a)</p>
           </div>
           <h1 className="mb-1 text-2xl font-bold">{eventName}</h1>

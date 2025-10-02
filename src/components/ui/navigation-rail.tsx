@@ -1,10 +1,10 @@
 'use client'
 
-import * as React from 'react'
+import { type LucideIcon } from 'lucide-react'
+import { motion } from 'motion/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { motion } from 'motion/react'
-import { LucideIcon } from 'lucide-react'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 export interface NavItem {
@@ -60,7 +60,7 @@ const NavigationRail = React.forwardRef<HTMLElement, NavigationRailProps>(
                 transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
                 aria-label={section.label}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="size-5" />
               </motion.button>
             )
           })}
@@ -100,7 +100,7 @@ const NavigationRail = React.forwardRef<HTMLElement, NavigationRailProps>(
                             : 'text-celebre-muted hover:bg-pastel-lavender-50 hover:text-celebre-ink'
                         )}
                       >
-                        <ItemIcon className="h-5 w-5 shrink-0" />
+                        <ItemIcon className="size-5 shrink-0" />
                         <span className="text-sm">{item.label}</span>
                         {item.badge !== undefined && item.badge > 0 && (
                           <span className="ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full bg-pastel-coral-400 px-1.5 text-xs font-semibold text-white">

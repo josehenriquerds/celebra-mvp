@@ -1,8 +1,8 @@
 'use client'
 
-import * as React from 'react'
 import { Search, Bell, Settings, User } from 'lucide-react'
 import { motion } from 'motion/react'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
 import {
@@ -53,7 +53,7 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
           {/* Busca */}
           <div className="max-w-md flex-1">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-celebre-muted" />
+              <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-celebre-muted" />
               <input
                 type="search"
                 placeholder={searchPlaceholder}
@@ -77,9 +77,9 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
               className="relative rounded-2xl"
               aria-label="Notificações"
             >
-              <Bell className="h-5 w-5" />
+              <Bell className="size-5" />
               {notificationCount > 0 && (
-                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-pastel-coral-400 text-xs font-semibold text-white">
+                <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-pastel-coral-400 text-xs font-semibold text-white">
                   {notificationCount > 9 ? '9+' : notificationCount}
                 </span>
               )}
@@ -87,7 +87,7 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
 
             {/* Configurações */}
             <Button variant="ghost" size="icon" className="rounded-2xl" aria-label="Configurações">
-              <Settings className="h-5 w-5" />
+              <Settings className="size-5" />
             </Button>
 
             {/* Perfil */}
@@ -100,15 +100,15 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
                     'border border-pastel-lavender-100'
                   )}
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-sm font-semibold text-white">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-sm font-semibold text-white">
                     {userAvatar ? (
                       <img
                         src={userAvatar}
                         alt={userName}
-                        className="h-8 w-8 rounded-full object-cover"
+                        className="size-8 rounded-full object-cover"
                       />
                     ) : (
-                      <User className="h-4 w-4" />
+                      <User className="size-4" />
                     )}
                   </div>
                   <span className="hidden text-sm font-medium text-celebre-ink md:block">

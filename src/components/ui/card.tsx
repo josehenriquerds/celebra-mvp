@@ -1,23 +1,23 @@
-import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { motion, type HTMLMotionProps } from 'framer-motion'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
-const cardVariants = cva('rounded-3xl overflow-hidden transition-smooth', {
+const cardVariants = cva('transition-smooth overflow-hidden rounded-3xl', {
   variants: {
     variant: {
       // Elevated: card com sombra e fundo branco
       elevated:
-        'bg-white shadow-elevation-2 hover:shadow-elevation-3 border border-pastel-lavender-100',
+        'border border-pastel-lavender-100 bg-white shadow-elevation-2 hover:shadow-elevation-3',
 
       // Glass: glassmorphism com blur
       glass: 'glass shadow-glass hover:shadow-glass-sm',
 
       // Flat: sem sombra, apenas fundo
-      flat: 'bg-white border border-pastel-lavender-50',
+      flat: 'border border-pastel-lavender-50 bg-white',
 
       // Legacy (compatibilidade)
-      default: 'bg-celebre-card border border-border shadow-celebre',
+      default: 'bg-celebre-card shadow-celebre border border-border',
     },
     padding: {
       none: '',

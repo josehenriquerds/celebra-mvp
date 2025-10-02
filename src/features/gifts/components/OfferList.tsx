@@ -1,10 +1,10 @@
-﻿import { Fragment } from 'react'
+﻿import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { ArrowUpRight, RefreshCcw, Star, Trash2 } from 'lucide-react'
+import { Fragment } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { ArrowUpRight, RefreshCcw, Star, Trash2 } from 'lucide-react'
 import type { GiftOffer, GiftOfferPriceHistory } from '@/schemas'
 import { BestPriceBadge } from './BestPriceBadge'
 import { PriceHistoryMiniChart } from './PriceHistoryMiniChart'
@@ -96,7 +96,7 @@ export function OfferList({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-[#2F64A4] hover:underline"
                 >
-                  Visitar loja <ArrowUpRight className="h-4 w-4" />
+                  Visitar loja <ArrowUpRight className="size-4" />
                 </a>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -106,7 +106,7 @@ export function OfferList({
                   onClick={() => onRefresh(offer.id)}
                   disabled={refreshingOfferId === offer.id || removingOfferId === offer.id}
                 >
-                  <RefreshCcw className="mr-2 h-4 w-4" /> Atualizar preço
+                  <RefreshCcw className="mr-2 size-4" /> Atualizar preço
                 </Button>
                 <Button
                   variant="outline"
@@ -114,7 +114,7 @@ export function OfferList({
                   onClick={() => onSetPrimary(offer.id)}
                   disabled={isPrimary || refreshingOfferId === offer.id || removingOfferId === offer.id}
                 >
-                  <Star className="mr-2 h-4 w-4" /> Definir como principal
+                  <Star className="mr-2 size-4" /> Definir como principal
                 </Button>
                 <Button
                   variant="ghost"
@@ -123,7 +123,7 @@ export function OfferList({
                   onClick={() => onRemove(offer.id)}
                   disabled={removingOfferId === offer.id || refreshingOfferId === offer.id}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" /> Remover
+                  <Trash2 className="mr-2 size-4" /> Remover
                 </Button>
               </div>
             </div>

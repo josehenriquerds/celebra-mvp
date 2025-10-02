@@ -1,10 +1,10 @@
 'use client'
 
-import { Calendar, dateFnsLocalizer, View } from 'react-big-calendar'
 import { format, parse, startOfWeek, getDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { useState } from 'react'
 import { X, Calendar as CalendarIcon, Clock, User, Phone, Tag } from 'lucide-react'
+import { useState } from 'react'
+import { Calendar, dateFnsLocalizer, type View } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import './calendar-custom.css'
 

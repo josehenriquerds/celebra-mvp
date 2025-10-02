@@ -38,7 +38,7 @@ export function GiftFilters({ search, onSearchChange, status, onStatusChange, so
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="relative md:max-w-sm">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8AA0B8]" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#8AA0B8]" />
           <Input
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}

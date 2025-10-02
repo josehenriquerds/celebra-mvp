@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'crypto'
 import { writeFile, mkdir } from 'fs/promises'
 import path from 'path'
-import crypto from 'crypto'
+import { type NextRequest, NextResponse } from 'next/server'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']

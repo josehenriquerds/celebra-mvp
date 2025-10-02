@@ -24,7 +24,7 @@ export function BestPriceBadge({ priceCents, currency = 'BRL', store, domain, cl
       variant="outline"
       className={`inline-flex items-center gap-2 rounded-full border-2 border-[#C7E8CA] bg-[#F6FBF7] px-3 py-1 text-sm font-medium text-[#246240] ${className ?? ''}`}
     >
-      {favicon ? <img src={favicon} alt={store ?? domain ?? ''} className="h-4 w-4 rounded-full" /> : null}
+      {favicon ? <img src={favicon} alt={store ?? domain ?? ''} className="size-4 rounded-full" /> : null}
       <span>{formattedPrice}</span>
       {store ? <span className="text-xs text-[#4E7E5E]">· {store}</span> : null}
       {!store && domain ? <span className="text-xs text-[#4E7E5E]">· {domain}</span> : null}

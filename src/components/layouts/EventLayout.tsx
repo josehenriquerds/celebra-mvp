@@ -1,8 +1,5 @@
 'use client'
 
-import { ReactNode, useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import {
   LayoutDashboard,
   Users,
@@ -17,6 +14,9 @@ import {
   X,
   ChevronLeft,
 } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { type ReactNode, useState } from 'react'
 import { Button } from '@/components/ui/button'
 
 interface EventLayoutProps {
@@ -57,11 +57,11 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
     <div className="min-h-screen bg-[#FAF7F4]">
       {/* Desktop Sidebar */}
       <aside className="hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col">
-        <div className="flex flex-grow flex-col border-r border-neutral-200 bg-white">
+        <div className="flex grow flex-col border-r border-neutral-200 bg-white">
           {/* Logo/Header */}
           <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-6">
             <Link href="/events" className="flex items-center gap-2">
-              <ChevronLeft className="h-5 w-5 text-neutral-600" />
+              <ChevronLeft className="size-5 text-neutral-600" />
               <span className="text-sm font-medium text-neutral-600">Eventos</span>
             </Link>
           </div>
@@ -72,7 +72,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4">
+          <nav className="flex-1 space-y-1 overflow-y-auto p-4">
             {navigation.map((item) => {
               const active = isActive(item.href)
               return (
@@ -85,7 +85,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
                       : 'text-neutral-700 hover:bg-neutral-100'
                   }`}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className="size-5" />
                   {item.name}
                 </Link>
               )
@@ -104,7 +104,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-white transition-transform duration-300 md:hidden ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white transition-transform duration-300 md:hidden${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -113,7 +113,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
           <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-6">
             <h2 className="text-lg font-semibold text-neutral-900">Menu</h2>
             <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
-              <X className="h-5 w-5" />
+              <X className="size-5" />
             </Button>
           </div>
 
@@ -124,7 +124,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-4">
+          <nav className="flex-1 space-y-1 overflow-y-auto p-4">
             {navigation.map((item) => {
               const active = isActive(item.href)
               return (
@@ -138,7 +138,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
                       : 'text-neutral-700 hover:bg-neutral-100'
                   }`}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className="size-5" />
                   {item.name}
                 </Link>
               )
@@ -157,13 +157,13 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
             className="md:hidden"
             onClick={() => setSidebarOpen(true)}
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="size-5" />
           </Button>
 
           <div className="ml-auto flex items-center gap-4">
             {/* User Avatar */}
             <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#863F44] text-sm font-medium text-white">
+              <div className="flex size-8 items-center justify-center rounded-full bg-[#863F44] text-sm font-medium text-white">
                 U
               </div>
             </div>
@@ -175,7 +175,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 border-t border-neutral-200 bg-white md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200 bg-white md:hidden">
         <div className="grid grid-cols-4">
           {mobileNavigation.map((item) => {
             const active = isActive(item.href)
@@ -187,7 +187,7 @@ export function EventLayout({ children, eventId, eventName }: EventLayoutProps) 
                   active ? 'text-[#863F44]' : 'text-neutral-600'
                 }`}
               >
-                <item.icon className="h-6 w-6" />
+                <item.icon className="size-6" />
                 {item.name}
               </Link>
             )

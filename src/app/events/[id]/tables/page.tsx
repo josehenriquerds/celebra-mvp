@@ -12,16 +12,16 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
-import { toPng } from 'html-to-image'
 import { AnimatePresence, motion } from 'framer-motion'
+import { toPng } from 'html-to-image'
 import { ArrowLeft, Plus, Users, X } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useToast } from '@/components/ui/use-toast'
 import {
   CreateTableModal,
@@ -460,7 +460,7 @@ export default function TablePlannerPage() {
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-6">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between md:px-6">
           <div className="flex flex-1 items-center gap-4">
             <Link href={`/events/${eventId}`}>
               <Button
@@ -564,7 +564,7 @@ export default function TablePlannerPage() {
                         : 'border-gray-200 hover:border-gray-300'
                     )}
                   >
-                    <div className="h-12 w-12 rounded-full border-4 border-current" />
+                    <div className="size-12 rounded-full border-4 border-current" />
                     <span className="text-xs font-medium">Redonda</span>
                   </button>
                   <button
@@ -577,7 +577,7 @@ export default function TablePlannerPage() {
                         : 'border-gray-200 hover:border-gray-300'
                     )}
                   >
-                    <div className="h-12 w-12 rounded-lg border-4 border-current" />
+                    <div className="size-12 rounded-lg border-4 border-current" />
                     <span className="text-xs font-medium">Quadrada</span>
                   </button>
                 </div>
@@ -660,10 +660,10 @@ export default function TablePlannerPage() {
                   <div className="md:sticky md:top-4">
                     <Card
                       id="guest-panel-desktop"
-                      className="h-full w-[18rem] border border-border bg-card shadow-elevation-2"
+                      className="h-full w-72 border border-border bg-card shadow-elevation-2"
                     >
                       <CardHeader className="flex flex-col gap-2 pb-3">
-                        <CardTitle className="flex items-center gap-2 font-heading text-lg">
+                        <CardTitle className="font-heading flex items-center gap-2 text-lg">
                           <Users className="size-5" aria-hidden="true" />
                           Convidados ({unassigned.length})
                         </CardTitle>
@@ -751,7 +751,7 @@ export default function TablePlannerPage() {
           </div>
           <DragOverlay dropAnimation={null}>
             {activeId ? (
-              <div className="rounded-lg border-2 border-celebre-brand bg-white p-3 shadow-elevation-2 transition-shadow duration-200 ease-smooth">
+              <div className="border-celebre-brand rounded-lg border-2 bg-white p-3 shadow-elevation-2 transition-shadow duration-200 ease-smooth">
                 {activeId.startsWith('guest-') && (
                   <div className="flex items-center gap-2">
                     <Users className="size-4" />

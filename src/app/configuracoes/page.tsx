@@ -1,5 +1,4 @@
 'use client'
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Calendar,
@@ -10,6 +9,7 @@ import {
   MessageCircle,
   Shirt,
 } from 'lucide-react'
+import { useState } from 'react'
 
 export default function ConfiguracoesEvento() {
   const [form, setForm] = useState({
@@ -176,7 +176,7 @@ export default function ConfiguracoesEvento() {
               type="checkbox"
               checked={form.rsvp}
               onChange={handleChange}
-              className="mt-2 h-6 w-6 accent-[#863F44]"
+              className="mt-2 size-6 accent-[#863F44]"
             />
           </div>
           {/* Mural toggle */}
@@ -190,7 +190,7 @@ export default function ConfiguracoesEvento() {
               type="checkbox"
               checked={form.mural}
               onChange={handleChange}
-              className="mt-2 h-6 w-6 accent-[#863F44]"
+              className="mt-2 size-6 accent-[#863F44]"
             />
           </div>
           {/* Botão salvar */}

@@ -12,11 +12,11 @@ import {
   Calendar,
 } from 'lucide-react'
 import Link from 'next/link'
-import { Hero } from '@/components/ui/hero'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import FAQAccordion from '@/app/components/landing2/FAQSection'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Hero } from '@/components/ui/hero'
 
 const features = [
   {
@@ -118,8 +118,8 @@ export default function LandingPage() {
                 className="group transition-all duration-300 hover:scale-105"
               >
                 <CardHeader>
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pastel-lavender-100 to-pastel-rose-100 transition-colors group-hover:from-pastel-lavender-200 group-hover:to-pastel-rose-200">
-                    <Icon className="h-8 w-8 text-pastel-lavender-600" />
+                  <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pastel-lavender-100 to-pastel-rose-100 transition-colors group-hover:from-pastel-lavender-200 group-hover:to-pastel-rose-200">
+                    <Icon className="size-8 text-pastel-lavender-600" />
                   </div>
                   <CardTitle className="text-xl">{feature.title}</CardTitle>
                 </CardHeader>
@@ -157,19 +157,19 @@ export default function LandingPage() {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Convidados ilimitados</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Convites pelo WhatsApp</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">RSVP automático</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Dashboard completo</span>
                 </div>
               </div>
@@ -195,19 +195,19 @@ export default function LandingPage() {
             <CardContent className="space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Tudo do plano gratuito</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Lista de presentes integrada</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Pagamento online</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-pastel-mint-500" />
+                  <CheckCircle className="size-5 text-pastel-mint-500" />
                   <span className="text-sm">Mural de fotos</span>
                 </div>
               </div>

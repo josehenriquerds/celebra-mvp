@@ -52,12 +52,12 @@ export function DroppableSeat({ seat, tableId, tableColor, tableRadius, zoom }: 
     <div
       ref={setRefs}
       {...(assigned ? { ...attributes, ...listeners } : {})}
-      className={`pointer-events-auto absolute flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-all ${isOver ? 'ring-celebre-brand/60 bg-celebre-accent/20 ring-2 scale-110' : ''} ${isDragging ? 'opacity-70' : ''} ${assigned ? 'cursor-grab touch-none select-none active:cursor-grabbing' : 'cursor-pointer'}`}
+      className={`pointer-events-auto absolute flex size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-all ${isOver ? 'ring-celebre-brand/60 bg-celebre-accent/20 scale-110 ring-2' : ''} ${isDragging ? 'opacity-70' : ''} ${assigned ? 'cursor-grab touch-none select-none active:cursor-grabbing' : 'cursor-pointer'}`}
       style={{ left: renderLeft, top: renderTop }}
       title={seat.assignment?.guest.contact.fullName || 'Vazio'}
     >
       <div
-        className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-[11px] font-medium transition-all ${assigned ? 'text-white' : 'bg-white'} ${isOver ? 'border-celebre-brand' : 'border-gray-300'}`}
+        className={`flex size-10 items-center justify-center rounded-full border-2 text-[11px] font-medium transition-all ${assigned ? 'text-white' : 'bg-white'} ${isOver ? 'border-celebre-brand' : 'border-gray-300'}`}
         style={{
           backgroundColor: assigned ? `${tableColor || '#8b5cf6'}30` : undefined,
           borderColor: assigned ? tableColor || 'var(--celebre-brand)' : undefined,

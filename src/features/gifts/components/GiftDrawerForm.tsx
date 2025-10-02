@@ -1,8 +1,8 @@
 'use client'
 
+import { Loader2, Plus } from 'lucide-react'
 import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Loader2, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { Input } from '@/components/ui/input'
@@ -12,14 +12,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import type { Gift } from '@/schemas'
+import { BestPriceBadge } from './BestPriceBadge'
+import { GiftLinkImporter } from './GiftLinkImporter'
+import { OfferList } from './OfferList'
 import type {
   CreateGiftPayload,
   GiftOffersResponse,
   UpdateGiftPayload,
 } from '../services/gifts.api'
-import { GiftLinkImporter } from './GiftLinkImporter'
-import { OfferList } from './OfferList'
-import { BestPriceBadge } from './BestPriceBadge'
 
 interface GiftDrawerFormProps {
   open: boolean
@@ -270,7 +270,7 @@ export function GiftDrawerForm({
                   <Label htmlFor="category">Categoria</Label>
                   <Input id="category" {...form.register('category')} placeholder="Ex: Cozinha" />
                 </div>
-                <div className="md:col-span-2 space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="description">Descrição</Label>
                   <Textarea
                     id="description"
@@ -279,7 +279,7 @@ export function GiftDrawerForm({
                     {...form.register('description')}
                   />
                 </div>
-                <div className="md:col-span-2 space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <Label htmlFor="link">Link do produto</Label>
                   <Input id="link" {...form.register('link')} placeholder="https://" />
                 </div>
@@ -350,7 +350,7 @@ export function GiftDrawerForm({
                       className="flex-1"
                     />
                     <Button type="submit" disabled={!offerUrl || !onAddOffer || submitting}>
-                      <Plus className="mr-2 h-4 w-4" /> Adicionar oferta
+                      <Plus className="mr-2 size-4" /> Adicionar oferta
                     </Button>
                   </form>
                   <OfferList
@@ -379,7 +379,7 @@ export function GiftDrawerForm({
           <Button onClick={form.handleSubmit(handleSubmit)} disabled={submitting}>
             {submitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Salvando...
+                <Loader2 className="mr-2 size-4 animate-spin" /> Salvando...
               </>
             ) : mode === 'create' ? (
               'Criar presente'

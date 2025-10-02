@@ -1,7 +1,7 @@
 'use client'
 
-import * as React from 'react'
 import { Upload, X, FileIcon } from 'lucide-react'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 interface UploaderProps {
@@ -87,7 +87,7 @@ export function Uploader({
           onChange={handleFileInput}
           className="hidden"
         />
-        <Upload className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+        <Upload className="mx-auto mb-4 size-10 text-muted-foreground" />
         <p className="mb-1 text-sm font-medium">Clique ou arraste arquivos aqui</p>
         <p className="text-xs text-muted-foreground">
           Máximo {Math.round(maxSize / 1024 / 1024)}MB por arquivo
@@ -99,7 +99,7 @@ export function Uploader({
         <div className="space-y-2">
           {value.map((file, index) => (
             <div key={index} className="flex items-center gap-3 rounded-lg border bg-white p-3">
-              <FileIcon className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
+              <FileIcon className="size-5 shrink-0 text-muted-foreground" />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{file.name}</p>
                 <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(1)} KB</p>
@@ -109,7 +109,7 @@ export function Uploader({
                 onClick={() => removeFile(index)}
                 className="rounded p-1 transition-colors hover:bg-destructive/10"
               >
-                <X className="h-4 w-4 text-destructive" />
+                <X className="size-4 text-destructive" />
               </button>
             </div>
           ))}

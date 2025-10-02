@@ -1,8 +1,8 @@
 'use client'
 
 import { X } from 'lucide-react'
-import { Badge } from './badge'
 import { cn } from '@/lib/utils'
+import { Badge } from './badge'
 
 interface ChipFilterProps {
   label: string
@@ -55,7 +55,7 @@ export function ChipFilter({
           className="ml-1.5 transition-opacity hover:opacity-70"
           aria-label="Remover filtro"
         >
-          <X className="h-3 w-3" />
+          <X className="size-3" />
         </button>
       )}
     </Badge>

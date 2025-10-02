@@ -427,7 +427,7 @@ async function main() {
     pendente: 60,
   }
 
-  let rsvpCounter = { sim: 0, nao: 0, talvez: 0, pendente: 0 }
+  const rsvpCounter = { sim: 0, nao: 0, talvez: 0, pendente: 0 }
 
   for (const contact of allContacts) {
     let rsvpStatus: 'sim' | 'nao' | 'talvez' | 'pendente' = 'pendente'

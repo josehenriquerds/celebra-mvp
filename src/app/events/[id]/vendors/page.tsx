@@ -1,8 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import {
   ArrowLeft,
   Plus,
@@ -17,9 +14,12 @@ import {
   Mail,
   FileText,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatCurrency } from '@/lib/utils'
 
@@ -208,7 +208,7 @@ export default function VendorsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando fornecedores...</p>
         </div>
       </div>
@@ -224,7 +224,7 @@ export default function VendorsPage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -235,7 +235,7 @@ export default function VendorsPage() {
               </div>
             </div>
             <Button onClick={openCreateModal}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               Novo Fornecedor
             </Button>
           </div>
@@ -252,7 +252,7 @@ export default function VendorsPage() {
                   {editingVendor ? 'Editar Fornecedor' : 'Novo Fornecedor'}
                 </CardTitle>
                 <Button variant="ghost" size="icon" onClick={() => setShowModal(false)}>
-                  <X className="h-4 w-4" />
+                  <X className="size-4" />
                 </Button>
               </div>
             </CardHeader>
@@ -387,7 +387,7 @@ export default function VendorsPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <DollarSign className="text-celebre-brand h-8 w-8" />
+                <DollarSign className="text-celebre-brand size-8" />
                 <div>
                   <p className="text-sm text-celebre-muted">Valor Total Contratado</p>
                   <p className="text-2xl font-bold text-celebre-ink">
@@ -401,7 +401,7 @@ export default function VendorsPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <CheckCircle className="h-8 w-8 text-green-500" />
+                <CheckCircle className="size-8 text-green-500" />
                 <div>
                   <p className="text-sm text-celebre-muted">Total Pago</p>
                   <p className="text-2xl font-bold text-green-600">{formatCurrency(totalPaid)}</p>
@@ -413,7 +413,7 @@ export default function VendorsPage() {
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
-                <Clock className="h-8 w-8 text-yellow-500" />
+                <Clock className="size-8 text-yellow-500" />
                 <div>
                   <p className="text-sm text-celebre-muted">Pendente</p>
                   <p className="text-2xl font-bold text-yellow-600">
@@ -431,7 +431,7 @@ export default function VendorsPage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-celebre-muted" />
+                <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-celebre-muted" />
                 <Input
                   type="text"
                   placeholder="Buscar fornecedor..."
@@ -474,10 +474,10 @@ export default function VendorsPage() {
         {filteredVendors.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <FileText className="mx-auto mb-4 h-12 w-12 text-celebre-muted opacity-50" />
+              <FileText className="mx-auto mb-4 size-12 text-celebre-muted opacity-50" />
               <p className="text-celebre-muted">Nenhum fornecedor encontrado</p>
               <Button variant="outline" className="mt-4" onClick={openCreateModal}>
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 size-4" />
                 Adicionar Primeiro Fornecedor
               </Button>
             </CardContent>
@@ -499,30 +499,30 @@ export default function VendorsPage() {
                         onClick={() => openEditModal(vendor)}
                         className="hover:bg-celebre-accent rounded-lg p-2 transition-colors"
                       >
-                        <Edit2 className="h-4 w-4 text-celebre-muted" />
+                        <Edit2 className="size-4 text-celebre-muted" />
                       </button>
                       <button
                         onClick={() => handleDelete(vendor.id)}
                         className="rounded-lg p-2 transition-colors hover:bg-red-100"
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="size-4 text-red-500" />
                       </button>
                     </div>
                   </div>
 
                   <div className="mb-4 space-y-3">
                     <div className="flex items-center gap-2 text-sm text-celebre-muted">
-                      <Phone className="h-4 w-4" />
+                      <Phone className="size-4" />
                       <span>{vendor.phone || 'Sem telefone'}</span>
                     </div>
                     {vendor.email && (
                       <div className="flex items-center gap-2 text-sm text-celebre-muted">
-                        <Mail className="h-4 w-4" />
+                        <Mail className="size-4" />
                         <span className="truncate">{vendor.email}</span>
                       </div>
                     )}
                     <div className="flex items-center gap-2 text-sm text-celebre-muted">
-                      <FileText className="h-4 w-4" />
+                      <FileText className="size-4" />
                       <span>{vendor._count.tasks} tarefas vinculadas</span>
                     </div>
                   </div>

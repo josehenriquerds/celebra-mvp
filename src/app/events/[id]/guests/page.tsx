@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
 import {
   Search,
   Filter,
@@ -17,10 +15,12 @@ import {
   Plus,
   X,
 } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 interface Guest {
   id: string
@@ -270,7 +270,7 @@ export default function GuestsPage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -282,22 +282,22 @@ export default function GuestsPage() {
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setShowGroupModal(true)}>
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 size-4" />
                 Novo Grupo
               </Button>
               {selectedGuests.size > 0 && (
                 <Button variant="outline" size="sm" onClick={() => setShowAssignModal(true)}>
-                  <Tag className="mr-2 h-4 w-4" />
+                  <Tag className="mr-2 size-4" />
                   Atribuir Grupo ({selectedGuests.size})
                 </Button>
               )}
               <Button variant="outline" size="sm" onClick={handleExportCSV}>
-                <Download className="mr-2 h-4 w-4" />
+                <Download className="mr-2 size-4" />
                 Exportar CSV
               </Button>
               {selectedGuests.size > 0 && (
                 <Button size="sm" onClick={handleSendInvites}>
-                  <Send className="mr-2 h-4 w-4" />
+                  <Send className="mr-2 size-4" />
                   Enviar Convites ({selectedGuests.size})
                 </Button>
               )}
@@ -320,14 +320,14 @@ export default function GuestsPage() {
                   key={group.id}
                   className="group inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 transition-all hover:shadow-sm"
                 >
-                  <Tag className="text-celebre-brand h-4 w-4" />
+                  <Tag className="text-celebre-brand size-4" />
                   <span className="text-sm font-medium text-celebre-ink">{group.name}</span>
                   <span className="text-xs text-celebre-muted">({group.guestCount})</span>
                   <button
                     onClick={() => deleteGroup(group.id)}
                     className="ml-1 opacity-0 transition-opacity group-hover:opacity-100"
                   >
-                    <X className="h-3 w-3 text-red-500 hover:text-red-700" />
+                    <X className="size-3 text-red-500 hover:text-red-700" />
                   </button>
                 </div>
               ))}
@@ -354,7 +354,7 @@ export default function GuestsPage() {
                       : 'hover:bg-celebre-accent border-gray-300 bg-white text-celebre-ink'
                   }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="size-4" />
                   <span className="text-sm font-medium">{f.label}</span>
                 </button>
               )
@@ -363,7 +363,7 @@ export default function GuestsPage() {
 
           {/* Search Bar */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-celebre-muted" />
+            <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-celebre-muted" />
             <input
               type="text"
               placeholder="Buscar por nome, telefone ou email..."
@@ -380,13 +380,13 @@ export default function GuestsPage() {
         {/* Guests List */}
         {loading ? (
           <div className="py-12 text-center">
-            <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+            <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
             <p className="text-celebre-muted">Carregando convidados...</p>
           </div>
         ) : guests.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Users className="mx-auto mb-4 h-12 w-12 text-celebre-muted opacity-50" />
+              <Users className="mx-auto mb-4 size-12 text-celebre-muted opacity-50" />
               <p className="text-celebre-muted">Nenhum convidado encontrado</p>
               {(filter !== 'all' || search) && (
                 <Button
@@ -411,7 +411,7 @@ export default function GuestsPage() {
                 type="checkbox"
                 checked={selectedGuests.size === guests.length && guests.length > 0}
                 onChange={toggleSelectAll}
-                className="text-celebre-brand focus:ring-celebre-brand h-4 w-4 rounded border-gray-300"
+                className="text-celebre-brand focus:ring-celebre-brand size-4 rounded border-gray-300"
               />
               <span className="text-sm text-celebre-muted">Selecionar todos ({guests.length})</span>
             </div>
@@ -437,7 +437,7 @@ export default function GuestsPage() {
                             toggleSelectGuest(guest.id)
                           }}
                           onClick={(e) => e.stopPropagation()}
-                          className="text-celebre-brand focus:ring-celebre-brand mt-1 h-4 w-4 rounded border-gray-300"
+                          className="text-celebre-brand focus:ring-celebre-brand mt-1 size-4 rounded border-gray-300"
                         />
                         <div className="min-w-0 flex-1">
                           <div className="mb-1 flex items-center gap-2">
@@ -445,7 +445,7 @@ export default function GuestsPage() {
                               {guest.contact.fullName}
                             </h3>
                             {guest.contact.isVip && (
-                              <Star className="h-4 w-4 flex-shrink-0 fill-yellow-500 text-yellow-500" />
+                              <Star className="size-4 shrink-0 fill-yellow-500 text-yellow-500" />
                             )}
                           </div>
                           <p className="text-xs text-celebre-muted">{guest.contact.phone}</p>
@@ -476,13 +476,13 @@ export default function GuestsPage() {
                       )}
                       {guest.children > 0 && (
                         <Badge variant="outline" className="text-xs">
-                          <Baby className="mr-1 h-3 w-3" />
+                          <Baby className="mr-1 size-3" />
                           {guest.children}
                         </Badge>
                       )}
                       {guest.tags?.map((tag) => (
                         <Badge key={tag.id} variant="outline" className="bg-celebre-accent text-xs">
-                          <Tag className="mr-1 h-3 w-3" />
+                          <Tag className="mr-1 size-3" />
                           {tag.name}
                         </Badge>
                       ))}
@@ -592,7 +592,7 @@ export default function GuestsPage() {
                     className="hover:bg-celebre-accent flex w-full items-center justify-between rounded-xl border border-gray-300 px-4 py-3 transition-all"
                   >
                     <div className="flex items-center gap-2">
-                      <Tag className="text-celebre-brand h-4 w-4" />
+                      <Tag className="text-celebre-brand size-4" />
                       <span className="font-medium text-celebre-ink">{group.name}</span>
                     </div>
                     <span className="text-xs text-celebre-muted">

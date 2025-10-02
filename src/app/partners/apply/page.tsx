@@ -1,5 +1,5 @@
+import { type Metadata } from 'next'
 import { VendorApplyForm } from '@/components/vendors/VendorApplyForm'
-import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Cadastro de Parceiros | Celebre',

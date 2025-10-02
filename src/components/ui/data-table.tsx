@@ -1,11 +1,10 @@
 'use client'
 
-import * as React from 'react'
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -14,14 +13,15 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
+import * as React from 'react'
 import { Button } from './button'
-import { Input } from './input'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from './dropdown-menu'
+import { Input } from './input'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
-                Colunas <ChevronDown className="ml-2 h-4 w-4" />
+                Colunas <ChevronDown className="ml-2 size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -177,7 +177,7 @@ export function DataTable<TData, TValue>({
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <ChevronsLeft className="h-4 w-4" />
+            <ChevronsLeft className="size-4" />
           </Button>
           <Button
             variant="outline"
@@ -185,7 +185,7 @@ export function DataTable<TData, TValue>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="size-4" />
           </Button>
           <div className="text-sm font-medium">
             Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
@@ -196,7 +196,7 @@ export function DataTable<TData, TValue>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="size-4" />
           </Button>
           <Button
             variant="outline"
@@ -204,7 +204,7 @@ export function DataTable<TData, TValue>({
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <ChevronsRight className="h-4 w-4" />
+            <ChevronsRight className="size-4" />
           </Button>
         </div>
       </div>

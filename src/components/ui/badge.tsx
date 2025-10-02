@@ -1,5 +1,5 @@
-import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 const badgeVariants = cva(
@@ -9,19 +9,19 @@ const badgeVariants = cva(
       variant: {
         // Pastel variants (novos)
         default:
-          'bg-pastel-lavender-100 text-pastel-lavender-700 border border-pastel-lavender-200',
-        success: 'bg-pastel-mint-100 text-pastel-mint-700 border border-pastel-mint-200',
-        warning: 'bg-pastel-peach-100 text-pastel-peach-700 border border-pastel-peach-200',
-        danger: 'bg-pastel-coral-100 text-pastel-coral-700 border border-pastel-coral-200',
-        info: 'bg-pastel-sky-100 text-pastel-sky-700 border border-pastel-sky-200',
+          'border border-pastel-lavender-200 bg-pastel-lavender-100 text-pastel-lavender-700',
+        success: 'border border-pastel-mint-200 bg-pastel-mint-100 text-pastel-mint-700',
+        warning: 'border border-pastel-peach-200 bg-pastel-peach-100 text-pastel-peach-700',
+        danger: 'border border-pastel-coral-200 bg-pastel-coral-100 text-pastel-coral-700',
+        info: 'border border-pastel-sky-200 bg-pastel-sky-100 text-pastel-sky-700',
 
         // Legacy variants
-        secondary: 'bg-secondary text-secondary-foreground border-transparent',
-        destructive: 'bg-destructive text-destructive-foreground border-transparent',
-        outline: 'text-foreground border border-input',
-        bronze: 'bg-orange-100 text-orange-800 border border-orange-200',
-        prata: 'bg-gray-200 text-gray-800 border border-gray-300',
-        ouro: 'bg-yellow-100 text-yellow-900 border border-yellow-200',
+        secondary: 'border-transparent bg-secondary text-secondary-foreground',
+        destructive: 'border-transparent bg-destructive text-destructive-foreground',
+        outline: 'border border-input text-foreground',
+        bronze: 'border border-orange-200 bg-orange-100 text-orange-800',
+        prata: 'border border-gray-300 bg-gray-200 text-gray-800',
+        ouro: 'border border-yellow-200 bg-yellow-100 text-yellow-900',
       },
       size: {
         sm: 'px-2 py-0.5 text-xs',

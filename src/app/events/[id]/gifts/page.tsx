@@ -1,9 +1,9 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import { ArrowLeft, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import {
@@ -138,7 +138,7 @@ export default function GiftsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando presentes...</p>
         </div>
       </div>
@@ -154,7 +154,7 @@ export default function GiftsPage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -167,7 +167,7 @@ export default function GiftsPage() {
               </div>
             </div>
             <Button onClick={handleCreateClick}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               Novo Presente
             </Button>
           </div>

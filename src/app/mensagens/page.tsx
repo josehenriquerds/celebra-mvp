@@ -1,5 +1,4 @@
 'use client'
-import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   MessageCircle,
@@ -12,6 +11,7 @@ import {
   PartyPopper,
   Star,
 } from 'lucide-react'
+import { useState, useRef } from 'react'
 
 interface Mensagem {
   id: number
@@ -161,7 +161,7 @@ export default function MensagensPage() {
         />
         {imagem && (
           <div className="flex items-center gap-2">
-            <img src={imagem} alt="Preview" className="h-16 w-16 rounded-lg border object-cover" />
+            <img src={imagem} alt="Preview" className="size-16 rounded-lg border object-cover" />
             <button
               type="button"
               onClick={() => setImagem(null)}
@@ -236,7 +236,7 @@ export default function MensagensPage() {
                 <img
                   src={msg.imagem}
                   alt="Imagem da mensagem"
-                  className="mt-2 h-32 w-32 rounded-lg border object-cover"
+                  className="mt-2 size-32 rounded-lg border object-cover"
                 />
               )}
               <div className="mt-1 flex gap-2">

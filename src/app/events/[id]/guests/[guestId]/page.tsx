@@ -1,8 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import {
   ArrowLeft,
   Baby,
@@ -19,6 +16,9 @@ import {
   Users,
   X,
 } from 'lucide-react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -101,7 +101,7 @@ export default function GuestProfilePage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando perfil...</p>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function GuestProfilePage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}/guests`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -141,7 +141,7 @@ export default function GuestProfilePage() {
                     {guest.contact.fullName}
                   </h1>
                   {guest.contact.isVip && (
-                    <Star className="h-6 w-6 fill-yellow-500 text-yellow-500" />
+                    <Star className="size-6 fill-yellow-500 text-yellow-500" />
                   )}
                 </div>
                 <p className="mt-1 text-sm text-celebre-muted">
@@ -154,22 +154,22 @@ export default function GuestProfilePage() {
               {!editing ? (
                 <>
                   <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                    <Edit className="mr-2 h-4 w-4" />
+                    <Edit className="mr-2 size-4" />
                     Editar
                   </Button>
                   <Button variant="outline" size="sm">
-                    <Send className="mr-2 h-4 w-4" />
+                    <Send className="mr-2 size-4" />
                     Enviar Mensagem
                   </Button>
                 </>
               ) : (
                 <>
                   <Button variant="outline" size="sm" onClick={() => setEditing(false)}>
-                    <X className="mr-2 h-4 w-4" />
+                    <X className="mr-2 size-4" />
                     Cancelar
                   </Button>
                   <Button size="sm" onClick={handleSave} disabled={updateMutation.isPending}>
-                    <Save className="mr-2 h-4 w-4" />
+                    <Save className="mr-2 size-4" />
                     {updateMutation.isPending ? 'Salvando...' : 'Salvar'}
                   </Button>
                 </>
@@ -200,7 +200,7 @@ export default function GuestProfilePage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <Phone className="h-5 w-5 text-celebre-muted" />
+                    <Phone className="size-5 text-celebre-muted" />
                     <div>
                       <p className="text-xs text-celebre-muted">Telefone</p>
                       <p className="font-medium">{guest.contact.phone}</p>
@@ -208,7 +208,7 @@ export default function GuestProfilePage() {
                   </div>
                   {guest.contact.email && (
                     <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-celebre-muted" />
+                      <Mail className="size-5 text-celebre-muted" />
                       <div>
                         <p className="text-xs text-celebre-muted">Email</p>
                         <p className="font-medium">{guest.contact.email}</p>
@@ -217,7 +217,7 @@ export default function GuestProfilePage() {
                   )}
                   {guest.household && (
                     <div className="flex items-center gap-3">
-                      <Users className="h-5 w-5 text-celebre-muted" />
+                      <Users className="size-5 text-celebre-muted" />
                       <div>
                         <p className="text-xs text-celebre-muted">Família</p>
                         <p className="font-medium">
@@ -280,7 +280,7 @@ export default function GuestProfilePage() {
                   ) : (
                     <>
                       <div className="flex items-center gap-3">
-                        <Users className="h-5 w-5 text-celebre-muted" />
+                        <Users className="size-5 text-celebre-muted" />
                         <div>
                           <p className="text-xs text-celebre-muted">Assentos</p>
                           <p className="font-medium">{guest.seats}</p>
@@ -288,7 +288,7 @@ export default function GuestProfilePage() {
                       </div>
                       {guest.children > 0 && (
                         <div className="flex items-center gap-3">
-                          <Baby className="h-5 w-5 text-celebre-muted" />
+                          <Baby className="size-5 text-celebre-muted" />
                           <div>
                             <p className="text-xs text-celebre-muted">Crianças</p>
                             <p className="font-medium">{guest.children}</p>
@@ -334,7 +334,7 @@ export default function GuestProfilePage() {
               <CardContent>
                 {!guest.timeline || guest.timeline.length === 0 ? (
                   <div className="py-8 text-center text-celebre-muted">
-                    <Clock className="mx-auto mb-2 h-12 w-12 opacity-50" />
+                    <Clock className="mx-auto mb-2 size-12 opacity-50" />
                     <p>Nenhuma interação registrada</p>
                   </div>
                 ) : (
@@ -347,7 +347,7 @@ export default function GuestProfilePage() {
                           className="hover:bg-celebre-accent/20 flex items-start gap-4 rounded-lg border p-4 transition-colors"
                         >
                           <div className="mt-1">
-                            <Icon className="h-5 w-5 text-celebre-muted" />
+                            <Icon className="size-5 text-celebre-muted" />
                           </div>
                           <div className="flex-1">
                             <p className="font-medium text-celebre-ink">{item.title}</p>
@@ -378,7 +378,7 @@ export default function GuestProfilePage() {
                 {guest.seatAssignment ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 text-celebre-muted" />
+                      <MapPin className="size-5 text-celebre-muted" />
                       <div>
                         <p className="text-xs text-celebre-muted">Mesa</p>
                         <p className="text-lg font-medium">
@@ -387,20 +387,20 @@ export default function GuestProfilePage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Users className="h-5 w-5 text-celebre-muted" />
+                      <Users className="size-5 text-celebre-muted" />
                       <div>
                         <p className="text-xs text-celebre-muted">Assento</p>
                         <p className="font-medium">#{guest.seatAssignment.seat.index + 1}</p>
                       </div>
                     </div>
                     <Button variant="outline" size="sm" className="mt-4">
-                      <MapPin className="mr-2 h-4 w-4" />
+                      <MapPin className="mr-2 size-4" />
                       Ver no Planner de Mesas
                     </Button>
                   </div>
                 ) : (
                   <div className="py-8 text-center text-celebre-muted">
-                    <MapPin className="mx-auto mb-2 h-12 w-12 opacity-50" />
+                    <MapPin className="mx-auto mb-2 size-12 opacity-50" />
                     <p>Assento não alocado</p>
                     <Button variant="outline" size="sm" className="mt-4">
                       Alocar Assento
@@ -488,7 +488,7 @@ export default function GuestProfilePage() {
               <CardContent>
                 {!guest.consentLogs || guest.consentLogs.length === 0 ? (
                   <div className="py-8 text-center text-celebre-muted">
-                    <Shield className="mx-auto mb-2 h-12 w-12 opacity-50" />
+                    <Shield className="mx-auto mb-2 size-12 opacity-50" />
                     <p>Nenhum log de consentimento registrado</p>
                   </div>
                 ) : (

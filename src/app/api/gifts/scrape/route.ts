@@ -1,7 +1,7 @@
-import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { GiftScraperError, scrapeProduct } from '@/server/gifts/scraper'
+import type { NextRequest } from 'next/server'
 
 const requestSchema = z.object({
   url: z.string({ required_error: 'Informe a URL da loja' }).url('URL inválida'),

@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client'
-import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { prisma } from '@/lib/prisma'
 import { addOfferToGift, getGiftOffers } from '@/server/gifts/offers'
 import { GiftScraperError, scrapeProduct } from '@/server/gifts/scraper'
-import { prisma } from '@/lib/prisma'
+import type { NextRequest } from 'next/server'
 
 const createOfferSchema = z.object({
   url: z.string({ required_error: 'Informe a URL da loja' }).url('URL inválida'),

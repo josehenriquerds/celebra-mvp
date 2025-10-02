@@ -1,10 +1,10 @@
 'use client'
 
-import * as React from 'react'
-import { LucideIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { type LucideIcon } from 'lucide-react'
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 interface TimelineItemProps {
   icon: LucideIcon
@@ -38,7 +38,7 @@ export function TimelineItem({
 
       {/* Icon */}
       <div className={cn('relative z-10 flex-shrink-0 rounded-full p-2', iconColor)}>
-        <Icon className="h-5 w-5 text-white" />
+        <Icon className="size-5 text-white" />
       </div>
 
       {/* Content */}

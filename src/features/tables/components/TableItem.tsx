@@ -3,7 +3,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { Edit2, Trash2 } from 'lucide-react'
-
 import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 import { DroppableSeat } from './DroppableSeat'
@@ -77,7 +76,7 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
           className={cn(actionButtonClasses, 'bg-blue-500 hover:bg-blue-600')}
           title="Editar"
         >
-          <Edit2 className="h-3 w-3" aria-hidden="true" />
+          <Edit2 className="size-3" aria-hidden="true" />
           <span className="sr-only">Editar mesa</span>
         </button>
         <button
@@ -88,7 +87,7 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
           className={cn(actionButtonClasses, 'bg-red-500 hover:bg-red-600')}
           title="Excluir"
         >
-          <Trash2 className="h-3 w-3" aria-hidden="true" />
+          <Trash2 className="size-3" aria-hidden="true" />
           <span className="sr-only">Excluir mesa</span>
         </button>
       </div>

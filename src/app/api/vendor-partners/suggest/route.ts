@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { suggestVendors } from '@/lib/vendor-suggestions'
+import { type NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { suggestVendors } from '@/lib/vendor-suggestions'
 
 const suggestSchema = z.object({
   eventId: z.string().optional(),

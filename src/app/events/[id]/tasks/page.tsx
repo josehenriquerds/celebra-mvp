@@ -1,8 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import {
   DndContext,
   DragOverlay,
@@ -10,10 +7,9 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  DragStartEvent,
-  DragEndEvent,
-} from '@dnd-kit/core'
-import { useDroppable, useDraggable } from '@dnd-kit/core'
+  type DragStartEvent,
+  type DragEndEvent,
+ useDroppable, useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import {
   ArrowLeft,
@@ -25,9 +21,12 @@ import {
   User,
   DollarSign,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatDate, formatTime, getSLABadgeColor } from '@/lib/utils'
 
@@ -88,7 +87,7 @@ function DraggableTask({ task }: { task: Task }) {
       <div className="space-y-1">
         {task.dueAt && (
           <div className="flex items-center gap-2 text-xs text-celebre-muted">
-            <Calendar className="h-3 w-3" />
+            <Calendar className="size-3" />
             <span>
               {formatDate(task.dueAt)} às {formatTime(task.dueAt)}
             </span>
@@ -96,7 +95,7 @@ function DraggableTask({ task }: { task: Task }) {
         )}
         {task.assignedTo && (
           <div className="flex items-center gap-2 text-xs text-celebre-muted">
-            <User className="h-3 w-3" />
+            <User className="size-3" />
             <span>{task.assignedTo}</span>
           </div>
         )}
@@ -108,7 +107,7 @@ function DraggableTask({ task }: { task: Task }) {
         )}
         {task.cost && (
           <div className="flex items-center gap-2 text-xs text-celebre-muted">
-            <DollarSign className="h-3 w-3" />
+            <DollarSign className="size-3" />
             <span>R$ {task.cost.toFixed(2)}</span>
           </div>
         )}
@@ -142,7 +141,7 @@ function DroppableColumn({
       className={`bg-celebre-accent/20 min-w-[300px] flex-1 rounded-xl p-4 ${isOver ? 'ring-celebre-brand ring-2' : ''}`}
     >
       <div className="mb-4 flex items-center gap-2">
-        <Icon className={`h-5 w-5 ${color}`} />
+        <Icon className={`size-5 ${color}`} />
         <h2 className="font-heading font-semibold text-celebre-ink">{title}</h2>
         <Badge variant="outline" className="ml-auto">
           {tasks.length}
@@ -282,7 +281,7 @@ export default function TasksPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando tarefas...</p>
         </div>
       </div>
@@ -301,7 +300,7 @@ export default function TasksPage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -314,7 +313,7 @@ export default function TasksPage() {
               </div>
             </div>
             <Button size="sm" onClick={() => setShowNewTaskForm(true)}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               Nova Tarefa
             </Button>
           </div>

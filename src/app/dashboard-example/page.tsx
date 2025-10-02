@@ -17,12 +17,12 @@ import {
   Settings,
   Heart,
 } from 'lucide-react'
-import { Hero } from '@/components/ui/hero'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Stat } from '@/components/ui/stat'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Hero } from '@/components/ui/hero'
 import { NavigationRail } from '@/components/ui/navigation-rail'
+import { Stat } from '@/components/ui/stat'
 import { Topbar } from '@/components/ui/topbar'
 
 // Dados de exemplo
@@ -171,15 +171,15 @@ export default function DashboardExamplePage() {
             <h2 className="mb-6 text-2xl font-bold text-celebre-ink">Ações Rápidas</h2>
             <div className="flex flex-wrap gap-4">
               <Button variant="primary" size="lg">
-                <Users className="mr-2 h-5 w-5" />
+                <Users className="mr-2 size-5" />
                 Adicionar Convidado
               </Button>
               <Button variant="soft" size="lg">
-                <Calendar className="mr-2 h-5 w-5" />
+                <Calendar className="mr-2 size-5" />
                 Nova Tarefa
               </Button>
               <Button variant="outline" size="lg">
-                <Heart className="mr-2 h-5 w-5" />
+                <Heart className="mr-2 size-5" />
                 Buscar Fornecedor
               </Button>
               <Button variant="ghost" size="lg">

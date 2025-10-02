@@ -1,4 +1,4 @@
-import { LucideIcon } from 'lucide-react'
+import { type LucideIcon } from 'lucide-react'
 import { Button } from './button'
 
 interface EmptyStateProps {
@@ -25,7 +25,7 @@ export function EmptyState({
     >
       {Icon && (
         <div className="mb-4 rounded-2xl bg-secondary/50 p-6">
-          <Icon className="h-10 w-10 text-muted-foreground" />
+          <Icon className="size-10 text-muted-foreground" />
         </div>
       )}
       <h3 className="mb-2 text-lg font-semibold text-foreground">{title}</h3>

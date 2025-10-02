@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/tables/:id - Update table position or properties

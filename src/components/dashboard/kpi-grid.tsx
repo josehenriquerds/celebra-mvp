@@ -1,6 +1,6 @@
-import { StatCard } from './stat-card'
-import { DonutChart } from '@/components/ui/donut-chart'
 import { Users, DollarSign, CheckSquare, Calendar } from 'lucide-react'
+import { DonutChart } from '@/components/ui/donut-chart'
+import { StatCard } from './stat-card'
 
 interface KPIData {
   rsvps: {

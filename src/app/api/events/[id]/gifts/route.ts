@@ -1,7 +1,6 @@
-import type { NextRequest } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import {
   createGiftWithPrimaryOffer,
@@ -18,6 +17,7 @@ import {
   serializeGift,
   type GiftWithRelations,
 } from '@/server/gifts/serializer'
+import type { NextRequest } from 'next/server'
 
 const STATUS_VALUES = ['disponivel', 'reservado', 'comprado', 'recebido'] as const
 

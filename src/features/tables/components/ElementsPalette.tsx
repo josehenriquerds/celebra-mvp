@@ -12,7 +12,6 @@ import {
   WineIcon,
   Camera,
 } from 'lucide-react'
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import type { ElementType } from '@/schemas'
@@ -131,12 +130,12 @@ function DraggableElement({ element }: { element: ElementDef }) {
       title={element.label}
     >
       <div
-        className="flex h-12 w-12 items-center justify-center rounded-lg transition-colors duration-200 ease-smooth"
+        className="flex size-12 items-center justify-center rounded-lg transition-colors duration-200 ease-smooth"
         style={{ backgroundColor: `${element.color}20` }}
       >
-        <Icon className="h-6 w-6" color={element.color} aria-hidden="true" />
+        <Icon className="size-6" color={element.color} aria-hidden="true" />
       </div>
-      <span className="text-center text-xs font-medium text-celebre-ink transition-colors duration-200 ease-smooth group-hover:text-celebre-ink/80">
+      <span className="group-hover:text-celebre-ink/80 text-center text-xs font-medium text-celebre-ink transition-colors duration-200 ease-smooth">
         {element.label}
       </span>
     </div>

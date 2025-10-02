@@ -1,9 +1,9 @@
 import { Prisma } from '@prisma/client'
-import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '@/lib/prisma'
 import { GiftScraperError } from '@/server/gifts/scraper'
+import type { NextRequest } from 'next/server'
 
 const STATUS_VALUES = ['disponivel', 'reservado', 'comprado', 'recebido'] as const
 

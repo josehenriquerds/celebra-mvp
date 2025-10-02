@@ -86,7 +86,7 @@ export function GiftCard({
           <img
             src={gift.imageUrl}
             alt={gift.title}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            className="size-full object-cover transition duration-300 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-[#8AA0B8]">
@@ -113,7 +113,7 @@ export function GiftCard({
               type="button"
               onClick={() => onToggleSelect(gift)}
               aria-pressed={isSelected}
-              className={`h-8 w-8 rounded-full border-2 ${isSelected ? 'border-[#3F8F6B] bg-[#E9F6F0]' : 'border-white bg-white/80'} backdrop-blur transition hover:border-[#3F8F6B]`}
+              className={`size-8 rounded-full border-2 ${isSelected ? 'border-[#3F8F6B] bg-[#E9F6F0]' : 'border-white bg-white/80'} backdrop-blur transition hover:border-[#3F8F6B]`}
             />
           ) : null}
         </div>
@@ -157,22 +157,22 @@ export function GiftCard({
         <div className="mt-4 flex items-center justify-between">
           <div className="flex flex-wrap items-center gap-2 text-xs text-[#5B6C92]">
             <div className="inline-flex items-center gap-1 rounded-full bg-[#EEF3FB] px-3 py-1">
-              <Users className="h-4 w-4" /> {gift.reservationsCount ?? 0} reservas
+              <Users className="size-4" /> {gift.reservationsCount ?? 0} reservas
             </div>
             <div className="inline-flex items-center gap-1 rounded-full bg-[#F9F2EA] px-3 py-1">
-              <ShoppingBag className="h-4 w-4" /> {gift.purchasesCount ?? 0} compras
+              <ShoppingBag className="size-4" /> {gift.purchasesCount ?? 0} compras
             </div>
           </div>
           <div className="flex items-center gap-2">
             {onEdit ? (
               <Button variant="outline" size="sm" onClick={() => onEdit(gift)}>
-                <Pencil className="mr-2 h-4 w-4" /> Editar
+                <Pencil className="mr-2 size-4" /> Editar
               </Button>
             ) : null}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="hover:bg-[#EDF3FF]">
-                  <MoreHorizontal className="h-5 w-5" />
+                  <MoreHorizontal className="size-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">

@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import {
   Clock,
   MessageSquare,
@@ -16,8 +14,11 @@ import {
   Users,
   Activity,
 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -26,7 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
 import { formatDate, formatTime } from '@/lib/utils'
 
 interface TimelineItem {
@@ -134,7 +134,7 @@ export default function EventTimelinePage() {
           </p>
         </div>
         <Button variant="outline" onClick={handleExport}>
-          <Download className="mr-2 h-4 w-4" />
+          <Download className="mr-2 size-4" />
           Exportar
         </Button>
       </div>
@@ -145,7 +145,7 @@ export default function EventTimelinePage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-gray-600" />
+                <Activity className="size-5 text-gray-600" />
                 <div>
                   <p className="text-2xl font-bold text-celebre-ink">{stats.total}</p>
                   <p className="text-xs text-celebre-muted">Total</p>
@@ -156,7 +156,7 @@ export default function EventTimelinePage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Clock className="h-5 w-5 text-blue-600" />
+                <Clock className="size-5 text-blue-600" />
                 <div>
                   <p className="text-2xl font-bold text-celebre-ink">{stats.timeline}</p>
                   <p className="text-xs text-celebre-muted">Timeline</p>
@@ -167,7 +167,7 @@ export default function EventTimelinePage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-purple-600" />
+                <MessageSquare className="size-5 text-purple-600" />
                 <div>
                   <p className="text-2xl font-bold text-celebre-ink">{stats.interactions}</p>
                   <p className="text-xs text-celebre-muted">Interações</p>
@@ -178,7 +178,7 @@ export default function EventTimelinePage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+                <CheckCircle className="size-5 text-green-600" />
                 <div>
                   <p className="text-2xl font-bold text-celebre-ink">{stats.checkins}</p>
                   <p className="text-xs text-celebre-muted">Check-ins</p>
@@ -189,7 +189,7 @@ export default function EventTimelinePage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Gift className="h-5 w-5 text-pink-600" />
+                <Gift className="size-5 text-pink-600" />
                 <div>
                   <p className="text-2xl font-bold text-celebre-ink">{stats.gifts}</p>
                   <p className="text-xs text-celebre-muted">Presentes</p>
@@ -200,7 +200,7 @@ export default function EventTimelinePage() {
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <ClipboardList className="h-5 w-5 text-orange-600" />
+                <ClipboardList className="size-5 text-orange-600" />
                 <div>
                   <p className="text-2xl font-bold text-celebre-ink">{stats.tasks}</p>
                   <p className="text-xs text-celebre-muted">Tarefas</p>
@@ -217,7 +217,7 @@ export default function EventTimelinePage() {
           <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-celebre-muted" />
+                <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-celebre-muted" />
                 <Input
                   placeholder="Buscar por convidado, título ou descrição..."
                   value={searchQuery}
@@ -237,7 +237,7 @@ export default function EventTimelinePage() {
                     return (
                       <SelectItem key={option.value} value={option.value}>
                         <div className="flex items-center gap-2">
-                          <Icon className="h-4 w-4" />
+                          <Icon className="size-4" />
                           {option.label}
                         </div>
                       </SelectItem>
@@ -262,12 +262,12 @@ export default function EventTimelinePage() {
         <CardContent>
           {loading ? (
             <div className="py-12 text-center">
-              <div className="border-celebre-brand mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+              <div className="border-celebre-brand mx-auto mb-4 size-8 animate-spin rounded-full border-b-2"></div>
               <p className="text-celebre-muted">Carregando timeline...</p>
             </div>
           ) : timeline.length === 0 ? (
             <div className="py-12 text-center">
-              <Activity className="mx-auto mb-4 h-12 w-12 text-celebre-muted" />
+              <Activity className="mx-auto mb-4 size-12 text-celebre-muted" />
               <p className="text-celebre-muted">Nenhuma atividade encontrada</p>
             </div>
           ) : (
@@ -285,9 +285,9 @@ export default function EventTimelinePage() {
 
                     {/* Icon */}
                     <div
-                      className={`h-10 w-10 flex-shrink-0 rounded-full ${colorClass} z-10 flex items-center justify-center`}
+                      className={`size-10 shrink-0 rounded-full ${colorClass} z-10 flex items-center justify-center`}
                     >
-                      <Icon className="h-5 w-5" />
+                      <Icon className="size-5" />
                     </div>
 
                     {/* Content */}
@@ -305,11 +305,11 @@ export default function EventTimelinePage() {
                           )}
                           <div className="flex items-center gap-4 text-xs text-celebre-muted">
                             <span className="flex items-center gap-1">
-                              <Users className="h-3 w-3" />
+                              <Users className="size-3" />
                               {item.contactName}
                             </span>
                             <span className="flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
+                              <Calendar className="size-3" />
                               {formatDate(item.occurredAt, 'short')} às{' '}
                               {formatTime(item.occurredAt)}
                             </span>

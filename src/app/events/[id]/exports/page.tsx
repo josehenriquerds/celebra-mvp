@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import jsPDF from 'jspdf'
 import {
   ArrowLeft,
   Download,
@@ -13,12 +11,14 @@ import {
   QrCode,
   Loader2,
 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import jsPDF from 'jspdf'
-import 'jspdf-autotable'
-import * as XLSX from 'xlsx'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import QRCodeLib from 'qrcode'
+import { useState } from 'react'
+import * as XLSX from 'xlsx'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import 'jspdf-autotable'
 
 declare module 'jspdf' {
   interface jsPDF {
@@ -328,7 +328,7 @@ export default function ExportsPage() {
           <div className="flex items-center gap-4">
             <Link href={`/events/${eventId}`}>
               <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="size-5" />
               </Button>
             </Link>
             <div>
@@ -352,7 +352,7 @@ export default function ExportsPage() {
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`rounded-xl bg-gray-100 p-3 ${exp.color}`}>
-                        <Icon className="h-6 w-6" />
+                        <Icon className="size-6" />
                       </div>
                       <div>
                         <CardTitle className="font-heading">{exp.title}</CardTitle>
@@ -365,12 +365,12 @@ export default function ExportsPage() {
                   <Button onClick={exp.handler} disabled={loading !== null} className="w-full">
                     {loading === exp.id ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 size-4 animate-spin" />
                         Exportando...
                       </>
                     ) : (
                       <>
-                        <Download className="mr-2 h-4 w-4" />
+                        <Download className="mr-2 size-4" />
                         Baixar
                       </>
                     )}

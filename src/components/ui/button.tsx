@@ -1,6 +1,6 @@
-import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
@@ -10,10 +10,10 @@ const buttonVariants = cva(
       variant: {
         // Primary: gradiente sutil + elevação
         primary:
-          'bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-white shadow-md hover:shadow-lg hover:from-pastel-lavender-500 hover:to-pastel-lavender-600',
+          'bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-white shadow-md hover:from-pastel-lavender-500 hover:to-pastel-lavender-600 hover:shadow-lg',
 
         // Soft: fundo pastel suave
-        soft: 'bg-pastel-lavender-100 text-pastel-lavender-700 hover:bg-pastel-lavender-200 shadow-sm hover:shadow-md',
+        soft: 'bg-pastel-lavender-100 text-pastel-lavender-700 shadow-sm hover:bg-pastel-lavender-200 hover:shadow-md',
 
         // Ghost: transparente
         ghost: 'hover:bg-pastel-lavender-50 hover:text-pastel-lavender-700',
@@ -28,21 +28,21 @@ const buttonVariants = cva(
 
         // Outline
         outline:
-          'border-2 border-pastel-lavender-300 bg-transparent hover:bg-pastel-lavender-50 text-pastel-lavender-700',
+          'border-2 border-pastel-lavender-300 bg-transparent text-pastel-lavender-700 hover:bg-pastel-lavender-50',
 
         // Link
         link: 'text-pastel-lavender-600 underline-offset-4 hover:underline',
 
         // Legacy (compatibilidade)
-        default: 'bg-celebre-brand text-white hover:bg-celebre-brand/90 shadow-md',
-        secondary: 'bg-celebre-accent text-celebre-ink hover:bg-celebre-accent-2',
+        default: 'bg-celebre-brand hover:bg-celebre-brand/90 text-white shadow-md',
+        secondary: 'bg-celebre-accent hover:bg-celebre-accent-2 text-celebre-ink',
       },
       size: {
         sm: 'h-8 px-4 text-xs',
         default: 'h-10 px-6',
         lg: 'h-12 px-8 text-base',
         xl: 'h-14 px-10 text-lg',
-        icon: 'h-10 w-10',
+        icon: 'size-10',
       },
     },
     defaultVariants: {

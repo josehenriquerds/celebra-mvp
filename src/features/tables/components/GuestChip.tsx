@@ -3,7 +3,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { Baby, Star, Users } from 'lucide-react'
-
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import type { UnassignedGuest } from '@/schemas'
@@ -38,7 +37,7 @@ export function GuestChip({ guest }: GuestChipProps) {
     >
       <div className="flex items-center gap-2">
         {guest.contact.isVip && (
-          <Star className="h-4 w-4 text-yellow-500 transition-colors duration-200 ease-smooth group-hover:text-yellow-600" />
+          <Star className="size-4 text-yellow-500 transition-colors duration-200 ease-smooth group-hover:text-yellow-600" />
         )}
         <span className="truncate text-sm font-medium transition-colors duration-200 ease-smooth group-hover:text-celebre-ink">
           {guest.contact.fullName}
@@ -49,12 +48,12 @@ export function GuestChip({ guest }: GuestChipProps) {
       )}
       <div className="mt-2 flex items-center gap-2">
         <Badge variant="outline" className="flex items-center gap-1 text-xs">
-          <Users className="h-3 w-3" aria-hidden="true" />
+          <Users className="size-3" aria-hidden="true" />
           {guest.seats}
         </Badge>
         {guest.children > 0 && (
           <Badge variant="outline" className="flex items-center gap-1 text-xs">
-            <Baby className="h-3 w-3" aria-hidden="true" />
+            <Baby className="size-3" aria-hidden="true" />
             {guest.children}
           </Badge>
         )}

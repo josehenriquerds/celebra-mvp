@@ -1,6 +1,6 @@
-import type { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { GiftScraperError, scrapeProduct, type ScrapedProduct } from './scraper'
+import type { Prisma } from '@prisma/client'
 
 const DEFAULT_CURRENCY = 'BRL'
 

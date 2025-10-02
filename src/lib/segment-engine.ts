@@ -1,4 +1,4 @@
-import { RsvpStatus, ContactRelation } from '@prisma/client'
+import { type RsvpStatus, type ContactRelation } from '@prisma/client'
 
 export interface SegmentRule {
   field: string

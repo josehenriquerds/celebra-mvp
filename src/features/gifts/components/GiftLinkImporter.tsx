@@ -1,12 +1,12 @@
-﻿import { useEffect, useMemo, useState } from 'react'
-import { Link2, Loader2, RefreshCcw } from 'lucide-react'
+﻿import { Link2, Loader2, RefreshCcw } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
+import { BestPriceBadge } from './BestPriceBadge'
 import { useScrapeGiftLink } from '../hooks/useGifts'
 import type { ScrapedGiftProduct } from '../services/gifts.api'
-import { BestPriceBadge } from './BestPriceBadge'
 
 interface GiftLinkImporterProps {
   initialUrl?: string
@@ -71,14 +71,14 @@ export function GiftLinkImporter({ initialUrl = '', onImported, onImageSelected,
           </div>
           {result ? (
             <Button type="button" variant="ghost" size="icon" onClick={handleReset}>
-              <RefreshCcw className="h-4 w-4" />
+              <RefreshCcw className="size-4" />
             </Button>
           ) : null}
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           <div className="flex-1">
             <div className="relative">
-              <Link2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8AA0B8]" />
+              <Link2 className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#8AA0B8]" />
               <Input
                 value={url}
                 onChange={(event) => setUrl(event.target.value)}
@@ -91,7 +91,7 @@ export function GiftLinkImporter({ initialUrl = '', onImported, onImageSelected,
           <Button type="submit" disabled={!url || scrapeMutation.isPending}>
             {scrapeMutation.isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Buscando...
+                <Loader2 className="mr-2 size-4 animate-spin" /> Buscando...
               </>
             ) : (
               'Buscar'
@@ -122,7 +122,7 @@ export function GiftLinkImporter({ initialUrl = '', onImported, onImageSelected,
           <div className="space-y-2">
             <div className="aspect-square overflow-hidden rounded-2xl border border-[#E5EEF5] bg-[#F5F9FC]">
               {selectedImage ? (
-                <img src={selectedImage} alt={result.title} className="h-full w-full object-cover" />
+                <img src={selectedImage} alt={result.title} className="size-full object-cover" />
               ) : (
                 <div className="flex h-full items-center justify-center text-xs text-[#8AA0B8]">
                   Sem imagem

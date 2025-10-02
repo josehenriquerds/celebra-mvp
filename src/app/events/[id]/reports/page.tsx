@@ -1,8 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import {
   ArrowLeft,
   Users,
@@ -12,6 +9,9 @@ import {
   Gift,
   CheckCircle,
 } from 'lucide-react'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import {
   BarChart,
   Bar,
@@ -27,8 +27,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/utils'
 
 interface ReportData {
@@ -88,7 +88,7 @@ export default function ReportsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando relatórios...</p>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default function ReportsPage() {
           <div className="flex items-center gap-4">
             <Link href={`/events/${eventId}`}>
               <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-5 w-5" />
+                <ArrowLeft className="size-5" />
               </Button>
             </Link>
             <div>
@@ -130,7 +130,7 @@ export default function ReportsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-heading flex items-center gap-2">
-              <Users className="h-5 w-5" />
+              <Users className="size-5" />
               Confirmações vs Presença
             </CardTitle>
             <CardDescription>Comparação entre RSVPs e check-ins realizados</CardDescription>
@@ -172,7 +172,7 @@ export default function ReportsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-heading flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
+                <MessageSquare className="size-5" />
                 Mensagens por Dia
               </CardTitle>
               <CardDescription>Volume de interações ao longo do tempo</CardDescription>
@@ -207,7 +207,7 @@ export default function ReportsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-heading flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
+                <TrendingUp className="size-5" />
                 Engajamento por Tier
               </CardTitle>
               <CardDescription>Distribuição de convidados por nível</CardDescription>
@@ -242,7 +242,7 @@ export default function ReportsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-heading flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
+                <DollarSign className="size-5" />
                 Custo por Convidado
               </CardTitle>
               <CardDescription>Análise financeira do evento</CardDescription>
@@ -278,7 +278,7 @@ export default function ReportsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="font-heading flex items-center gap-2">
-                <Gift className="h-5 w-5" />
+                <Gift className="size-5" />
                 Conversão de Presentes
               </CardTitle>
               <CardDescription>Status da lista de presentes</CardDescription>
@@ -329,7 +329,7 @@ export default function ReportsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-heading flex items-center gap-2">
-              <CheckCircle className="h-5 w-5" />
+              <CheckCircle className="size-5" />
               Taxa de Resposta por Segmento
             </CardTitle>
             <CardDescription>Engajamento por categoria de convidados</CardDescription>

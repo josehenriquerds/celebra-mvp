@@ -1,7 +1,6 @@
 'use client'
 
 import { useDroppable } from '@dnd-kit/core'
-
 import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 import { TableItem } from './TableItem'

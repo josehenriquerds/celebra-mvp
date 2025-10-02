@@ -1,9 +1,9 @@
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { type Metadata } from 'next'
 import Image from 'next/image'
+import { notFound } from 'next/navigation'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 
 interface VendorPublicData {
   slug: string
@@ -83,15 +83,15 @@ export default async function VendorPortfolioPage({ params }: { params: { slug: 
         {vendor.cover ? (
           <Image src={vendor.cover} alt={vendor.companyName} fill className="object-cover" />
         ) : (
-          <div className="h-full w-full bg-gradient-to-br from-pink-200 to-purple-200" />
+          <div className="size-full bg-gradient-to-br from-pink-200 to-purple-200" />
         )}
         <div className="absolute inset-0 bg-black/30" />
 
         {/* Logo and Company Name */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+        <div className="absolute inset-x-0 bottom-0 p-6 md:p-12">
           <div className="mx-auto flex max-w-6xl items-end gap-6">
             {vendor.logo && (
-              <div className="relative h-32 w-32 rounded-full bg-white p-2 shadow-xl">
+              <div className="relative size-32 rounded-full bg-white p-2 shadow-xl">
                 <Image
                   src={vendor.logo}
                   alt={vendor.companyName}
@@ -194,7 +194,7 @@ export default async function VendorPortfolioPage({ params }: { params: { slug: 
 
         {/* CTA Fixo Mobile */}
         {vendor.whatsappUrl && (
-          <div className="fixed bottom-0 left-0 right-0 border-t bg-white p-4 shadow-lg md:hidden">
+          <div className="fixed inset-x-0 bottom-0 border-t bg-white p-4 shadow-lg md:hidden">
             <Button asChild className="w-full bg-green-600 hover:bg-green-700">
               <a href={vendor.whatsappUrl} target="_blank" rel="noopener noreferrer">
                 💬 Falar no WhatsApp

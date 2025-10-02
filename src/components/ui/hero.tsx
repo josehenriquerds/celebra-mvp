@@ -1,10 +1,10 @@
 'use client'
 
-import * as React from 'react'
 import { LucideIcon } from 'lucide-react'
+import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
-import { Stat, StatProps } from './stat'
+import { Stat, type StatProps } from './stat'
 
 interface HeroProps extends React.HTMLAttributes<HTMLElement> {
   image?: string
@@ -50,13 +50,13 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
             <img
               src={image}
               alt={imageAlt}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 size-full object-cover"
             />
             {/* Overlay sutil */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 
             {/* Painel translúcido sobre a imagem (opcional) */}
-            <div className="absolute bottom-6 left-6 right-6">
+            <div className="absolute inset-x-6 bottom-6">
               <div className="glass-soft rounded-2xl p-6">
                 <h2 className="mb-2 text-2xl font-bold text-white">{title}</h2>
                 <p className="text-sm text-white/90">{subtitle}</p>

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { vendorStatusChangeSchema } from '@/lib/validations/vendor'
 import type { VendorPartnerStatus } from '@prisma/client'

@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import { ArrowLeft, Plus, Edit2, Trash2, X, Users, Filter, Send } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
 interface SegmentRule {
@@ -224,7 +224,7 @@ export default function SegmentsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando segmentos...</p>
         </div>
       </div>
@@ -240,7 +240,7 @@ export default function SegmentsPage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -253,7 +253,7 @@ export default function SegmentsPage() {
               </div>
             </div>
             <Button onClick={openCreateModal}>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="mr-2 size-4" />
               Novo Segmento
             </Button>
           </div>
@@ -270,7 +270,7 @@ export default function SegmentsPage() {
                   {editingSegment ? 'Editar Segmento' : 'Novo Segmento'}
                 </CardTitle>
                 <Button variant="ghost" size="icon" onClick={() => setShowModal(false)}>
-                  <X className="h-4 w-4" />
+                  <X className="size-4" />
                 </Button>
               </div>
             </CardHeader>
@@ -307,7 +307,7 @@ export default function SegmentsPage() {
                     Regras (todas devem ser verdadeiras)
                   </label>
                   <Button variant="outline" size="sm" onClick={addRule}>
-                    <Plus className="mr-1 h-3 w-3" />
+                    <Plus className="mr-1 size-3" />
                     Adicionar Regra
                   </Button>
                 </div>
@@ -397,7 +397,7 @@ export default function SegmentsPage() {
                           onClick={() => removeRule(index)}
                           disabled={formData.rules.length === 1}
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <Trash2 className="size-4 text-red-500" />
                         </Button>
                       </div>
                     )
@@ -407,7 +407,7 @@ export default function SegmentsPage() {
 
               {/* Preview */}
               <div className="bg-celebre-accent/20 flex items-center gap-3 rounded-lg p-4">
-                <Users className="text-celebre-brand h-5 w-5" />
+                <Users className="text-celebre-brand size-5" />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-celebre-ink">Preview de Convidados</p>
                   {previewCount !== null && (
@@ -445,10 +445,10 @@ export default function SegmentsPage() {
         {segments.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
-              <Filter className="mx-auto mb-4 h-12 w-12 text-celebre-muted opacity-50" />
+              <Filter className="mx-auto mb-4 size-12 text-celebre-muted opacity-50" />
               <p className="mb-4 text-celebre-muted">Nenhum segmento criado ainda</p>
               <Button onClick={openCreateModal}>
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 size-4" />
                 Criar Primeiro Segmento
               </Button>
             </CardContent>
@@ -472,13 +472,13 @@ export default function SegmentsPage() {
                         onClick={() => openEditModal(segment)}
                         className="hover:bg-celebre-accent rounded-lg p-2 transition-colors"
                       >
-                        <Edit2 className="h-4 w-4 text-celebre-muted" />
+                        <Edit2 className="size-4 text-celebre-muted" />
                       </button>
                       <button
                         onClick={() => handleDelete(segment.id)}
                         className="rounded-lg p-2 transition-colors hover:bg-red-100"
                       >
-                        <Trash2 className="h-4 w-4 text-red-500" />
+                        <Trash2 className="size-4 text-red-500" />
                       </button>
                     </div>
                   </div>
@@ -501,14 +501,14 @@ export default function SegmentsPage() {
 
                   <div className="flex items-center justify-between border-t pt-4">
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-celebre-muted" />
+                      <Users className="size-4 text-celebre-muted" />
                       <span className="text-celebre-brand text-sm font-semibold">
                         {segment._count.guests}
                       </span>
                       <span className="text-xs text-celebre-muted">convidados</span>
                     </div>
                     <Button size="sm" onClick={() => handleSendMessage(segment.id)}>
-                      <Send className="mr-1 h-3 w-3" />
+                      <Send className="mr-1 size-3" />
                       Enviar
                     </Button>
                   </div>

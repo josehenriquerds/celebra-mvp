@@ -1,8 +1,8 @@
-import { Card } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Clock, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 
 interface Task {
   id: string
@@ -35,13 +35,13 @@ export function UpcomingTasks({ tasks, eventId }: UpcomingTasksProps) {
     <Card className="p-6">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Clock className="h-5 w-5 text-neutral-600" />
+          <Clock className="size-5 text-neutral-600" />
           <h2 className="text-lg font-semibold text-neutral-900">Próximas Tarefas</h2>
         </div>
         <Link href={`/events/${eventId}/tasks`}>
           <Button variant="ghost" size="sm">
             Ver todas
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <ArrowRight className="ml-1 size-4" />
           </Button>
         </Link>
       </div>

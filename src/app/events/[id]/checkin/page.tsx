@@ -1,8 +1,5 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
 import { Html5Qrcode } from 'html5-qrcode'
 import {
   ArrowLeft,
@@ -14,11 +11,14 @@ import {
   TrendingUp,
   Star,
 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import { useEffect, useState, useRef } from 'react'
 import { DonutProgress } from '@/components/dashboard/donut-progress'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 
 interface Guest {
   id: string
@@ -184,7 +184,7 @@ export default function CheckinPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando check-in...</p>
         </div>
       </div>
@@ -200,7 +200,7 @@ export default function CheckinPage() {
             <div className="flex items-center gap-4">
               <Link href={`/events/${eventId}`}>
                 <Button variant="ghost" size="icon">
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="size-5" />
                 </Button>
               </Link>
               <div>
@@ -216,7 +216,7 @@ export default function CheckinPage() {
               variant={scanning ? 'destructive' : 'default'}
               onClick={scanning ? stopScanning : startScanning}
             >
-              <QrCode className="mr-2 h-4 w-4" />
+              <QrCode className="mr-2 size-4" />
               {scanning ? 'Parar Scanner' : 'Escanear QR Code'}
             </Button>
           </div>
@@ -225,10 +225,10 @@ export default function CheckinPage() {
 
       {/* Last Check-in Toast */}
       {lastCheckin && (
-        <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 duration-300 animate-in slide-in-from-top">
+        <div className="animate-in slide-in-from-top fixed left-1/2 top-20 z-50 -translate-x-1/2 duration-300">
           <Card className="border-2 border-green-500 shadow-lg">
             <CardContent className="flex items-center gap-3 p-4">
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <CheckCircle className="size-8 text-green-500" />
               <div>
                 <p className="font-semibold text-celebre-ink">Check-in realizado!</p>
                 <p className="text-sm text-celebre-muted">{lastCheckin}</p>
@@ -254,7 +254,7 @@ export default function CheckinPage() {
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
           <Card>
             <CardContent className="p-6 text-center">
-              <Users className="mx-auto mb-2 h-8 w-8 text-celebre-muted" />
+              <Users className="mx-auto mb-2 size-8 text-celebre-muted" />
               <div className="text-celebre-brand text-3xl font-bold">{stats.total}</div>
               <p className="mt-1 text-sm text-celebre-muted">Total Confirmados</p>
             </CardContent>
@@ -262,7 +262,7 @@ export default function CheckinPage() {
 
           <Card>
             <CardContent className="p-6 text-center">
-              <CheckCircle className="mx-auto mb-2 h-8 w-8 text-green-500" />
+              <CheckCircle className="mx-auto mb-2 size-8 text-green-500" />
               <div className="text-3xl font-bold text-green-600">{stats.presentes}</div>
               <p className="mt-1 text-sm text-celebre-muted">Presentes</p>
             </CardContent>
@@ -270,7 +270,7 @@ export default function CheckinPage() {
 
           <Card>
             <CardContent className="p-6 text-center">
-              <XCircle className="mx-auto mb-2 h-8 w-8 text-gray-400" />
+              <XCircle className="mx-auto mb-2 size-8 text-gray-400" />
               <div className="text-3xl font-bold text-gray-600">{stats.ausentes}</div>
               <p className="mt-1 text-sm text-celebre-muted">Ausentes</p>
             </CardContent>
@@ -287,7 +287,7 @@ export default function CheckinPage() {
         <Card className="mb-6">
           <CardContent className="p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-celebre-muted" />
+              <Search className="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-celebre-muted" />
               <Input
                 type="text"
                 placeholder="Buscar convidado por nome ou telefone..."
@@ -308,7 +308,7 @@ export default function CheckinPage() {
             <div className="space-y-2">
               {filteredGuests.length === 0 ? (
                 <div className="py-8 text-center text-celebre-muted">
-                  <Users className="mx-auto mb-2 h-12 w-12 opacity-50" />
+                  <Users className="mx-auto mb-2 size-12 opacity-50" />
                   <p>Nenhum convidado encontrado</p>
                 </div>
               ) : (
@@ -323,15 +323,15 @@ export default function CheckinPage() {
                   >
                     <div className="flex flex-1 items-center gap-3">
                       {guest.checkin ? (
-                        <CheckCircle className="h-6 w-6 text-green-500" />
+                        <CheckCircle className="size-6 text-green-500" />
                       ) : (
-                        <div className="h-6 w-6 rounded-full border-2 border-gray-300" />
+                        <div className="size-6 rounded-full border-2 border-gray-300" />
                       )}
                       <div>
                         <div className="flex items-center gap-2">
                           <p className="font-semibold text-celebre-ink">{guest.contact.fullName}</p>
                           {guest.contact.isVip && (
-                            <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                            <Star className="size-4 fill-yellow-500 text-yellow-500" />
                           )}
                         </div>
                         <div className="mt-1 flex items-center gap-3 text-xs text-celebre-muted">

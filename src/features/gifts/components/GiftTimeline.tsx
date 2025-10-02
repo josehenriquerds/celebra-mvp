@@ -2,8 +2,8 @@
 
 import { TrendingDown, TrendingUp } from 'lucide-react'
 import { TimelineItem } from '@/components/ui/timeline-item'
-import type { GiftOfferPriceHistory } from '@/schemas'
 import { formatCurrency } from '@/lib/utils'
+import type { GiftOfferPriceHistory } from '@/schemas'
 
 interface GiftTimelineProps {
   history: GiftOfferPriceHistory[]

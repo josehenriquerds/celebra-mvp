@@ -1,19 +1,19 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Card } from '@/components/ui/card'
 import {
   vendorApplySchema,
   type VendorApplyInput,
   vendorCategories,
 } from '@/lib/validations/vendor'
-import { Checkbox } from '@/components/ui/checkbox'
 
 export function VendorApplyForm() {
   const [step, setStep] = useState(1)
@@ -136,7 +136,7 @@ export function VendorApplyForm() {
         {[1, 2, 3, 4].map((s) => (
           <div
             key={s}
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${
+            className={`flex size-10 items-center justify-center rounded-full ${
               s === step
                 ? 'bg-[--brand] text-white'
                 : s < step

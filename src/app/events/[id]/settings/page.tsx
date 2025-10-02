@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import {
   Settings as SettingsIcon,
   Palette,
@@ -12,13 +10,15 @@ import {
   Save,
   CheckCircle,
 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 
 interface Settings {
   branding: {
@@ -113,7 +113,7 @@ export default function EventSettingsPage() {
   if (loading || !settings || !templates) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="border-celebre-brand h-8 w-8 animate-spin rounded-full border-b-2"></div>
+        <div className="border-celebre-brand size-8 animate-spin rounded-full border-b-2"></div>
       </div>
     )
   }
@@ -129,12 +129,12 @@ export default function EventSettingsPage() {
         <Button onClick={handleSave} disabled={saving}>
           {saved ? (
             <>
-              <CheckCircle className="mr-2 h-4 w-4" />
+              <CheckCircle className="mr-2 size-4" />
               Salvo!
             </>
           ) : (
             <>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="mr-2 size-4" />
               {saving ? 'Salvando...' : 'Salvar Alterações'}
             </>
           )}
@@ -145,23 +145,23 @@ export default function EventSettingsPage() {
       <Tabs defaultValue="templates" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="templates">
-            <MessageSquare className="mr-2 h-4 w-4" />
+            <MessageSquare className="mr-2 size-4" />
             Templates
           </TabsTrigger>
           <TabsTrigger value="branding">
-            <Palette className="mr-2 h-4 w-4" />
+            <Palette className="mr-2 size-4" />
             Marca
           </TabsTrigger>
           <TabsTrigger value="lgpd">
-            <Shield className="mr-2 h-4 w-4" />
+            <Shield className="mr-2 size-4" />
             LGPD
           </TabsTrigger>
           <TabsTrigger value="integrations">
-            <Plug className="mr-2 h-4 w-4" />
+            <Plug className="mr-2 size-4" />
             Integrações
           </TabsTrigger>
           <TabsTrigger value="notifications">
-            <Bell className="mr-2 h-4 w-4" />
+            <Bell className="mr-2 size-4" />
             Notificações
           </TabsTrigger>
         </TabsList>
@@ -617,12 +617,12 @@ export default function EventSettingsPage() {
         <Button onClick={handleSave} disabled={saving} size="lg">
           {saved ? (
             <>
-              <CheckCircle className="mr-2 h-4 w-4" />
+              <CheckCircle className="mr-2 size-4" />
               Alterações Salvas!
             </>
           ) : (
             <>
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="mr-2 size-4" />
               {saving ? 'Salvando...' : 'Salvar Todas as Configurações'}
             </>
           )}

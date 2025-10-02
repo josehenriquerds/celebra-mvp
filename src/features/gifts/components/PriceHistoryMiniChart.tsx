@@ -1,5 +1,7 @@
 ﻿'use client'
 
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 import { memo, useMemo } from 'react'
 import {
   Line,
@@ -9,10 +11,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import type { GiftOfferPriceHistory } from '@/schemas'
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 import { formatCurrency } from '@/lib/utils'
+import type { GiftOfferPriceHistory } from '@/schemas'
 
 interface PriceHistoryMiniChartProps {
   history: GiftOfferPriceHistory[]

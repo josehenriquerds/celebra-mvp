@@ -1,7 +1,6 @@
 'use client'
 
 import { Download, LayoutGrid, Redo, Undo, ZoomIn, ZoomOut, Shapes } from 'lucide-react'
-
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { usePlannerStore } from '../stores/usePlannerStore'
@@ -40,9 +39,9 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
           aria-label="Diminuir zoom"
           className={controlButtonClasses}
         >
-          <ZoomOut className="h-4 w-4" aria-hidden="true" />
+          <ZoomOut className="size-4" aria-hidden="true" />
         </Button>
-        <span className="min-w-[3rem] text-center text-xs font-medium">{Math.round(zoom * 100)}%</span>
+        <span className="min-w-12 text-center text-xs font-medium">{Math.round(zoom * 100)}%</span>
         <Button
           variant="ghost"
           size="sm"
@@ -51,11 +50,11 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
           aria-label="Aumentar zoom"
           className={controlButtonClasses}
         >
-          <ZoomIn className="h-4 w-4" aria-hidden="true" />
+          <ZoomIn className="size-4" aria-hidden="true" />
         </Button>
       </div>
 
-      <div className="flex items-center gap-1 rounded-full border border-border bg-card px-1 py-1 shadow-sm transition-colors duration-200 ease-smooth">
+      <div className="flex items-center gap-1 rounded-full border border-border bg-card p-1 shadow-sm transition-colors duration-200 ease-smooth">
         <Button
           variant="ghost"
           size="sm"
@@ -64,7 +63,7 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
           aria-label="Desfazer"
           className={controlButtonClasses}
         >
-          <Undo className="h-4 w-4" aria-hidden="true" />
+          <Undo className="size-4" aria-hidden="true" />
         </Button>
         <Button
           variant="ghost"
@@ -74,7 +73,7 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
           aria-label="Refazer"
           className={controlButtonClasses}
         >
-          <Redo className="h-4 w-4" aria-hidden="true" />
+          <Redo className="size-4" aria-hidden="true" />
         </Button>
       </div>
 
@@ -106,7 +105,7 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
         onClick={onAutoArrange}
         className={cn('rounded-full border border-border px-3 py-2 text-sm font-medium', controlButtonClasses)}
       >
-        <LayoutGrid className="mr-2 h-4 w-4" aria-hidden="true" />
+        <LayoutGrid className="mr-2 size-4" aria-hidden="true" />
         Auto-Organizar
       </Button>
 
@@ -126,7 +125,7 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
         disabled={exporting}
         className={cn('rounded-full border border-border px-3 py-2 text-sm font-medium', controlButtonClasses)}
       >
-        <Download className="mr-2 h-4 w-4" aria-hidden="true" />
+        <Download className="mr-2 size-4" aria-hidden="true" />
         {exporting ? 'Exportando...' : 'Exportar'}
       </Button>
     </div>

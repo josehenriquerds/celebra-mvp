@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 
 export default function LoginCadastro() {
   const [isLogin, setIsLogin] = useState(true)

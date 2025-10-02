@@ -1,7 +1,7 @@
-import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { recordOfferClick } from '@/server/gifts/offers'
 import { GiftScraperError } from '@/server/gifts/scraper'
+import type { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest, { params }: { params: { giftId: string; offerId: string } }) {
   try {

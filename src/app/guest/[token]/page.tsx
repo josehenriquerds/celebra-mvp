@@ -1,7 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import {
   User,
   Calendar,
@@ -15,9 +13,11 @@ import {
   XCircle,
   AlertCircle,
 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatDate, formatTime } from '@/lib/utils'
 
 interface GuestPortalData {
@@ -196,7 +196,7 @@ export default function GuestPortalPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <div className="text-center">
-          <div className="border-celebre-brand mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
+          <div className="border-celebre-brand mx-auto mb-4 size-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-celebre-muted">Carregando...</p>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function GuestPortalPage() {
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg">
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
-            <AlertCircle className="mx-auto mb-4 h-12 w-12 text-red-500" />
+            <AlertCircle className="mx-auto mb-4 size-12 text-red-500" />
             <p className="mb-2 font-semibold text-celebre-ink">{error || 'Link inválido'}</p>
             <p className="text-sm text-celebre-muted">
               Entre em contato com os organizadores do evento.
@@ -224,7 +224,7 @@ export default function GuestPortalPage() {
       <div className="flex min-h-screen items-center justify-center bg-celebre-bg p-4">
         <Card className="w-full max-w-md">
           <CardContent className="p-8 text-center">
-            <Shield className="text-celebre-brand mx-auto mb-4 h-12 w-12" />
+            <Shield className="text-celebre-brand mx-auto mb-4 size-12" />
             <p className="mb-2 font-semibold text-celebre-ink">Comunicações Desativadas</p>
             <p className="text-sm text-celebre-muted">
               Você optou por não receber mais comunicações sobre este evento.
@@ -258,7 +258,7 @@ export default function GuestPortalPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-celebre-muted" />
+              <Calendar className="size-5 text-celebre-muted" />
               <div>
                 <p className="text-sm text-celebre-muted">Data e Horário</p>
                 <p className="font-medium text-celebre-ink">
@@ -267,7 +267,7 @@ export default function GuestPortalPage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <MapPin className="h-5 w-5 text-celebre-muted" />
+              <MapPin className="size-5 text-celebre-muted" />
               <div>
                 <p className="text-sm text-celebre-muted">Local</p>
                 <p className="font-medium text-celebre-ink">{data.event.venueName}</p>
@@ -276,7 +276,7 @@ export default function GuestPortalPage() {
             </div>
             {data.guest.table && (
               <div className="flex items-center gap-3">
-                <Users className="h-5 w-5 text-celebre-muted" />
+                <Users className="size-5 text-celebre-muted" />
                 <div>
                   <p className="text-sm text-celebre-muted">Sua Mesa</p>
                   <p className="font-medium text-celebre-ink">{data.guest.table.label}</p>
@@ -309,7 +309,7 @@ export default function GuestPortalPage() {
                     }`}
                   >
                     <Icon
-                      className={`mx-auto mb-2 h-6 w-6 ${isSelected ? 'text-celebre-brand' : option.color}`}
+                      className={`mx-auto mb-2 size-6 ${isSelected ? 'text-celebre-brand' : option.color}`}
                     />
                     <p
                       className={`text-sm font-medium ${isSelected ? 'text-celebre-brand' : 'text-celebre-ink'}`}
@@ -378,7 +378,7 @@ export default function GuestPortalPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center gap-2">
-              <Shield className="text-celebre-brand h-5 w-5" />
+              <Shield className="text-celebre-brand size-5" />
               <CardTitle className="font-heading">Privacidade e Dados (LGPD)</CardTitle>
             </div>
             <CardDescription>Você tem controle total sobre seus dados pessoais</CardDescription>
@@ -386,7 +386,7 @@ export default function GuestPortalPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Button variant="outline" className="w-full justify-start" onClick={handleExportData}>
-                <Download className="mr-2 h-4 w-4" />
+                <Download className="mr-2 size-4" />
                 Baixar Meus Dados (JSON)
               </Button>
               <Button
@@ -395,7 +395,7 @@ export default function GuestPortalPage() {
                 onClick={handleOptOut}
                 disabled={updating}
               >
-                <XCircle className="mr-2 h-4 w-4" />
+                <XCircle className="mr-2 size-4" />
                 Parar de Receber Comunicações
               </Button>
               <Button
@@ -404,7 +404,7 @@ export default function GuestPortalPage() {
                 onClick={handleDeleteData}
                 disabled={updating}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 size-4" />
                 Excluir Permanentemente Meus Dados
               </Button>
             </div>

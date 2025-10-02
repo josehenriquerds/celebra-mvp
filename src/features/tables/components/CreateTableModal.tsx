@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import { X } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -113,7 +113,7 @@ export function CreateTableModal({ onClose, onCreate, tablesCount }: CreateTable
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
-                  <div className="h-16 w-16 rounded-full border-4 border-current" />
+                  <div className="size-16 rounded-full border-4 border-current" />
                   <span className="text-sm font-medium">Redonda</span>
                 </button>
                 <button
@@ -126,7 +126,7 @@ export function CreateTableModal({ onClose, onCreate, tablesCount }: CreateTable
                       : 'border-gray-200 hover:border-gray-300'
                   )}
                 >
-                  <div className="h-16 w-16 rounded-lg border-4 border-current" />
+                  <div className="size-16 rounded-lg border-4 border-current" />
                   <span className="text-sm font-medium">Quadrada</span>
                 </button>
               </div>

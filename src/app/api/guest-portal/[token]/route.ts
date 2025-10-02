@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
+import { type NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
 
 // Helper to generate token from guestId (simple hash)
 function generateToken(guestId: string): string {
