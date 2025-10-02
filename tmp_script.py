@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+from pathlib import Path
+path = Path("src/server/gifts/offers.ts")
+text = path.read_text()
+if "giftWithRelationsInclude" not in text:
+    text = text.replace("import { prisma } from '@/lib/prisma'\nimport { GiftScraperError, scrapeProduct, type ScrapedProduct } from './scraper'",
+                        "import { prisma } from '@/lib/prisma'\nimport { giftWithRelationsInclude, type GiftWithRelations } from './serializer'\nimport { GiftScraperError, scrapeProduct, type ScrapedProduct } from './scraper'")
+if 'updateGiftAggregates' not in text:
+    insert_after = 'function prepareOfferData'
+    idx = text.index(insert_after)
+    insertion_point = text.index('\n}', idx) + 3
+    helper = "\nasync function updateGiftAggregates(\n  tx: Prisma.TransactionClient,\n  giftId: string\n): Promise<GiftWithRelations> {\n  const [reservationCount, purchaseAgg, contributionAgg, gift] = await Promise.all([\n    tx.giftReservation.count({ where: { giftId } }),\n    tx.giftPurchase.aggregate({ where: { giftId }, _sum: { quantity: true, amountPaidCents: true } }),\n    tx.giftContribution.aggregate({ where: { giftId }, _sum: { amountCents: true } }),\n    tx.giftRegistryItem.findUnique({\n      where: { id: giftId },\n      select: { status: true, allowContributions: true, contributionGoalCents: true, targetQuantity: true },\n    }),\n  ])\n\n  if (!gift) {\n    throw new GiftScraperError('Presente nao encontrado', 404)\n  }\n\n  const purchasedQuantity = purchaseAgg._sum.quantity ?? 0\n  const contributionRaisedCents = contributionAgg._sum.amountCents ?? 0\n\n  let nextStatus = gift.status\n  const reachedTarget = gift.targetQuantity !== null && gift.targetQuantity !== undefined && purchasedQuantity >= gift.targetQuantity\n  const reachedContributionGoal =\n    gift.allowContributions && gift.contributionGoalCents !== null && gift.contributionGoalCents !== undefined && contributionRaisedCents >= gift.contributionGoalCents\n\n  if (gift.status !== 'recebido') {\n    if (purchasedQuantity > 0 or reachedTarget or reachedContributionGoal) {\n      nextStatus = 'comprado'\n    } else if (reservationCount > 0) {\n      nextStatus = 'reservado'\n    } else {\n      nextStatus = 'disponivel'\n    }\n  }\n\n  const updated = await tx.giftRegistryItem.update({\n    where: { id: giftId },\n    data: {\n      reservedQuantity: reservationCount,\n      purchasedQuantity: purchasedQuantity,\n      contributionRaisedCents: contributionRaisedCents,\n      status: nextStatus,\n    },\n    include: giftWithRelationsInclude,\n  })\n\n  return updated as GiftWithRelations\n}\n\nexport async function refreshGiftAggregates(giftId: string) {\n  return prisma.$transaction(async (tx) => updateGiftAggregates(tx, giftId))\n}\n"
+    text = text[:insertion_point] + helper + text[insertion_point:]
+path.write_text(text)

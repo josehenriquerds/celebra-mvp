@@ -1,17 +1,29 @@
-'use client'
+﻿'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import type { Gift, GiftFormData, GiftStatus } from '@/schemas'
+import type { Gift, GiftStatus } from '@/schemas'
 import {
   createGift,
+  createGiftOffer,
   deleteGift,
+  deleteGiftOffer,
+  fetchGiftOffers,
   fetchGifts,
+  importGiftLinks,
+  refreshGiftOffer,
+  scrapeGiftLink,
   updateGift,
   updateGiftStatus,
 } from '../services/gifts.api'
+import type {
+  CreateGiftPayload,
+  GiftOffersResponse,
+  ImportGiftLinksResult,
+  ScrapedGiftProduct,
+  UpdateGiftPayload,
+} from '../services/gifts.api'
 
-// Query keys factory
 export const giftsKeys = {
   all: ['gifts'] as const,
   lists: () => [...giftsKeys.all, 'list'] as const,
@@ -20,7 +32,11 @@ export const giftsKeys = {
   detail: (id: string) => [...giftsKeys.details(), id] as const,
 }
 
-// Hook to fetch gifts
+export const giftOffersKeys = {
+  all: ['gift-offers'] as const,
+  list: (giftId: string) => [...giftOffersKeys.all, giftId] as const,
+}
+
 export function useGifts(eventId?: string) {
   const params = useParams()
   const id = eventId || (params.id as string)
@@ -32,58 +48,60 @@ export function useGifts(eventId?: string) {
   })
 }
 
-// Hook to create gift
-export function useCreateGift() {
-  const queryClient = useQueryClient()
+export function useGiftOffers(giftId: string) {
+  return useQuery<GiftOffersResponse>({
+    queryKey: giftOffersKeys.list(giftId),
+    queryFn: () => fetchGiftOffers(giftId),
+    enabled: !!giftId,
+  })
+}
+
+export function useScrapeGiftLink() {
+  return useMutation({
+    mutationFn: (url: string) => scrapeGiftLink(url),
+  })
+}
+
+export function useImportGiftLinks(eventId?: string) {
   const params = useParams()
-  const eventId = params.id as string
+  const id = eventId || (params.id as string)
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: GiftFormData) => createGift(eventId, data),
+    mutationFn: (urls: string[]) => importGiftLinks(id, urls),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
+      queryClient.invalidateQueries({ queryKey: giftsKeys.list(id) })
     },
   })
 }
 
-// Hook to update gift
+export function useCreateGift(eventId?: string) {
+  const queryClient = useQueryClient()
+  const params = useParams()
+  const id = eventId || (params.id as string)
+
+  return useMutation({
+    mutationFn: (data: CreateGiftPayload) => createGift(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: giftsKeys.list(id) })
+    },
+  })
+}
+
 export function useUpdateGift() {
   const queryClient = useQueryClient()
   const params = useParams()
   const eventId = params.id as string
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<GiftFormData> }) => updateGift(id, data),
-    onMutate: async ({ id, data }) => {
-      // Cancel outgoing refetches
-      await queryClient.cancelQueries({ queryKey: giftsKeys.list(eventId) })
-
-      // Snapshot previous value
-      const previousGifts = queryClient.getQueryData<Gift[]>(giftsKeys.list(eventId))
-
-      // Optimistically update
-      if (previousGifts) {
-        queryClient.setQueryData<Gift[]>(
-          giftsKeys.list(eventId),
-          previousGifts.map((gift) => (gift.id === id ? { ...gift, ...data } : gift))
-        )
-      }
-
-      return { previousGifts }
-    },
-    onError: (err, variables, context) => {
-      // Rollback on error
-      if (context?.previousGifts) {
-        queryClient.setQueryData(giftsKeys.list(eventId), context.previousGifts)
-      }
-    },
-    onSettled: () => {
+    mutationFn: ({ id, data }: { id: string; data: UpdateGiftPayload }) => updateGift(id, data),
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
+      queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.id) })
     },
   })
 }
 
-// Hook to delete gift
 export function useDeleteGift() {
   const queryClient = useQueryClient()
   const params = useParams()
@@ -91,60 +109,64 @@ export function useDeleteGift() {
 
   return useMutation({
     mutationFn: (id: string) => deleteGift(id),
-    onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: giftsKeys.list(eventId) })
-
-      const previousGifts = queryClient.getQueryData<Gift[]>(giftsKeys.list(eventId))
-
-      if (previousGifts) {
-        queryClient.setQueryData<Gift[]>(
-          giftsKeys.list(eventId),
-          previousGifts.filter((gift) => gift.id !== id)
-        )
-      }
-
-      return { previousGifts }
-    },
-    onError: (err, variables, context) => {
-      if (context?.previousGifts) {
-        queryClient.setQueryData(giftsKeys.list(eventId), context.previousGifts)
-      }
-    },
-    onSettled: () => {
+    onSuccess: (_, giftId) => {
       queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
+      queryClient.removeQueries({ queryKey: giftOffersKeys.list(giftId) })
     },
   })
 }
 
-// Hook to update gift status (mark as received, etc.)
 export function useUpdateGiftStatus() {
   const queryClient = useQueryClient()
   const params = useParams()
   const eventId = params.id as string
 
   return useMutation({
-    mutationFn: ({ id, status }: { id: string; status: GiftStatus }) =>
-      updateGiftStatus(id, status),
-    onMutate: async ({ id, status }) => {
-      await queryClient.cancelQueries({ queryKey: giftsKeys.list(eventId) })
-
-      const previousGifts = queryClient.getQueryData<Gift[]>(giftsKeys.list(eventId))
-
-      if (previousGifts) {
-        queryClient.setQueryData<Gift[]>(
-          giftsKeys.list(eventId),
-          previousGifts.map((gift) => (gift.id === id ? { ...gift, status } : gift))
-        )
-      }
-
-      return { previousGifts }
+    mutationFn: ({ id, status }: { id: string; status: GiftStatus }) => updateGiftStatus(id, status),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
+      queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.id) })
     },
-    onError: (err, variables, context) => {
-      if (context?.previousGifts) {
-        queryClient.setQueryData(giftsKeys.list(eventId), context.previousGifts)
-      }
+  })
+}
+
+export function useCreateGiftOffer() {
+  const queryClient = useQueryClient()
+  const params = useParams()
+  const eventId = params.id as string
+
+  return useMutation({
+    mutationFn: ({ giftId, url }: { giftId: string; url: string }) => createGiftOffer(giftId, url),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.giftId) })
+      queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
     },
-    onSettled: () => {
+  })
+}
+
+export function useRefreshGiftOffer() {
+  const queryClient = useQueryClient()
+  const params = useParams()
+  const eventId = params.id as string
+
+  return useMutation({
+    mutationFn: ({ giftId, offerId }: { giftId: string; offerId: string }) => refreshGiftOffer(offerId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.giftId) })
+      queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
+    },
+  })
+}
+
+export function useDeleteGiftOffer() {
+  const queryClient = useQueryClient()
+  const params = useParams()
+  const eventId = params.id as string
+
+  return useMutation({
+    mutationFn: ({ giftId, offerId }: { giftId: string; offerId: string }) => deleteGiftOffer(offerId),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.giftId) })
       queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
     },
   })

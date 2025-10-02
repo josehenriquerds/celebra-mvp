@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useToast } from '@/components/ui/use-toast'
 import {
+  CreateTableModal,
   ElementsPalette,
   GuestChip,
   TablesCanvas,
@@ -159,8 +160,7 @@ export default function TablePlannerPage() {
   const { zoom, activeId, setActiveId, addToHistory, showElementsPalette } = usePlannerStore()
 
   // Local state
-  const [newTableLabel, setNewTableLabel] = useState('')
-  const [newTableCapacity, setNewTableCapacity] = useState(8)
+  const [creatingTable, setCreatingTable] = useState(false)
   const [editingTable, setEditingTable] = useState<Table | null>(null)
   const [exporting, setExporting] = useState(false)
   const [guestPanelOpen, setGuestPanelOpen] = useState(true)
@@ -303,35 +303,28 @@ export default function TablePlannerPage() {
 
   /* ======= CRUD Mesa ======= */
 
-  async function handleCreateTable() {
-    if (!newTableCapacity || newTableCapacity < 2) {
-      toast({
-        title: 'Erro',
-        description: 'A capacidade deve ser no mínimo 2',
-        variant: 'destructive',
-      })
-      return
-    }
-
+  async function handleCreateTable(data: {
+    label: string
+    capacity: number
+    color: string
+    shape: 'round' | 'square'
+  }) {
     try {
       await createTableMutation.mutateAsync({
-        label: newTableLabel || `Mesa ${tables.length + 1}`,
-        capacity: newTableCapacity,
-        shape: 'round',
+        label: data.label,
+        capacity: data.capacity,
+        shape: data.shape,
         x: snap(400 + Math.random() * 200),
         y: snap(300 + Math.random() * 200),
         radius: 80,
         rotation: 0,
-        color: '#C7B7F3',
+        color: data.color,
       })
 
       toast({
         title: 'Mesa criada',
         description: 'A mesa foi adicionada com sucesso',
       })
-
-      setNewTableCapacity(8)
-      setNewTableLabel('')
     } catch (error) {
       toast({
         title: 'Erro',
@@ -351,6 +344,7 @@ export default function TablePlannerPage() {
           label: editingTable.label,
           capacity: editingTable.capacity,
           color: editingTable.color,
+          shape: editingTable.shape,
         },
       })
 
@@ -513,6 +507,15 @@ export default function TablePlannerPage() {
         </div>
       </header>
 
+      {/* Modal de Criação */}
+      {creatingTable && (
+        <CreateTableModal
+          onClose={() => setCreatingTable(false)}
+          onCreate={handleCreateTable}
+          tablesCount={tables.length}
+        />
+      )}
+
       {/* Modal de Edição */}
       {editingTable && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -546,6 +549,38 @@ export default function TablePlannerPage() {
                   }
                   className="mt-1"
                 />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-celebre-ink">Formato</label>
+                <div className="mt-2 grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditingTable({ ...editingTable, shape: 'round' })}
+                    className={cn(
+                      'flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all',
+                      editingTable.shape === 'round'
+                        ? 'border-celebre-brand bg-celebre-accent/10'
+                        : 'border-gray-200 hover:border-gray-300'
+                    )}
+                  >
+                    <div className="h-12 w-12 rounded-full border-4 border-current" />
+                    <span className="text-xs font-medium">Redonda</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingTable({ ...editingTable, shape: 'square' })}
+                    className={cn(
+                      'flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all',
+                      editingTable.shape === 'square'
+                        ? 'border-celebre-brand bg-celebre-accent/10'
+                        : 'border-gray-200 hover:border-gray-300'
+                    )}
+                  >
+                    <div className="h-12 w-12 rounded-lg border-4 border-current" />
+                    <span className="text-xs font-medium">Quadrada</span>
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -657,32 +692,15 @@ export default function TablePlannerPage() {
                     <CardHeader className="flex flex-col gap-3 pb-3">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                         <CardTitle className="font-heading text-lg">Layout das Mesas</CardTitle>
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                          <Input
-                            type="text"
-                            placeholder="Nome da mesa"
-                            value={newTableLabel}
-                            onChange={(e) => setNewTableLabel(e.target.value)}
-                            className="w-full sm:max-w-[10rem]"
-                          />
-                          <Input
-                            type="number"
-                            min="2"
-                            max="20"
-                            value={newTableCapacity}
-                            onChange={(e) => setNewTableCapacity(parseInt(e.target.value) || 8)}
-                            className="w-full sm:max-w-[5.5rem]"
-                          />
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={handleCreateTable}
-                            className={cn('rounded-full sm:ml-1', interactiveButtonClasses)}
-                          >
-                            <Plus className="mr-1 size-4" />
-                            Mesa
-                          </Button>
-                        </div>
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => setCreatingTable(true)}
+                          className={cn('rounded-full', interactiveButtonClasses)}
+                        >
+                          <Plus className="mr-1 size-4" />
+                          Nova Mesa
+                        </Button>
                       </div>
                     </CardHeader>
                     <CardContent className="overflow-auto rounded-3xl border border-dashed border-muted/50 bg-white p-4 transition-colors duration-200 ease-smooth">

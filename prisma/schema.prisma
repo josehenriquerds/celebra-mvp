@@ -361,23 +361,158 @@ model VendorStatusLog {
 // ============================================
 
 model GiftRegistryItem {
-  id              String           @id @default(cuid())
-  eventId         String           @map("event_id")
-  title           String
-  link            String?
-  price           Float?
-  status          GiftStatus       @default(disponivel)
-  buyerContactId  String?          @map("buyer_contact_id")
-  createdAt       DateTime         @default(now()) @map("created_at")
-  updatedAt       DateTime         @updatedAt @map("updated_at")
+  id                     String           @id @default(cuid())
+  eventId                String           @map("event_id")
+  title                  String
+  description            String?          @db.Text
+  link                   String?
+  imageUrl               String?          @map("image_url")
+  price                  Float?
+  currency               String           @default("BRL")
+  category               String?
+  status                 GiftStatus       @default(disponivel)
+  targetQuantity         Int              @default(1) @map("target_quantity")
+  purchasedQuantity      Int              @default(0) @map("purchased_quantity")
+  reservedQuantity       Int              @default(0) @map("reserved_quantity")
+  allowContributions     Boolean          @default(false) @map("allow_contributions")
+  contributionGoalCents  Int?             @map("contribution_goal_cents")
+  contributionRaisedCents Int             @default(0) @map("contribution_raised_cents")
+  buyerContactId         String?          @map("buyer_contact_id")
+  primaryOfferId         String?          @map("primary_offer_id")
+  createdAt              DateTime         @default(now()) @map("created_at")
+  updatedAt              DateTime         @updatedAt @map("updated_at")
 
   // Relations
-  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  buyerContact Contact? @relation(fields: [buyerContactId], references: [id])
+  event          Event                @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  buyerContact   Contact?             @relation(fields: [buyerContactId], references: [id])
+  offers         GiftOffer[]
+  primaryOffer   GiftOffer?           @relation("PrimaryGiftOffer", fields: [primaryOfferId], references: [id])
+  reservations   GiftReservation[]
+  purchases      GiftPurchase[]
+  contributions  GiftContribution[]
+  offerClicks    GiftOfferClick[]
 
   @@index([eventId])
   @@index([status])
+  @@index([primaryOfferId])
   @@map("gift_registry_items")
+}
+
+model GiftOffer {
+  id            String           @id @default(cuid())
+  giftId        String           @map("gift_id")
+  store         String
+  domain        String
+  title         String?
+  url           String           @unique
+  canonicalUrl  String?          @map("canonical_url")
+  imageUrl      String?          @map("image_url")
+  priceCents    Int?             @map("price_cents")
+  currency      String           @default("BRL")
+  lastCheckedAt DateTime?        @map("last_checked_at")
+  isPrimary     Boolean          @default(false) @map("is_primary")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  // Relations
+  gift        GiftRegistryItem  @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  primaryFor  GiftRegistryItem? @relation("PrimaryGiftOffer")
+  priceHistory GiftOfferPriceHistory[]
+  clicks      GiftOfferClick[]
+
+  @@index([giftId, isPrimary])
+  @@map("gift_offer")
+}
+
+model GiftOfferPriceHistory {
+  id         String   @id @default(cuid())
+  offerId    String   @map("offer_id")
+  priceCents Int      @map("price_cents")
+  checkedAt  DateTime @default(now()) @map("checked_at")
+
+  // Relations
+  offer GiftOffer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@index([offerId, checkedAt])
+  @@map("gift_offer_price_history")
+}
+
+model GiftOfferClick {
+  id        String           @id @default(cuid())
+  offerId   String           @map("offer_id")
+  giftId    String           @map("gift_id")
+  ip        String?
+  userAgent String?          @map("user_agent")
+  clickedAt DateTime         @default(now()) @map("clicked_at")
+
+  // Relations
+  offer GiftOffer        @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  gift  GiftRegistryItem @relation(fields: [giftId], references: [id], onDelete: Cascade)
+
+  @@index([offerId])
+  @@index([giftId])
+  @@map("gift_offer_click")
+}
+
+model GiftReservation {
+  id            String   @id @default(cuid())
+  giftId        String   @map("gift_id")
+  guestId       String   @map("guest_id")
+  reservedUntil DateTime? @map("reserved_until")
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  gift  GiftRegistryItem @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  guest Guest            @relation(fields: [guestId], references: [id], onDelete: Cascade)
+
+  @@index([giftId])
+  @@index([guestId])
+  @@map("gift_reservations")
+}
+
+model GiftPurchase {
+  id              String   @id @default(cuid())
+  giftId          String   @map("gift_id")
+  guestId         String?  @map("guest_id")
+  purchasedAt     DateTime @map("purchased_at")
+  quantity        Int      @default(1)
+  amountPaidCents Int?     @map("amount_paid_cents")
+  receiptUrl      String?  @map("receipt_url")
+  notes           String?  @db.Text
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  gift    GiftRegistryItem @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  guest   Guest?           @relation(fields: [guestId], references: [id])
+  contributions GiftContribution[] @relation("PurchaseContributions")
+
+  @@index([giftId])
+  @@index([guestId])
+  @@map("gift_purchases")
+}
+
+model GiftContribution {
+  id            String   @id @default(cuid())
+  giftId        String   @map("gift_id")
+  guestId       String?  @map("guest_id")
+  purchaseId    String?  @map("purchase_id")
+  amountCents   Int      @map("amount_cents")
+  contributedAt DateTime @default(now()) @map("contributed_at")
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  gift     GiftRegistryItem @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  guest    Guest?           @relation(fields: [guestId], references: [id])
+  purchase GiftPurchase?    @relation("PurchaseContributions", fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  @@index([giftId])
+  @@index([guestId])
+  @@map("gift_contributions")
 }
 
 // ============================================
@@ -597,6 +732,7 @@ enum GiftStatus {
   disponivel
   reservado
   comprado
+  recebido
 }
 
 enum ConsentSource {

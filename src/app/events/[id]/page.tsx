@@ -235,7 +235,7 @@ export default function EventDashboard() {
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-xl font-semibold">Today’s Schedule</h2>
-              <p className="text-sm text-muted-foreground">Check all your activities</p>
+              <p className="text-sm text-muted-foreground">Quais será sua proxima tarefa?</p>
             </div>
             <div className="text-pastel-rose-900 grid size-10 place-items-center rounded-full bg-pastel-rose-200">
               {firstHost.slice(0, 1)}

@@ -41,7 +41,8 @@
       "Bash(tree:*)",
       "Bash(dotnet build)",
       "Bash(dotnet ef migrations add:*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(xargs:*)"
     ],
     "deny": [],
     "ask": []

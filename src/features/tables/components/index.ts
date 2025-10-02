@@ -1,3 +1,4 @@
+export { CreateTableModal } from './CreateTableModal'
 export { DroppableSeat } from './DroppableSeat'
 export { ElementsPalette } from './ElementsPalette'
 export { GuestChip } from './GuestChip'

@@ -27,21 +27,30 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
   const renderLeft = table.x * zoom
   const renderTop = table.y * zoom
   const renderDiameter = table.radius * 2 * zoom
+  const renderRadius = table.radius * zoom
+
+  // Determine shape class
+  const shapeClass = table.shape === 'square' || table.shape === 'rect'
+    ? 'rounded-2xl'
+    : 'rounded-full'
 
   return (
     <div
       ref={setNodeRef}
       style={{
-        left: renderLeft,
-        top: renderTop,
+        left: renderLeft - renderRadius,
+        top: renderTop - renderRadius,
         width: renderDiameter,
         height: renderDiameter,
-        transform: `${CSS.Translate.toString(transform)} translate(-50%, -50%)`,
+        transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.5 : 1,
         borderColor: table.color || 'var(--celebre-brand)',
         cursor: isDragging ? 'grabbing' : 'grab',
       }}
-      className="group absolute flex items-center justify-center rounded-full border-4 bg-white shadow-lg transition-shadow duration-200 ease-smooth"
+      className={cn(
+        "group absolute flex items-center justify-center border-4 bg-white shadow-lg transition-shadow duration-200 ease-smooth",
+        shapeClass
+      )}
       {...listeners}
       {...attributes}
     >
@@ -90,6 +99,7 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
           seat={seat}
           tableId={table.id}
           tableColor={table.color}
+          tableRadius={renderRadius}
           zoom={zoom}
         />
       ))}

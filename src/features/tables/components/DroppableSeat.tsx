@@ -7,10 +7,11 @@ interface DroppableSeatProps {
   seat: Seat
   tableId: string
   tableColor?: string
+  tableRadius: number
   zoom: number
 }
 
-export function DroppableSeat({ seat, tableId, tableColor, zoom }: DroppableSeatProps) {
+export function DroppableSeat({ seat, tableId, tableColor, tableRadius, zoom }: DroppableSeatProps) {
   const { setNodeRef: setDropRef, isOver } = useDroppable({
     id: `seat-${tableId}-${seat.id}`,
     data: { type: 'seat', seatId: seat.id, tableId },
@@ -41,22 +42,22 @@ export function DroppableSeat({ seat, tableId, tableColor, zoom }: DroppableSeat
 
   const assigned = !!seat.assignment
   const vip = seat.assignment?.guest.contact.isVip
-  const renderLeft = seat.x * zoom
-  const renderTop = seat.y * zoom
+
+  // Calculate position relative to table center (already in canvas coordinates)
+  // The seat.x and seat.y are relative to table center, so we add tableRadius to position them correctly
+  const renderLeft = seat.x * zoom + tableRadius
+  const renderTop = seat.y * zoom + tableRadius
 
   return (
     <div
       ref={setRefs}
       {...(assigned ? { ...attributes, ...listeners } : {})}
-      className={`pointer-events-auto absolute flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 touch-none select-none items-center justify-center rounded-full ${isOver ? 'ring-celebre-brand/60 bg-celebre-accent/20 ring-2' : ''} ${isDragging ? 'opacity-70' : ''}`}
+      className={`pointer-events-auto absolute flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full transition-all ${isOver ? 'ring-celebre-brand/60 bg-celebre-accent/20 ring-2 scale-110' : ''} ${isDragging ? 'opacity-70' : ''} ${assigned ? 'cursor-grab touch-none select-none active:cursor-grabbing' : 'cursor-pointer'}`}
       style={{ left: renderLeft, top: renderTop }}
       title={seat.assignment?.guest.contact.fullName || 'Vazio'}
-      onPointerDown={(e) => !assigned && e.stopPropagation()}
-      onMouseDown={(e) => !assigned && e.stopPropagation()}
-      onTouchStart={(e) => !assigned && e.stopPropagation()}
     >
       <div
-        className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-[11px] font-medium ${assigned ? 'text-white' : 'bg-white'} ${isOver ? 'border-celebre-brand' : 'border-gray-300'}`}
+        className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-[11px] font-medium transition-all ${assigned ? 'text-white' : 'bg-white'} ${isOver ? 'border-celebre-brand' : 'border-gray-300'}`}
         style={{
           backgroundColor: assigned ? `${tableColor || '#8b5cf6'}30` : undefined,
           borderColor: assigned ? tableColor || 'var(--celebre-brand)' : undefined,

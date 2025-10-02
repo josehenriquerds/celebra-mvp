@@ -18,6 +18,7 @@ import {
   Filter,
   ChevronLeft,
   ChevronRight,
+  Calendar,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -39,6 +40,7 @@ type Item = { name: string; href: string; icon: React.ElementType }
 
 const navigation: Item[] = [
   { name: 'Visão Geral', href: '', icon: Home },
+  { name: 'Calendário', href: '/calendar', icon: Calendar },
   { name: 'Convidados', href: '/guests', icon: Users },
   { name: 'Tarefas', href: '/tasks', icon: CheckSquare },
   { name: 'Fornecedores', href: '/vendors', icon: UserCog },

@@ -137,7 +137,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     })
 
     // Generate seats in circular arrangement
-    const radius = 80
+    const radius = 100 // Increased spacing between seats and table
     const theta = (2 * Math.PI) / capacity
 
     const seats = Array.from({ length: capacity }, (_, i) => ({
