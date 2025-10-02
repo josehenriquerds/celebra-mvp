@@ -52,7 +52,7 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
 
       {/* Ações */}
       <div
-        className="absolute -top-8 right-0 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 pointer-events-auto"
+        className="pointer-events-auto absolute -top-8 right-0 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100"
         onPointerDown={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
         onTouchStart={(e) => e.stopPropagation()}
@@ -62,7 +62,7 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
             e.stopPropagation()
             onEdit(table)
           }}
-          className="rounded-full bg-blue-500 p-1 text-white transition-colors hover:bg-blue-600 cursor-pointer"
+          className="cursor-pointer rounded-full bg-blue-500 p-1 text-white transition-colors hover:bg-blue-600"
           title="Editar"
         >
           <Edit2 className="h-3 w-3" />
@@ -72,7 +72,7 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
             e.stopPropagation()
             onDelete(table.id)
           }}
-          className="rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600 cursor-pointer"
+          className="cursor-pointer rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600"
           title="Excluir"
         >
           <Trash2 className="h-3 w-3" />
@@ -81,7 +81,13 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
 
       {/* Assentos */}
       {table.seats.map((seat) => (
-        <DroppableSeat key={seat.id} seat={seat} tableId={table.id} tableColor={table.color} zoom={zoom} />
+        <DroppableSeat
+          key={seat.id}
+          seat={seat}
+          tableId={table.id}
+          tableColor={table.color}
+          zoom={zoom}
+        />
       ))}
     </div>
   )

@@ -1,10 +1,4 @@
-import type {
-  Table,
-  TableInput,
-  TablePlannerData,
-  TableUpdate,
-  SeatAssignment,
-} from '@/schemas'
+import type { Table, TableInput, TablePlannerData, TableUpdate, SeatAssignment } from '@/schemas'
 
 // Fetch table planner data (tables + unassigned guests + elements)
 export async function fetchTablePlannerData(eventId: string): Promise<TablePlannerData> {
@@ -64,10 +58,7 @@ export async function deleteTable(tableId: string): Promise<void> {
 }
 
 // Assign guest to seat
-export async function assignGuestToSeat(
-  tableId: string,
-  data: SeatAssignment,
-): Promise<void> {
+export async function assignGuestToSeat(tableId: string, data: SeatAssignment): Promise<void> {
   const res = await fetch(`/api/tables/${tableId}/assign`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -94,7 +85,7 @@ export async function unassignGuestFromSeat(seatId: string): Promise<void> {
 
 // Bulk update table positions
 export async function bulkUpdateTablePositions(
-  updates: Array<{ id: string; x: number; y: number; rotation?: number }>,
+  updates: Array<{ id: string; x: number; y: number; rotation?: number }>
 ): Promise<void> {
   await Promise.all(
     updates.map((update) =>
@@ -102,7 +93,7 @@ export async function bulkUpdateTablePositions(
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ x: update.x, y: update.y, rotation: update.rotation }),
-      }),
-    ),
+      })
+    )
   )
 }

@@ -10,6 +10,7 @@
 ## ✅ Correções Aplicadas
 
 ### 1. `src/app/events/[id]/tables/page.tsx` (linha 337)
+
 ```typescript
 // ANTES:
 shape: 'circular',
@@ -19,6 +20,7 @@ shape: 'round',
 ```
 
 ### 2. `src/app/api/events/[id]/tables/route.ts` (linhas 37-48)
+
 ```typescript
 // Adicionados campos obrigatórios na response:
 const formattedTables = tables.map((table) => ({
@@ -38,6 +40,7 @@ const formattedTables = tables.map((table) => ({
 ```
 
 ### 3. `src/features/tables/stores/usePlannerStore.ts`
+
 ```typescript
 // Adicionadas type assertions:
 undo: () => {
@@ -57,6 +60,7 @@ addToHistory: (data) => {
 ```
 
 ### 4. `src/features/tables/components/ElementsPalette.tsx`
+
 ```typescript
 // Atualizada interface para aceitar color prop:
 interface ElementDef {
@@ -75,12 +79,14 @@ interface ElementDef {
 ## 🚀 Como Testar
 
 ### 1. Limpar cache e reiniciar servidor
+
 ```bash
 rm -rf .next
 npm run dev
 ```
 
 ### 2. Acessar página
+
 ```
 http://localhost:3000/events/cmg7932an000013g79a1jig3q/tables
 ```
@@ -88,12 +94,14 @@ http://localhost:3000/events/cmg7932an000013g79a1jig3q/tables
 ### 3. Funcionalidades para testar
 
 #### ✅ Criar Mesa
+
 1. Preencher "Nome da mesa" (opcional)
 2. Definir capacidade (2-20)
 3. Clicar "+ Mesa"
 4. Mesa aparece no canvas com assentos ao redor
 
 #### ✅ Arrastar Mesa
+
 1. Hover sobre a mesa
 2. Aparece handle (ícone 3 linhas) no topo
 3. Clicar e arrastar o handle
@@ -101,38 +109,45 @@ http://localhost:3000/events/cmg7932an000013g79a1jig3q/tables
 5. Detecta colisão e ajusta posição automaticamente
 
 #### ✅ Editar/Deletar Mesa
+
 1. Hover sobre a mesa
 2. Botões aparecem no canto superior direito
 3. Azul = Editar (abre modal)
 4. Vermelho = Deletar (pede confirmação)
 
 #### ✅ Alocar Convidado
+
 1. Sidebar esquerda lista convidados não alocados
 2. Clicar e arrastar convidado
 3. Soltar sobre um assento (círculo ao redor da mesa)
 4. Assento fica preenchido com índice ou ⭐ (VIP)
 
 #### ✅ Desalocar Convidado
+
 1. Clicar e arrastar assento ocupado
 2. Soltar na zona "Convidados" (sidebar esquerda)
 3. Convidado volta para lista de não alocados
 
 #### ✅ Realocar Convidado
+
 1. Arrastar assento ocupado
 2. Soltar em outro assento vazio
 3. Convidado muda de lugar
 
 #### ✅ Zoom
+
 1. Botões +/- no Toolbar (centro superior)
 2. Range: 0.5x a 2x
 3. Zoom lógico (coordenadas multiplicadas, não CSS transform)
 
 #### ✅ Undo/Redo
+
 1. Botões com setas no Toolbar
 2. Histórico de todas as ações (criar, mover, alocar, etc.)
 3. Desabilitado quando não há histórico
 
 #### ✅ Painel de Elementos
+
 1. Botão "Elementos" no Toolbar
 2. Toggle sidebar direita
 3. 9 elementos decorativos:
@@ -147,11 +162,13 @@ http://localhost:3000/events/cmg7932an000013g79a1jig3q/tables
    - Área de Fotos
 
 #### ✅ Auto-Organizar
+
 1. Botão no Toolbar
 2. Reorganiza mesas em grid
 3. Respeita spacing mínimo de 64px
 
 #### ✅ Exportar PNG
+
 1. Botão no Toolbar
 2. Gera imagem do canvas
 3. Download automático
@@ -166,6 +183,7 @@ http://localhost:3000/events/cmg7932an000013g79a1jig3q/tables
 Se ainda houver problemas:
 
 ### Console do Navegador (F12)
+
 ```javascript
 // Verificar se dados estão carregando:
 console.log(tables, unassigned)
@@ -178,6 +196,7 @@ console.log(usePlannerStore.getState())
 ```
 
 ### Logs do Server
+
 ```bash
 # Verificar se API está respondendo:
 curl http://localhost:3000/api/events/cmg7932an000013g79a1jig3q/tables

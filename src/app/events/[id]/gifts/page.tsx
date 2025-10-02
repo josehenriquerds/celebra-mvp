@@ -91,7 +91,8 @@ export default function GiftsPage() {
     } catch (error) {
       toast({
         title: 'Erro',
-        description: error instanceof Error ? error.message : 'Ocorreu um erro ao salvar o presente.',
+        description:
+          error instanceof Error ? error.message : 'Ocorreu um erro ao salvar o presente.',
         variant: 'destructive',
       })
     }
@@ -109,7 +110,8 @@ export default function GiftsPage() {
     } catch (error) {
       toast({
         title: 'Erro',
-        description: error instanceof Error ? error.message : 'Ocorreu um erro ao excluir o presente.',
+        description:
+          error instanceof Error ? error.message : 'Ocorreu um erro ao excluir o presente.',
         variant: 'destructive',
       })
     }
@@ -125,7 +127,8 @@ export default function GiftsPage() {
     } catch (error) {
       toast({
         title: 'Erro',
-        description: error instanceof Error ? error.message : 'Ocorreu um erro ao atualizar o status.',
+        description:
+          error instanceof Error ? error.message : 'Ocorreu um erro ao atualizar o status.',
         variant: 'destructive',
       })
     }

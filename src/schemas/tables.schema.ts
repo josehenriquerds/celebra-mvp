@@ -133,7 +133,7 @@ export const tableBulkPositionUpdateSchema = z.object({
       x: z.number(),
       y: z.number(),
       rotation: z.number().optional(),
-    }),
+    })
   ),
 })
 

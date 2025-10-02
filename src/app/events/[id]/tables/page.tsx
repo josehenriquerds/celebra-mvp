@@ -54,7 +54,7 @@ const snap = (v: number, step = GRID) => Math.round(v / step) * step
 const circlesCollide = (
   a: { x: number; y: number; r: number },
   b: { x: number; y: number; r: number },
-  gap = 0,
+  gap = 0
 ) => {
   const dx = a.x - b.x
   const dy = a.y - b.y
@@ -67,7 +67,7 @@ function findFreeSpot(
   movingId: string,
   x: number,
   y: number,
-  r: number,
+  r: number
 ): { x: number; y: number } {
   let candidate = { x: snap(x), y: snap(y) }
   const others = tables.filter((t) => t.id !== movingId)
@@ -76,7 +76,9 @@ function findFreeSpot(
     cx - r >= 0 && cy - r >= 0 && cx + r <= CANVAS_W && cy + r <= CANVAS_H
 
   const collides = (cx: number, cy: number) =>
-    others.some((t) => circlesCollide({ x: cx, y: cy, r }, { x: t.x, y: t.y, r: t.radius }, MIN_GAP))
+    others.some((t) =>
+      circlesCollide({ x: cx, y: cy, r }, { x: t.x, y: t.y, r: t.radius }, MIN_GAP)
+    )
 
   candidate.x = clamp(candidate.x, r, CANVAS_W - r)
   candidate.y = clamp(candidate.y, r, CANVAS_H - r)
@@ -157,7 +159,7 @@ export default function TablePlannerPage() {
   // DnD Sensors
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
   )
 
   // Add to history when data changes
@@ -384,8 +386,8 @@ export default function TablePlannerPage() {
           updateTableMutation.mutateAsync({
             id: t.id,
             data: { x: t.x, y: t.y },
-          }),
-        ),
+          })
+        )
       )
 
       toast({
@@ -578,7 +580,9 @@ export default function TablePlannerPage() {
             </div>
 
             {/* Canvas Central */}
-            <div className={`col-span-12 ${showElementsPalette ? 'lg:col-span-6' : 'lg:col-span-9'}`}>
+            <div
+              className={`col-span-12 ${showElementsPalette ? 'lg:col-span-6' : 'lg:col-span-9'}`}
+            >
               <Card>
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
@@ -630,15 +634,13 @@ export default function TablePlannerPage() {
           </div>
           <DragOverlay dropAnimation={null}>
             {activeId ? (
-              <div className="rounded-lg border-2 border-celebre-brand bg-white p-3 shadow-lg">
+              <div className="border-celebre-brand rounded-lg border-2 bg-white p-3 shadow-lg">
                 {activeId.startsWith('guest-') && (
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     <span className="text-sm font-medium">
-                      {
-                        unassigned.find((g) => `guest-${g.id}` === activeId)?.contact.fullName ||
-                          'Convidado'
-                      }
+                      {unassigned.find((g) => `guest-${g.id}` === activeId)?.contact.fullName ||
+                        'Convidado'}
                     </span>
                   </div>
                 )}

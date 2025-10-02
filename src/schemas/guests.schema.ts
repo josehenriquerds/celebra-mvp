@@ -106,7 +106,7 @@ export const guestWithTimelineSchema = guestSchema.extend({
       title: z.string(),
       description: z.string().nullable(),
       occurredAt: z.coerce.date(),
-    }),
+    })
   ),
   interactions: z.array(
     z.object({
@@ -116,7 +116,7 @@ export const guestWithTimelineSchema = guestSchema.extend({
       channel: z.string(),
       messageSnippet: z.string().nullable(),
       occurredAt: z.coerce.date(),
-    }),
+    })
   ),
   checkins: z.array(
     z.object({
@@ -124,7 +124,7 @@ export const guestWithTimelineSchema = guestSchema.extend({
       status: z.string(),
       method: z.string(),
       occurredAt: z.coerce.date(),
-    }),
+    })
   ),
   gifts: z.array(
     z.object({
@@ -132,7 +132,7 @@ export const guestWithTimelineSchema = guestSchema.extend({
       title: z.string(),
       price: z.number(),
       status: z.string(),
-    }),
+    })
   ),
   consentLogs: z.array(
     z.object({
@@ -140,7 +140,7 @@ export const guestWithTimelineSchema = guestSchema.extend({
       action: z.string(),
       context: z.string(),
       occurredAt: z.coerce.date(),
-    }),
+    })
   ),
 })
 

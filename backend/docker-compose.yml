@@ -13,12 +13,12 @@ services:
       TZ: America/Sao_Paulo
       PGTZ: America/Sao_Paulo
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U celebre -d celebre_db"]
+      test: ['CMD-SHELL', 'pg_isready -U celebre -d celebre_db']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,45 +34,45 @@ services:
     restart: unless-stopped
     environment:
       # Database
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=celebre_db;Username=celebre;Password=celebre_dev_password;Include Error Detail=true"
+      ConnectionStrings__DefaultConnection: 'Host=db;Port=5432;Database=celebre_db;Username=celebre;Password=celebre_dev_password;Include Error Detail=true'
 
       # n8n Integration
-      N8n__BaseUrl: "${N8N_URL:-http://n8n:5678}"
-      N8n__ApiKey: "${N8N_API_KEY:-change-me}"
-      N8n__SendMessageWebhook: "/webhook/send-message"
-      N8n__VendorSubmittedWebhook: "/webhook/vendor-submitted"
-      N8n__GiftReceivedWebhook: "/webhook/gift-received"
+      N8n__BaseUrl: '${N8N_URL:-http://n8n:5678}'
+      N8n__ApiKey: '${N8N_API_KEY:-change-me}'
+      N8n__SendMessageWebhook: '/webhook/send-message'
+      N8n__VendorSubmittedWebhook: '/webhook/vendor-submitted'
+      N8n__GiftReceivedWebhook: '/webhook/gift-received'
 
       # WhatsApp Cloud API
-      WhatsApp__PhoneNumberId: "${WHATSAPP_PHONE_NUMBER_ID:-}"
-      WhatsApp__AccessToken: "${WHATSAPP_ACCESS_TOKEN:-}"
-      WhatsApp__VerifyToken: "${WHATSAPP_VERIFY_TOKEN:-celebre_webhook_verify}"
-      WhatsApp__BusinessAccountId: "${WHATSAPP_BUSINESS_ACCOUNT_ID:-}"
+      WhatsApp__PhoneNumberId: '${WHATSAPP_PHONE_NUMBER_ID:-}'
+      WhatsApp__AccessToken: '${WHATSAPP_ACCESS_TOKEN:-}'
+      WhatsApp__VerifyToken: '${WHATSAPP_VERIFY_TOKEN:-celebre_webhook_verify}'
+      WhatsApp__BusinessAccountId: '${WHATSAPP_BUSINESS_ACCOUNT_ID:-}'
 
       # CORS
-      Cors__AllowedOrigins: "${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:3001}"
+      Cors__AllowedOrigins: '${ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:3001}'
 
       # Guest Portal Token
-      GuestPortal__Secret: "${NEXTAUTH_SECRET:-change-this-secret-in-production}"
+      GuestPortal__Secret: '${NEXTAUTH_SECRET:-change-this-secret-in-production}'
 
       # JWT (futuro)
-      Jwt__Secret: "${JWT_SECRET:-change-this-jwt-secret-in-production}"
-      Jwt__Issuer: "https://api.celebre.com"
-      Jwt__Audience: "https://celebre.com"
-      Jwt__ExpirationMinutes: "60"
+      Jwt__Secret: '${JWT_SECRET:-change-this-jwt-secret-in-production}'
+      Jwt__Issuer: 'https://api.celebre.com'
+      Jwt__Audience: 'https://celebre.com'
+      Jwt__ExpirationMinutes: '60'
 
       # Timezone
       TZ: America/Sao_Paulo
 
       # ASP.NET Core
       ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: "http://+:80;https://+:443"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: "/https/aspnetapp.pfx"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "password"
+      ASPNETCORE_URLS: 'http://+:80;https://+:443'
+      ASPNETCORE_Kestrel__Certificates__Default__Path: '/https/aspnetapp.pfx'
+      ASPNETCORE_Kestrel__Certificates__Default__Password: 'password'
 
     ports:
-      - "5000:80"
-      - "5001:443"
+      - '5000:80'
+      - '5001:443'
     depends_on:
       db:
         condition: service_healthy
@@ -89,17 +89,17 @@ services:
     container_name: celebre-n8n
     restart: unless-stopped
     environment:
-      N8N_BASIC_AUTH_ACTIVE: "true"
-      N8N_BASIC_AUTH_USER: "${N8N_USER:-admin}"
-      N8N_BASIC_AUTH_PASSWORD: "${N8N_PASSWORD:-admin123}"
-      N8N_HOST: "${N8N_HOST:-n8n.localhost}"
-      N8N_PROTOCOL: "http"
-      N8N_PORT: "5678"
-      WEBHOOK_URL: "http://n8n:5678/"
-      GENERIC_TIMEZONE: "America/Sao_Paulo"
+      N8N_BASIC_AUTH_ACTIVE: 'true'
+      N8N_BASIC_AUTH_USER: '${N8N_USER:-admin}'
+      N8N_BASIC_AUTH_PASSWORD: '${N8N_PASSWORD:-admin123}'
+      N8N_HOST: '${N8N_HOST:-n8n.localhost}'
+      N8N_PROTOCOL: 'http'
+      N8N_PORT: '5678'
+      WEBHOOK_URL: 'http://n8n:5678/'
+      GENERIC_TIMEZONE: 'America/Sao_Paulo'
       TZ: America/Sao_Paulo
     ports:
-      - "5678:5678"
+      - '5678:5678'
     volumes:
       - n8n_data:/home/node/.n8n
       - ./n8n/workflows:/home/node/.n8n/workflows:ro
@@ -112,12 +112,12 @@ services:
     container_name: celebre-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_EMAIL:-admin@celebre.local}"
-      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_PASSWORD:-admin123}"
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      PGADMIN_DEFAULT_EMAIL: '${PGADMIN_EMAIL:-admin@celebre.local}'
+      PGADMIN_DEFAULT_PASSWORD: '${PGADMIN_PASSWORD:-admin123}'
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     ports:
-      - "5050:80"
+      - '5050:80'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./pgadmin/servers.json:/pgadmin4/servers.json:ro

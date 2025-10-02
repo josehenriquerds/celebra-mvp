@@ -81,7 +81,7 @@ export function useUpdateGuest() {
       if (previousGuests) {
         queryClient.setQueryData<Guest[]>(
           guestsKeys.list(eventId),
-          previousGuests.map((guest) => (guest.id === id ? { ...guest, ...data } : guest)),
+          previousGuests.map((guest) => (guest.id === id ? { ...guest, ...data } : guest))
         )
       }
 
@@ -127,7 +127,7 @@ export function useDeleteGuest() {
       if (previousGuests) {
         queryClient.setQueryData<Guest[]>(
           guestsKeys.list(eventId),
-          previousGuests.filter((guest) => guest.id !== id),
+          previousGuests.filter((guest) => guest.id !== id)
         )
       }
 

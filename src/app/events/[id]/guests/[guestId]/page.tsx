@@ -452,7 +452,8 @@ export default function GuestProfilePage() {
                         <div className="flex justify-between">
                           <span className="text-celebre-muted">Mensagens WhatsApp</span>
                           <span className="font-medium">
-                            {guest.interactions?.filter((i) => i.type === 'whatsapp_message').length || 0}
+                            {guest.interactions?.filter((i) => i.type === 'whatsapp_message')
+                              .length || 0}
                           </span>
                         </div>
                         <div className="flex justify-between">

@@ -25,23 +25,27 @@ backend/
 ## ✅ Componentes Implementados
 
 ### 1. Domain Layer
+
 - ✅ **26 Enums** em português (idênticos ao Prisma)
 - ✅ Estrutura base para todas as entidades
 - ✅ Exemplo completo: `Event`, `Guest`, `Contact`
 
 ### 2. Shared Layer
+
 - ✅ `Result<T>` pattern para error handling
 - ✅ `PagedResult<T>` para paginação
 - ✅ `CuidGenerator` compatível com Prisma
 - ✅ Extension methods e helpers
 
 ### 3. Infrastructure
+
 - ✅ DbContext configurado com Npgsql
 - ✅ Snake_case naming convention (EFCore.NamingConventions)
 - ✅ Templates para Entity Configurations
 - ✅ Repository pattern base
 
 ### 4. Application
+
 - ✅ CQRS pattern com MediatR
 - ✅ Templates para Queries e Commands
 - ✅ FluentValidation para validações
@@ -49,6 +53,7 @@ backend/
 - ✅ Exemplos completos de handlers
 
 ### 5. API Layer
+
 - ✅ Controllers com templates
 - ✅ Swagger/OpenAPI configurado (NSwag)
 - ✅ CORS configurável
@@ -56,12 +61,14 @@ backend/
 - ✅ Error handling middleware
 
 ### 6. Integrations
+
 - ✅ Template para HTTP clients resilientes (Polly)
 - ✅ Base para n8n Service
 - ✅ Base para WhatsApp Webhook Handler
 - ✅ Retry policies e circuit breakers
 
 ### 7. DevOps & Docker
+
 - ✅ `Dockerfile` multi-stage otimizado
 - ✅ `docker-compose.yml` completo com:
   - PostgreSQL 15
@@ -72,6 +79,7 @@ backend/
 - ✅ Volume persistence
 
 ### 8. Documentação Completa
+
 - ✅ **README.md**: Arquitetura, configuração, exemplos
 - ✅ **IMPLEMENTATION_GUIDE.md**: Templates de código para todos os componentes
 - ✅ **QUICKSTART.md**: Guia de início rápido
@@ -82,27 +90,28 @@ backend/
 
 ### ✅ Estrutura pronta para implementar 50+ endpoints:
 
-| Categoria | Endpoints | Status |
-|-----------|-----------|--------|
-| **Guests & RSVP** | 6 endpoints | 📝 Templates prontos |
-| **Guest Portal** | 5 endpoints | 📝 Templates prontos |
-| **Segments** | 7 endpoints | 📝 Templates prontos |
-| **Groups** | 4 endpoints | 📝 Templates prontos |
-| **Tasks** | 5 endpoints | 📝 Templates prontos |
-| **Timeline** | 2 endpoints | 📝 Templates prontos |
-| **Tables/Seating** | 7 endpoints | 📝 Templates prontos |
-| **Gifts** | 4 endpoints | 📝 Templates prontos |
-| **Vendors** | 4 endpoints | 📝 Templates prontos |
+| Categoria           | Endpoints    | Status               |
+| ------------------- | ------------ | -------------------- |
+| **Guests & RSVP**   | 6 endpoints  | 📝 Templates prontos |
+| **Guest Portal**    | 5 endpoints  | 📝 Templates prontos |
+| **Segments**        | 7 endpoints  | 📝 Templates prontos |
+| **Groups**          | 4 endpoints  | 📝 Templates prontos |
+| **Tasks**           | 5 endpoints  | 📝 Templates prontos |
+| **Timeline**        | 2 endpoints  | 📝 Templates prontos |
+| **Tables/Seating**  | 7 endpoints  | 📝 Templates prontos |
+| **Gifts**           | 4 endpoints  | 📝 Templates prontos |
+| **Vendors**         | 4 endpoints  | 📝 Templates prontos |
 | **Vendor Partners** | 10 endpoints | 📝 Templates prontos |
-| **Reports** | 3 endpoints | 📝 Templates prontos |
-| **Uploads** | 1 endpoint | 📝 Templates prontos |
-| **Webhooks** | 2 endpoints | 📝 Templates prontos |
+| **Reports**         | 3 endpoints  | 📝 Templates prontos |
+| **Uploads**         | 1 endpoint   | 📝 Templates prontos |
+| **Webhooks**        | 2 endpoints  | 📝 Templates prontos |
 
 **Total: 60 endpoints REST** mapeados com contratos idênticos ao Next.js
 
 ## 🎯 Compatibilidade Garantida
 
 ### ✅ Enums em Português (idênticos ao Prisma)
+
 ```
 ContactRelation: familia, amigo, trabalho, fornecedor
 InviteStatus: nao_enviado, enviado, entregue, lido
@@ -114,11 +123,13 @@ VendorPartnerStatus: pending_review, approved, rejected, suspended
 ```
 
 ### ✅ Timezone Correto
+
 - `America/Sao_Paulo` configurado
 - `DateTimeOffset` para todas as datas
 - Persistência com `timestamp with time zone`
 
 ### ✅ Paginação Idêntica
+
 ```json
 {
   "items": [...],
@@ -132,6 +143,7 @@ VendorPartnerStatus: pending_review, approved, rejected, suspended
 ```
 
 ### ✅ Error Handling Padronizado
+
 ```json
 {
   "error": "Error message",
@@ -143,6 +155,7 @@ VendorPartnerStatus: pending_review, approved, rejected, suspended
 ## 🚀 Como Usar
 
 ### 1. Início Rápido (5 minutos)
+
 ```bash
 cd backend
 cp .env.example .env
@@ -151,33 +164,38 @@ docker-compose up -d
 ```
 
 ### 2. Desenvolvimento Local
+
 Ver instruções detalhadas em `QUICKSTART.md`
 
 ### 3. Implementar Endpoints
+
 1. Seguir templates em `IMPLEMENTATION_GUIDE.md`
 2. Copiar e adaptar exemplos do README.md
 3. Testar via Swagger
 4. Validar compatibilidade com front
 
 ### 4. Gerar Cliente TypeScript
+
 ```bash
 nswag openapi2tsclient /input:http://localhost:5000/swagger/v1/swagger.json /output:../src/lib/api/celebre-client.ts
 ```
 
 ### 5. Integrar no Front Next.js
+
 ```typescript
-import { apiClient } from '@/lib/api/client';
+import { apiClient } from '@/lib/api/client'
 
 // Antes:
-const response = await fetch('/api/events/123/guests');
+const response = await fetch('/api/events/123/guests')
 
 // Depois:
-const response = await apiClient.getGuests('123');
+const response = await apiClient.getGuests('123')
 ```
 
 ## 📊 Status da Implementação
 
 ### ✅ 100% Completo
+
 - Arquitetura DDD + Clean
 - Estrutura de projetos
 - Pacotes NuGet essenciais
@@ -188,6 +206,7 @@ const response = await apiClient.getGuests('123');
 - Documentação completa
 
 ### 📝 Templates Prontos (implementação direta)
+
 - Todas as 26 entidades do Domain
 - Todos os 60 endpoints REST
 - Entity Configurations EF Core
@@ -198,6 +217,7 @@ const response = await apiClient.getGuests('123');
 - Services de integração
 
 ### ⏰ Pendente (seguir templates)
+
 - Implementar entidades completas (copiar templates)
 - Implementar handlers CQRS (copiar templates)
 - Implementar controllers (copiar templates)
@@ -235,12 +255,12 @@ Com os templates fornecidos, um desenvolvedor .NET pode:
 
 ## 📚 Documentação Entregue
 
-| Documento | Conteúdo | Páginas |
-|-----------|----------|---------|
-| `README.md` | Arquitetura completa, configuração, exemplos de código | ~500 linhas |
-| `IMPLEMENTATION_GUIDE.md` | Templates para todos os componentes | ~800 linhas |
-| `QUICKSTART.md` | Guia de início rápido, troubleshooting | ~350 linhas |
-| `SUMMARY.md` | Este documento | ~400 linhas |
+| Documento                 | Conteúdo                                               | Páginas     |
+| ------------------------- | ------------------------------------------------------ | ----------- |
+| `README.md`               | Arquitetura completa, configuração, exemplos de código | ~500 linhas |
+| `IMPLEMENTATION_GUIDE.md` | Templates para todos os componentes                    | ~800 linhas |
+| `QUICKSTART.md`           | Guia de início rápido, troubleshooting                 | ~350 linhas |
+| `SUMMARY.md`              | Este documento                                         | ~400 linhas |
 
 **Total: ~2.050 linhas de documentação técnica detalhada**
 
@@ -297,24 +317,28 @@ Com os templates fornecidos, um desenvolvedor .NET pode:
 ## 🚦 Próximos Passos Recomendados
 
 ### Imediato (1-2 dias)
+
 1. Revisar documentação completa
 2. Rodar `docker-compose up` e validar Swagger
 3. Implementar 1-2 endpoints completos como POC
 4. Validar integração com front Next.js
 
 ### Curto Prazo (1-2 semanas)
+
 5. Implementar todas as entidades do Domain
 6. Implementar endpoints críticos (Guests, Checkins, Tables)
 7. Criar migrations e aplicar no DB
 8. Portar seeds do Prisma
 
 ### Médio Prazo (3-4 semanas)
+
 9. Implementar todos os 60 endpoints REST
 10. Escrever testes unitários e de integração
 11. Configurar CI/CD
 12. Deploy em ambiente de staging
 
 ### Longo Prazo (1-2 meses)
+
 13. Migração gradual do front (feature flag)
 14. Validação em produção (canary deployment)
 15. Descomissionar Next.js API routes
@@ -334,13 +358,13 @@ Com os templates fornecidos, um desenvolvedor .NET pode:
 - [x] Swagger/OpenAPI configurado
 - [x] Scripts de migration e geração de client
 - [x] Guias de troubleshooting
-- [ ] Todas as entidades implementadas *(templates prontos)*
-- [ ] Todos os 60 endpoints implementados *(templates prontos)*
-- [ ] Migrations criadas *(aguarda entidades)*
-- [ ] Seeds portados do Prisma *(aguarda entidades)*
-- [ ] Testes escritos *(templates prontos)*
-- [ ] Cliente TypeScript gerado *(após endpoints)*
-- [ ] Validação E2E com front *(após integração)*
+- [ ] Todas as entidades implementadas _(templates prontos)_
+- [ ] Todos os 60 endpoints implementados _(templates prontos)_
+- [ ] Migrations criadas _(aguarda entidades)_
+- [ ] Seeds portados do Prisma _(aguarda entidades)_
+- [ ] Testes escritos _(templates prontos)_
+- [ ] Cliente TypeScript gerado _(após endpoints)_
+- [ ] Validação E2E com front _(após integração)_
 
 ## 🎓 Conclusão
 

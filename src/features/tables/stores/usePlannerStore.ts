@@ -22,7 +22,10 @@ interface PlannerStore {
   setZoom: (zoom: number) => void
   zoomIn: () => void
   zoomOut: () => void
-  setActiveId: (id: string | null, type: 'guest' | 'table' | 'assignment' | 'element' | null) => void
+  setActiveId: (
+    id: string | null,
+    type: 'guest' | 'table' | 'assignment' | 'element' | null
+  ) => void
 
   // History actions
   addToHistory: (data: TablePlannerData) => void
@@ -98,7 +101,8 @@ export const usePlannerStore = create<PlannerStore>((set, get) => ({
 
   setEditingElementId: (id) => set({ editingElementId: id }),
 
-  toggleElementsPalette: () => set((state) => ({ showElementsPalette: !state.showElementsPalette })),
+  toggleElementsPalette: () =>
+    set((state) => ({ showElementsPalette: !state.showElementsPalette })),
 
   reset: () => set(initialState),
 }))

@@ -12,7 +12,17 @@ interface ToolbarProps {
 }
 
 export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: ToolbarProps) {
-  const { zoom, zoomIn, zoomOut, undo, redo, canUndo, canRedo, toggleElementsPalette, showElementsPalette } = usePlannerStore()
+  const {
+    zoom,
+    zoomIn,
+    zoomOut,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    toggleElementsPalette,
+    showElementsPalette,
+  } = usePlannerStore()
 
   return (
     <div className="flex items-center gap-2">
@@ -21,7 +31,9 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
         <Button variant="ghost" size="sm" onClick={zoomOut} disabled={zoom <= 0.5}>
           <ZoomOut className="h-4 w-4" />
         </Button>
-        <span className="min-w-[3rem] text-center text-xs font-medium">{Math.round(zoom * 100)}%</span>
+        <span className="min-w-[3rem] text-center text-xs font-medium">
+          {Math.round(zoom * 100)}%
+        </span>
         <Button variant="ghost" size="sm" onClick={zoomIn} disabled={zoom >= 2}>
           <ZoomIn className="h-4 w-4" />
         </Button>
@@ -38,21 +50,42 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
       </div>
 
       {/* Actions */}
-      <Button variant="outline" size="sm" onClick={toggleElementsPalette} title="Elementos do espaço">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={toggleElementsPalette}
+        title="Elementos do espaço"
+      >
         <Shapes className="mr-2 h-4 w-4" />
         {showElementsPalette ? 'Ocultar' : 'Elementos'}
       </Button>
 
-      <Button variant="outline" size="sm" onClick={onAutoArrange} title="Organizar mesas automaticamente">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onAutoArrange}
+        title="Organizar mesas automaticamente"
+      >
         <LayoutGrid className="mr-2 h-4 w-4" />
         Auto-Organizar
       </Button>
 
-      <Button variant="outline" size="sm" onClick={onAutoAllocate} title="Alocar convidados automaticamente">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onAutoAllocate}
+        title="Alocar convidados automaticamente"
+      >
         Auto-Alocar
       </Button>
 
-      <Button variant="outline" size="sm" onClick={onExport} disabled={exporting} title="Exportar como imagem">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onExport}
+        disabled={exporting}
+        title="Exportar como imagem"
+      >
         <Download className="mr-2 h-4 w-4" />
         {exporting ? 'Exportando...' : 'Exportar'}
       </Button>

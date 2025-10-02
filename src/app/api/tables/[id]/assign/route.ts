@@ -25,7 +25,10 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     })
 
     if (!seat || seat.tableId !== tableId) {
-      return NextResponse.json({ error: 'Seat not found or does not belong to this table' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Seat not found or does not belong to this table' },
+        { status: 404 }
+      )
     }
 
     // Check if seat is already occupied (by a different guest)

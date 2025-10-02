@@ -2,13 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import type {
-  Table,
-  TableInput,
-  TablePlannerData,
-  TableUpdate,
-  SeatAssignment,
-} from '@/schemas'
+import type { Table, TableInput, TablePlannerData, TableUpdate, SeatAssignment } from '@/schemas'
 import {
   assignGuestToSeat,
   bulkUpdateTablePositions,
@@ -66,16 +60,14 @@ export function useUpdateTable() {
       await queryClient.cancelQueries({ queryKey: tablesKeys.planner(eventId) })
 
       // Snapshot previous value
-      const previousData = queryClient.getQueryData<TablePlannerData>(
-        tablesKeys.planner(eventId),
-      )
+      const previousData = queryClient.getQueryData<TablePlannerData>(tablesKeys.planner(eventId))
 
       // Optimistically update
       if (previousData) {
         queryClient.setQueryData<TablePlannerData>(tablesKeys.planner(eventId), {
           ...previousData,
           tables: previousData.tables.map((table) =>
-            table.id === id ? { ...table, ...data } : table,
+            table.id === id ? { ...table, ...data } : table
           ),
         })
       }
@@ -105,9 +97,7 @@ export function useDeleteTable() {
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: tablesKeys.planner(eventId) })
 
-      const previousData = queryClient.getQueryData<TablePlannerData>(
-        tablesKeys.planner(eventId),
-      )
+      const previousData = queryClient.getQueryData<TablePlannerData>(tablesKeys.planner(eventId))
 
       if (previousData) {
         queryClient.setQueryData<TablePlannerData>(tablesKeys.planner(eventId), {
@@ -141,9 +131,7 @@ export function useAssignGuestToSeat() {
     onMutate: async ({ tableId, data }) => {
       await queryClient.cancelQueries({ queryKey: tablesKeys.planner(eventId) })
 
-      const previousData = queryClient.getQueryData<TablePlannerData>(
-        tablesKeys.planner(eventId),
-      )
+      const previousData = queryClient.getQueryData<TablePlannerData>(tablesKeys.planner(eventId))
 
       // Optimistic update will be handled by the component for better UX
       return { previousData }

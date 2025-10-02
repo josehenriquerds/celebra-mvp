@@ -1,6 +1,14 @@
 'use client'
 
-import { CheckCircle, Clock, Edit2, ExternalLink, Gift as GiftIcon, ShoppingCart, Trash2 } from 'lucide-react'
+import {
+  CheckCircle,
+  Clock,
+  Edit2,
+  ExternalLink,
+  Gift as GiftIcon,
+  ShoppingCart,
+  Trash2,
+} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'

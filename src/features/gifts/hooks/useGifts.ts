@@ -53,8 +53,7 @@ export function useUpdateGift() {
   const eventId = params.id as string
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<GiftFormData> }) =>
-      updateGift(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<GiftFormData> }) => updateGift(id, data),
     onMutate: async ({ id, data }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: giftsKeys.list(eventId) })
@@ -66,7 +65,7 @@ export function useUpdateGift() {
       if (previousGifts) {
         queryClient.setQueryData<Gift[]>(
           giftsKeys.list(eventId),
-          previousGifts.map((gift) => (gift.id === id ? { ...gift, ...data } : gift)),
+          previousGifts.map((gift) => (gift.id === id ? { ...gift, ...data } : gift))
         )
       }
 
@@ -100,7 +99,7 @@ export function useDeleteGift() {
       if (previousGifts) {
         queryClient.setQueryData<Gift[]>(
           giftsKeys.list(eventId),
-          previousGifts.filter((gift) => gift.id !== id),
+          previousGifts.filter((gift) => gift.id !== id)
         )
       }
 
@@ -134,7 +133,7 @@ export function useUpdateGiftStatus() {
       if (previousGifts) {
         queryClient.setQueryData<Gift[]>(
           giftsKeys.list(eventId),
-          previousGifts.map((gift) => (gift.id === id ? { ...gift, status } : gift)),
+          previousGifts.map((gift) => (gift.id === id ? { ...gift, status } : gift))
         )
       }
 

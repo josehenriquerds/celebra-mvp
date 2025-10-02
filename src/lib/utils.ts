@@ -5,7 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(date: Date | string | null | undefined, format: 'short' | 'long' = 'short'): string {
+export function formatDate(
+  date: Date | string | null | undefined,
+  format: 'short' | 'long' = 'short'
+): string {
   if (!date) return '-'
 
   const d = typeof date === 'string' ? new Date(date) : date

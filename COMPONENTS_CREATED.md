@@ -5,30 +5,30 @@
 ### Componentes Criados ([src/features/tables/components/](src/features/tables/components/))
 
 #### 1. **DroppableSeat.tsx**
+
 Componente de assento com hit-area ampliada (56px visual, 40px interno).
 
 **Funcionalidades**:
+
 - Droppable: Aceita guest ou assignment
 - Draggable: Quando ocupado, pode ser arrastado para outro seat
 - Visual: VIP mostra ⭐, outros mostram número
 - Cores: Personaliz adas pela cor da mesa
 
 **Uso**:
+
 ```tsx
-<DroppableSeat
-  seat={seat}
-  tableId={table.id}
-  tableColor={table.color}
-  zoom={zoom}
-/>
+<DroppableSeat seat={seat} tableId={table.id} tableColor={table.color} zoom={zoom} />
 ```
 
 ---
 
 #### 2. **TableItem.tsx**
+
 Componente de mesa individual com todas as funcionalidades.
 
 **Funcionalidades**:
+
 - Draggable: Arrasta a mesa inteira
 - Zoom lógico: Renderiza escalonado sem blur
 - Ações: Editar e Excluir (aparecem no hover)
@@ -36,26 +36,25 @@ Componente de mesa individual com todas as funcionalidades.
 - Assentos: Renderiza todos os DroppableSeat
 
 **Uso**:
+
 ```tsx
-<TableItem
-  table={table}
-  zoom={zoom}
-  onEdit={handleEdit}
-  onDelete={handleDelete}
-/>
+<TableItem table={table} zoom={zoom} onEdit={handleEdit} onDelete={handleDelete} />
 ```
 
 ---
 
 #### 3. **GuestChip.tsx**
+
 Chip de convidado não alocado (arrast ável).
 
 **Funcionalidades**:
+
 - Draggable: Pode ser arrastado para qualquer seat
 - Visual: Badge VIP (⭐), household, assentos, crianças
 - Compacto: Design otimizado para sidebar
 
 **Uso**:
+
 ```tsx
 <GuestChip guest={guest} />
 ```
@@ -63,32 +62,40 @@ Chip de convidado não alocado (arrast ável).
 ---
 
 #### 4. **UnassignedZone.tsx**
+
 Zona droppable para desalocar convidados.
 
 **Funcionalidades**:
+
 - Droppable: Aceita assignments para desalocar
 - Feedback visual: Ring azul quando hovering
 - Container: Envolve lista de GuestChip
 
 **Uso**:
+
 ```tsx
 <UnassignedZone>
-  {unassigned.map(g => <GuestChip key={g.id} guest={g} />)}
+  {unassigned.map((g) => (
+    <GuestChip key={g.id} guest={g} />
+  ))}
 </UnassignedZone>
 ```
 
 ---
 
 #### 5. **TablesCanvas.tsx**
+
 Canvas principal com grid de fundo.
 
 **Funcionalidades**:
+
 - Grid visual: 16px escalado por zoom
 - Renderiza todas as TableItem
 - Exportável: id="tables-canvas" para toPng
 - Zoom lógico: Dimensões escaladas
 
 **Uso**:
+
 ```tsx
 <TablesCanvas
   tables={tables}
@@ -103,9 +110,11 @@ Canvas principal com grid de fundo.
 ---
 
 #### 6. **Toolbar.tsx**
+
 Barra de ferramentas com zoom, undo/redo e ações.
 
 **Funcionalidades**:
+
 - Zoom In/Out: Controles com limite (0.5x - 2x)
 - Undo/Redo: Integrado com Zustand store
 - Botão Elementos: Toggle do painel lateral
@@ -114,6 +123,7 @@ Barra de ferramentas com zoom, undo/redo e ações.
 - Exportar: PNG de alta qualidade
 
 **Uso**:
+
 ```tsx
 <Toolbar
   onExport={handleExport}
@@ -126,6 +136,7 @@ Barra de ferramentas com zoom, undo/redo e ações.
 ---
 
 #### 7. **ElementsPalette.tsx** ⭐ NOVO
+
 Painel de elementos decorativos arrastáveis.
 
 **Elementos Disponíveis**:
@@ -142,17 +153,21 @@ Painel de elementos decorativos arrastáveis.
 | photoArea | 📷 | Teal | 120x120 |
 
 **Funcionalidades**:
+
 - Draggable: Cada elemento pode ser arrastado
 - Visual: Ícone colorido + label
 - Grid: Layout 2 colunas responsivo
 
 **Uso**:
+
 ```tsx
-{showElementsPalette && (
-  <div className="col-span-3">
-    <ElementsPalette />
-  </div>
-)}
+{
+  showElementsPalette && (
+    <div className="col-span-3">
+      <ElementsPalette />
+    </div>
+  )
+}
 ```
 
 ---
@@ -175,6 +190,7 @@ Painel de elementos decorativos arrastáveis.
 ```
 
 **Responsivo**:
+
 - Desktop: 3-6-3 (com palette)
 - Desktop: 3-9 (sem palette)
 - Mobile: Stack vertical 12 cols cada
@@ -184,6 +200,7 @@ Painel de elementos decorativos arrastáveis.
 ## 🔌 Integração com a Página
 
 ### Imports Necessários
+
 ```tsx
 import {
   ElementsPalette,
@@ -206,6 +223,7 @@ import { usePlannerStore } from '@/features/tables/stores/usePlannerStore'
 ```
 
 ### Setup no Componente
+
 ```tsx
 export default function TablePlannerPage() {
   // React Query hooks
@@ -217,13 +235,7 @@ export default function TablePlannerPage() {
   const unassignMutation = useUnassignGuestFromSeat()
 
   // Zustand store
-  const {
-    zoom,
-    activeId,
-    setActiveId,
-    addToHistory,
-    showElementsPalette,
-  } = usePlannerStore()
+  const { zoom, activeId, setActiveId, addToHistory, showElementsPalette } = usePlannerStore()
 
   // Dados extraídos
   const tables = data?.tables || []
@@ -238,6 +250,7 @@ export default function TablePlannerPage() {
 ## 🎯 Como Usar os Novos Componentes
 
 ### 1. Renderizar Sidebar de Convidados
+
 ```tsx
 <Card>
   <CardHeader>
@@ -257,6 +270,7 @@ export default function TablePlannerPage() {
 ```
 
 ### 2. Renderizar Canvas Central
+
 ```tsx
 <Card>
   <CardHeader>
@@ -277,26 +291,28 @@ export default function TablePlannerPage() {
         onEditTable={setEditingTable}
         onDeleteTable={handleDeleteTable}
       />
-      <DragOverlay>
-        {activeId ? <div>Arrastando...</div> : null}
-      </DragOverlay>
+      <DragOverlay>{activeId ? <div>Arrastando...</div> : null}</DragOverlay>
     </DndContext>
   </CardContent>
 </Card>
 ```
 
 ### 3. Renderizar Painel de Elementos (Condicional)
+
 ```tsx
-{showElementsPalette && (
-  <div className="col-span-12 lg:col-span-3">
-    <div className="sticky top-4">
-      <ElementsPalette />
+{
+  showElementsPalette && (
+    <div className="col-span-12 lg:col-span-3">
+      <div className="sticky top-4">
+        <ElementsPalette />
+      </div>
     </div>
-  </div>
-)}
+  )
+}
 ```
 
 ### 4. Toolbar no Header
+
 ```tsx
 <header className="border-b bg-white">
   <div className="flex items-center justify-between">
@@ -324,6 +340,7 @@ export default function TablePlannerPage() {
 ## 🐛 Para Testar as Novas Funcionalidades
 
 ### 1. Painel de Elementos Aparece?
+
 ```tsx
 // No store, verificar:
 const { showElementsPalette, toggleElementsPalette } = usePlannerStore()
@@ -338,6 +355,7 @@ const { showElementsPalette, toggleElementsPalette } = usePlannerStore()
 ```
 
 ### 2. Undo/Redo Funciona?
+
 ```tsx
 // Verificar no store:
 const { undo, redo, canUndo, canRedo, addToHistory } = usePlannerStore()
@@ -353,6 +371,7 @@ useEffect(() => {
 ```
 
 ### 3. Criação de Mesa Funciona?
+
 ```tsx
 const createMutation = useCreateTable()
 
@@ -375,6 +394,7 @@ async function handleCreateTable() {
 ## 📝 Arquivo de Referência
 
 Para integrar tudo na página, consulte o exemplo completo em:
+
 - **Backup original**: `src/app/events/[id]/tables/page-backup.tsx`
 - **Componentes**: `src/features/tables/components/*.tsx`
 - **Hooks**: `src/features/tables/hooks/useTables.ts`

@@ -103,6 +103,7 @@ dotnet run
 ```
 
 A API estará disponível em:
+
 - HTTP: http://localhost:5000
 - HTTPS: https://localhost:5001
 - Swagger: https://localhost:5001/swagger
@@ -872,11 +873,11 @@ services:
       POSTGRES_DB: celebre_db
       TZ: America/Sao_Paulo
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U celebre"]
+      test: ['CMD-SHELL', 'pg_isready -U celebre']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -887,19 +888,19 @@ services:
       dockerfile: Dockerfile
     container_name: celebre-api
     environment:
-      DATABASE_URL: "Host=db;Database=celebre_db;Username=celebre;Password=celebre_dev_password"
-      N8N_URL: "${N8N_URL:-http://host.docker.internal:5678}"
-      N8N_API_KEY: "${N8N_API_KEY}"
-      WHATSAPP_PHONE_NUMBER_ID: "${WHATSAPP_PHONE_NUMBER_ID}"
-      WHATSAPP_ACCESS_TOKEN: "${WHATSAPP_ACCESS_TOKEN}"
-      WHATSAPP_VERIFY_TOKEN: "${WHATSAPP_VERIFY_TOKEN}"
-      ALLOWED_ORIGINS: "${ALLOWED_ORIGINS:-http://localhost:3000}"
-      NEXTAUTH_SECRET: "${NEXTAUTH_SECRET}"
+      DATABASE_URL: 'Host=db;Database=celebre_db;Username=celebre;Password=celebre_dev_password'
+      N8N_URL: '${N8N_URL:-http://host.docker.internal:5678}'
+      N8N_API_KEY: '${N8N_API_KEY}'
+      WHATSAPP_PHONE_NUMBER_ID: '${WHATSAPP_PHONE_NUMBER_ID}'
+      WHATSAPP_ACCESS_TOKEN: '${WHATSAPP_ACCESS_TOKEN}'
+      WHATSAPP_VERIFY_TOKEN: '${WHATSAPP_VERIFY_TOKEN}'
+      ALLOWED_ORIGINS: '${ALLOWED_ORIGINS:-http://localhost:3000}'
+      NEXTAUTH_SECRET: '${NEXTAUTH_SECRET}'
       TZ: America/Sao_Paulo
       ASPNETCORE_ENVIRONMENT: Development
     ports:
-      - "5000:80"
-      - "5001:443"
+      - '5000:80'
+      - '5001:443'
     depends_on:
       db:
         condition: service_healthy
@@ -911,12 +912,12 @@ services:
     image: n8nio/n8n:latest
     container_name: celebre-n8n
     environment:
-      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_ACTIVE: 'true'
       N8N_BASIC_AUTH_USER: admin
       N8N_BASIC_AUTH_PASSWORD: admin123
       TZ: America/Sao_Paulo
     ports:
-      - "5678:5678"
+      - '5678:5678'
     volumes:
       - n8n_data:/home/node/.n8n
 
@@ -1103,6 +1104,7 @@ if (args.Contains("--seed"))
 - Opt-out: -5 pontos
 
 Tiers:
+
 - Bronze: < 25
 - Prata: 25-49
 - Ouro: ≥ 50
@@ -1234,22 +1236,22 @@ nswag openapi2tsclient /input:https://localhost:5001/swagger/v1/swagger.json /ou
 
 ```typescript
 // lib/api/client.ts
-import { CelebreClient } from './celebre-client';
+import { CelebreClient } from './celebre-client'
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
 
-export const apiClient = new CelebreClient(baseUrl);
+export const apiClient = new CelebreClient(baseUrl)
 
 // Uso em componente
-import { apiClient } from '@/lib/api/client';
+import { apiClient } from '@/lib/api/client'
 
 export async function getGuests(eventId: string) {
   const response = await apiClient.getGuests(eventId, {
     filter: 'confirmed',
     page: 1,
-    limit: 50
-  });
-  return response;
+    limit: 50,
+  })
+  return response
 }
 ```
 
@@ -1441,17 +1443,19 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 ### 3. Substituir fetchers
 
 Antes:
+
 ```typescript
 // app/guests/page.tsx
-const response = await fetch(`/api/events/${eventId}/guests`);
-const data = await response.json();
+const response = await fetch(`/api/events/${eventId}/guests`)
+const data = await response.json()
 ```
 
 Depois:
-```typescript
-import { apiClient } from '@/lib/api/client';
 
-const data = await apiClient.getGuests(eventId, { page: 1, limit: 50 });
+```typescript
+import { apiClient } from '@/lib/api/client'
+
+const data = await apiClient.getGuests(eventId, { page: 1, limit: 50 })
 ```
 
 ### 4. Manter tipos sincronizados
@@ -1462,6 +1466,7 @@ npm run generate:api-client
 ```
 
 Adicionar ao package.json:
+
 ```json
 {
   "scripts": {
@@ -1508,6 +1513,7 @@ Adicionar ao package.json:
 ## Suporte
 
 Para dúvidas sobre a implementação:
+
 - Consultar schema Prisma original: `../prisma/schema.prisma`
 - Consultar endpoints Next.js originais: `../src/app/api/**/*.ts`
 - Seguir padrões estabelecidos neste README

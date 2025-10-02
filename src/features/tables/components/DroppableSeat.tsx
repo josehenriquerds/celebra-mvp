@@ -48,7 +48,7 @@ export function DroppableSeat({ seat, tableId, tableColor, zoom }: DroppableSeat
     <div
       ref={setRefs}
       {...(assigned ? { ...attributes, ...listeners } : {})}
-      className={`absolute flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 touch-none select-none items-center justify-center rounded-full pointer-events-auto ${isOver ? 'ring-celebre-brand/60 bg-celebre-accent/20 ring-2' : ''} ${isDragging ? 'opacity-70' : ''}`}
+      className={`pointer-events-auto absolute flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 touch-none select-none items-center justify-center rounded-full ${isOver ? 'ring-celebre-brand/60 bg-celebre-accent/20 ring-2' : ''} ${isDragging ? 'opacity-70' : ''}`}
       style={{ left: renderLeft, top: renderTop }}
       title={seat.assignment?.guest.contact.fullName || 'Vazio'}
       onPointerDown={(e) => !assigned && e.stopPropagation()}

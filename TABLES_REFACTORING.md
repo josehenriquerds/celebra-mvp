@@ -13,6 +13,7 @@ Esta refatoração aplicou os padrões modernos (React Query + Zod + Zustand + d
 **Problema**: A função `handleCreateTable` estava fazendo o POST mas não atualizava a UI adequadamente após criação.
 
 **Solução Aplicada**:
+
 - Migrado para React Query com `useCreateTable` hook
 - Invalidação automática de cache após criação bem-sucedida
 - Feedback visual durante operação (loading state)
@@ -23,6 +24,7 @@ Esta refatoração aplicou os padrões modernos (React Query + Zod + Zustand + d
 **Problema**: 900+ linhas em um único arquivo, difícil manutenção, sem separação de responsabilidades.
 
 **Solução Aplicada**:
+
 ```
 src/features/tables/
 ├── services/
@@ -40,6 +42,7 @@ src/features/tables/
 **Problema**: Estado de mesas (servidor) misturado com zoom/undo/redo (UI local).
 
 **Solução Aplicada**:
+
 - **React Query**: Cache e sincronização de dados do servidor (tables, unassigned, elements)
 - **Zustand**: Estado efêmero de UI (zoom, activeId, history, editing)
 - Separação clara de responsabilidades
@@ -55,33 +58,33 @@ src/features/tables/
 export type Table = z.infer<typeof tableSchema>
 export type Seat = z.infer<typeof seatSchema>
 export type UnassignedGuest = z.infer<typeof unassignedGuestSchema>
-export type DecorElement = z.infer<typeof decorElementSchema>        // NOVO
+export type DecorElement = z.infer<typeof decorElementSchema> // NOVO
 export type TablePlannerData = z.infer<typeof tablePlannerDataSchema>
 
 // Elemento decorativo (NOVO)
 export const decorElementSchema = z.object({
   id: z.string(),
-  type: elementTypeEnum,                    // 'cakeTable' | 'danceFloor' | etc.
+  type: elementTypeEnum, // 'cakeTable' | 'danceFloor' | etc.
   x: z.number(),
   y: z.number(),
   width: z.number().positive(),
   height: z.number().positive(),
   rotation: z.number().default(0),
-  locked: z.boolean().default(false),       // Travar para evitar arrasto acidental
+  locked: z.boolean().default(false), // Travar para evitar arrasto acidental
   zIndex: z.number().int().default(0),
 })
 
 // 9 tipos de elementos disponíveis
 export const elementTypeEnum = z.enum([
-  'cakeTable',      // Mesa do Bolo
-  'danceFloor',     // Pista de Dança
-  'restroom',       // Banheiro
-  'buffet',         // Buffet
-  'dj',             // DJ
-  'entrance',       // Entrada
-  'exit',           // Saída
-  'bar',            // Bar
-  'photoArea',      // Área de Fotos
+  'cakeTable', // Mesa do Bolo
+  'danceFloor', // Pista de Dança
+  'restroom', // Banheiro
+  'buffet', // Buffet
+  'dj', // DJ
+  'entrance', // Entrada
+  'exit', // Saída
+  'bar', // Bar
+  'photoArea', // Área de Fotos
 ])
 ```
 
@@ -118,8 +121,8 @@ export const tablesKeys = {
 // Hooks disponíveis
 export function useTablePlannerData(eventId?: string)
 export function useCreateTable()
-export function useUpdateTable()          // Com optimistic update
-export function useDeleteTable()          // Com optimistic update + rollback
+export function useUpdateTable() // Com optimistic update
+export function useDeleteTable() // Com optimistic update + rollback
 export function useAssignGuestToSeat()
 export function useUnassignGuestFromSeat()
 export function useBulkUpdateTablePositions()
@@ -171,17 +174,17 @@ export const useCanUndo = () => usePlannerStore((state) => state.canUndo())
 
 #### Elementos Disponíveis
 
-| Tipo | Label | Ícone | Cor | Dimensões Padrão |
-|------|-------|-------|-----|------------------|
-| `cakeTable` | Mesa do Bolo | 🍰 | Amarelo | 120x80 |
-| `danceFloor` | Pista de Dança | 🎵 | Roxo | 200x200 |
-| `restroom` | Banheiro | 🚪 | Cinza | 80x80 |
-| `buffet` | Buffet | 🍴 | Verde | 180x100 |
-| `dj` | DJ | 🎧 | Vermelho | 100x100 |
-| `entrance` | Entrada | 🚪 | Azul | 100x60 |
-| `exit` | Saída | 🚪 | Laranja | 100x60 |
-| `bar` | Bar | 🍷 | Rosa | 150x80 |
-| `photoArea` | Área de Fotos | 📷 | Teal | 120x120 |
+| Tipo         | Label          | Ícone | Cor      | Dimensões Padrão |
+| ------------ | -------------- | ----- | -------- | ---------------- |
+| `cakeTable`  | Mesa do Bolo   | 🍰    | Amarelo  | 120x80           |
+| `danceFloor` | Pista de Dança | 🎵    | Roxo     | 200x200          |
+| `restroom`   | Banheiro       | 🚪    | Cinza    | 80x80            |
+| `buffet`     | Buffet         | 🍴    | Verde    | 180x100          |
+| `dj`         | DJ             | 🎧    | Vermelho | 100x100          |
+| `entrance`   | Entrada        | 🚪    | Azul     | 100x60           |
+| `exit`       | Saída          | 🚪    | Laranja  | 100x60           |
+| `bar`        | Bar            | 🍷    | Rosa     | 150x80           |
+| `photoArea`  | Área de Fotos  | 📷    | Teal     | 120x120          |
 
 #### Funcionalidades
 
@@ -189,6 +192,7 @@ export const useCanUndo = () => usePlannerStore((state) => state.canUndo())
 ✅ **Lock/Unlock**: Travar elementos individualmente para evitar arrasto acidental
 ✅ **Z-Index**: Controle de sobreposição (útil para pista de dança sob mesas)
 ✅ **Persistência**:
+
 - **Se backend suportar**: Salva em endpoint existente de layout
 - **Se não**: localStorage + feature flag `tables.decorPalette = true`
 
@@ -218,6 +222,7 @@ if (id.startsWith('new-element-')) {
 ### 1. Criação de Mesas (Fix Completo)
 
 **Antes**:
+
 ```typescript
 // Refresh manual frágil após POST
 const r2 = await fetch(`/api/events/${eventId}/tables`)
@@ -226,6 +231,7 @@ setData(json)
 ```
 
 **Depois**:
+
 ```typescript
 const createMutation = useCreateTable()
 
@@ -237,6 +243,7 @@ await createMutation.mutateAsync(data)
 ### 2. Optimistic Updates
 
 **useUpdateTable** (exemplo):
+
 ```typescript
 onMutate: async ({ id, data }) => {
   // 1. Cancelar refetches em andamento
@@ -266,6 +273,7 @@ onError: (err, vars, context) => {
 **Problema**: Difícil soltar convidado exatamente no assento pequeno (40px).
 
 **Solução**:
+
 ```typescript
 // Hitbox invisível (56px) contém visual (40px)
 <div className="h-14 w-14 ...">  {/* 56px - área de drop */}
@@ -280,6 +288,7 @@ onError: (err, vars, context) => {
 **Antes**: `transform: scale(zoom)` → blur e problemas de coordenadas
 
 **Depois**: Renderização escalada
+
 ```typescript
 const renderLeft = table.x * zoom
 const renderTop = table.y * zoom
@@ -293,18 +302,19 @@ const renderDiameter = table.radius * 2 * zoom
 ```typescript
 const sensors = useSensors(
   useSensor(MouseSensor, {
-    activationConstraint: { distance: 6 }  // Previne clique acidental
+    activationConstraint: { distance: 6 }, // Previne clique acidental
   }),
   useSensor(TouchSensor, {
-    activationConstraint: { delay: 120, tolerance: 6 }  // Previne scroll durante drag
+    activationConstraint: { delay: 120, tolerance: 6 }, // Previne scroll durante drag
   })
 )
 ```
 
 CSS:
+
 ```css
 .draggable-item {
-  touch-action: none;  /* Essencial para mobile */
+  touch-action: none; /* Essencial para mobile */
 }
 ```
 
@@ -312,12 +322,12 @@ CSS:
 
 ## 📊 Melhorias de Performance
 
-| Métrica | Antes | Depois | Melhoria |
-|---------|-------|--------|----------|
-| **Rerenders** | Todo canvas a cada mudança | Apenas componente afetado | ✅ ~70% redução |
-| **Type Safety** | Tipos manuais parciais | 100% inferidos via Zod | ✅ 0 erros em produção |
-| **Bundle** | Tudo em 1 arquivo (900+ linhas) | 5 arquivos modulares | ✅ Tree-shaking habilitado |
-| **Cache Stale** | Refetch manual sempre | React Query SWR strategy | ✅ 50% menos requisições |
+| Métrica         | Antes                           | Depois                    | Melhoria                   |
+| --------------- | ------------------------------- | ------------------------- | -------------------------- |
+| **Rerenders**   | Todo canvas a cada mudança      | Apenas componente afetado | ✅ ~70% redução            |
+| **Type Safety** | Tipos manuais parciais          | 100% inferidos via Zod    | ✅ 0 erros em produção     |
+| **Bundle**      | Tudo em 1 arquivo (900+ linhas) | 5 arquivos modulares      | ✅ Tree-shaking habilitado |
+| **Cache Stale** | Refetch manual sempre           | React Query SWR strategy  | ✅ 50% menos requisições   |
 
 ---
 
@@ -333,7 +343,7 @@ export const tablesKeys = {
 queryClient.invalidateQueries({ queryKey: tablesKeys.planner(eventId) })
 
 // Cache compartilhado entre componentes
-const { data } = useTablePlannerData(eventId)  // Usa o mesmo cache
+const { data } = useTablePlannerData(eventId) // Usa o mesmo cache
 ```
 
 ---
@@ -434,6 +444,7 @@ src/
 ### 1. Componentizar Página Principal
 
 Extrair de `page.tsx`:
+
 - `TablesCanvas.tsx`: Canvas SVG/HTML com grid
 - `TableItem.tsx`: Componente de mesa individual
 - `GuestChip.tsx`: Convidado na lista lateral
@@ -442,6 +453,7 @@ Extrair de `page.tsx`:
 ### 2. Persistência de Elementos
 
 Se backend não suportar inicialmente:
+
 ```typescript
 // Feature flag
 const DECOR_PALETTE_ENABLED = true
@@ -452,6 +464,7 @@ localStorage.setItem(layoutKey, JSON.stringify(elements))
 ```
 
 Quando backend estiver pronto:
+
 ```typescript
 // Migrar para endpoint
 POST /api/events/:id/layout
@@ -472,7 +485,7 @@ async function exportCanvas() {
   const canvas = document.getElementById('tables-canvas')
   const dataUrl = await toPng(canvas, {
     quality: 1.0,
-    pixelRatio: 2,  // High DPI
+    pixelRatio: 2, // High DPI
   })
   // Download ou enviar para API
 }

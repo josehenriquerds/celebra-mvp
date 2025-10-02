@@ -177,7 +177,7 @@ const config: Config = {
 
       // >>> FONTE PRINCIPAL
       fontFamily: {
-        sans: [ 'Zalando Sans', 'system-ui', 'sans-serif'],
+        sans: ['Zalando Sans', 'system-ui', 'sans-serif'],
       },
 
       // Tamanhos
