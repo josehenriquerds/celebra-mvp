@@ -13,6 +13,7 @@ import {
   useSensors,
 } from '@dnd-kit/core'
 import { toPng } from 'html-to-image'
+import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, Plus, Users, X } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -20,6 +21,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { useToast } from '@/components/ui/use-toast'
 import {
   ElementsPalette,
@@ -37,6 +39,7 @@ import {
   useUpdateTable,
 } from '@/features/tables/hooks/useTables'
 import { usePlannerStore } from '@/features/tables/stores/usePlannerStore'
+import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 
 /* =========================
@@ -47,6 +50,11 @@ const CANVAS_W = 2000
 const CANVAS_H = 1500
 const GRID = 16
 const MIN_GAP = 64
+const GUEST_PANEL_WIDTH = 288
+const ELEMENT_PANEL_WIDTH = 320
+const PANEL_TRANSITION = { type: 'spring', stiffness: 260, damping: 24 } as const
+const EASE_SMOOTH = [0.16, 1, 0.3, 1] as const
+
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v))
 const snap = (v: number, step = GRID) => Math.round(v / step) * step
@@ -155,6 +163,10 @@ export default function TablePlannerPage() {
   const [newTableCapacity, setNewTableCapacity] = useState(8)
   const [editingTable, setEditingTable] = useState<Table | null>(null)
   const [exporting, setExporting] = useState(false)
+  const [guestPanelOpen, setGuestPanelOpen] = useState(true)
+
+  const interactiveButtonClasses = 'transition-transform duration-200 ease-smooth hover:bg-muted/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]'
+  const mobilePanelTransition = { duration: 0.3, ease: EASE_SMOOTH }
 
   // DnD Sensors
   const sensors = useSensors(
@@ -453,27 +465,44 @@ export default function TablePlannerPage() {
   return (
     <div className="min-h-screen bg-celebre-bg">
       {/* Header */}
-      <header className="shadow-celebre border-b bg-white">
-        <div className="mx-auto max-w-[95vw] p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href={`/events/${eventId}`}>
-                <Button variant="ghost" size="icon">
-                  <ArrowLeft className="size-5" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="font-heading text-2xl font-bold text-celebre-ink">
-                  Planner de Mesas
-                </h1>
-                <p className="mt-1 text-sm text-celebre-muted">
-                  {tables.length} mesa{tables.length !== 1 ? 's' : ''} • {unassigned.length}{' '}
-                  convidado{unassigned.length !== 1 ? 's' : ''} não alocado
-                  {unassigned.length !== 1 ? 's' : ''}
-                </p>
-              </div>
+      <header className="border-b bg-white">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-4 md:flex-row md:items-center md:justify-between md:px-6">
+          <div className="flex flex-1 items-center gap-4">
+            <Link href={`/events/${eventId}`}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={interactiveButtonClasses}
+              >
+                <ArrowLeft className="size-5" />
+                <span className="sr-only">Voltar para o evento</span>
+              </Button>
+            </Link>
+            <div>
+              <h1 className="font-heading text-2xl font-bold text-celebre-ink">
+                Planner de Mesas
+              </h1>
+              <p className="mt-1 text-sm text-celebre-muted">
+                {tables.length} mesa{tables.length !== 1 ? 's' : ''} • {unassigned.length}{' '}
+                convidado{unassigned.length !== 1 ? 's' : ''} não alocado
+                {unassigned.length !== 1 ? 's' : ''}
+              </p>
             </div>
-
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setGuestPanelOpen((prev) => !prev)}
+              aria-expanded={guestPanelOpen}
+              aria-controls="guest-panel-desktop"
+              data-state={guestPanelOpen ? 'open' : 'closed'}
+              className={cn("hidden items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium md:inline-flex", interactiveButtonClasses, "data-[state=open]:bg-muted/60")}
+            >
+              <Users className="size-4" aria-hidden="true" />
+              {guestPanelOpen ? 'Ocultar nomes' : 'Mostrar nomes'}
+            </Button>
             <Toolbar
               onExport={handleExport}
               onAutoArrange={handleAutoArrange}
@@ -491,7 +520,7 @@ export default function TablePlannerPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="font-heading">Editar Mesa</CardTitle>
-                <Button variant="ghost" size="icon" onClick={() => setEditingTable(null)}>
+                <Button variant="ghost" size="icon" onClick={() => setEditingTable(null)} className={interactiveButtonClasses}>
                   <X className="size-4" />
                 </Button>
               </div>
@@ -530,10 +559,10 @@ export default function TablePlannerPage() {
               </div>
 
               <div className="flex gap-2 pt-2">
-                <Button variant="outline" onClick={() => setEditingTable(null)} className="flex-1">
+                <Button variant="outline" onClick={() => setEditingTable(null)} className={cn('flex-1', interactiveButtonClasses)}>
                   Cancelar
                 </Button>
-                <Button onClick={handleUpdateTable} className="flex-1">
+                <Button onClick={handleUpdateTable} className={cn('flex-1', interactiveButtonClasses)}>
                   Salvar
                 </Button>
               </div>
@@ -543,7 +572,7 @@ export default function TablePlannerPage() {
       )}
 
       {/* Main Content */}
-      <main className="mx-auto max-w-[95vw] px-4 py-6">
+      <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
@@ -555,92 +584,161 @@ export default function TablePlannerPage() {
             },
           }}
         >
-          <div className="grid grid-cols-12 gap-6">
-            {/* Sidebar Esquerda: Convidados */}
-            <div className="col-span-12 lg:col-span-3">
-              <Card className="sticky top-4">
-                <CardHeader className="pb-3">
-                  <CardTitle className="font-heading text-lg">
-                    <Users className="mr-2 inline size-5" />
-                    Convidados ({unassigned.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="max-h-[70vh] overflow-y-auto">
-                  <UnassignedZone>
-                    {unassigned.length === 0 ? (
-                      <p className="py-8 text-center text-sm text-celebre-muted">
-                        Todos os convidados foram alocados
-                      </p>
-                    ) : (
-                      unassigned.map((guest) => <GuestChip key={guest.id} guest={guest} />)
-                    )}
-                  </UnassignedZone>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Canvas Central */}
-            <div
-              className={`col-span-12 ${showElementsPalette ? 'lg:col-span-6' : 'lg:col-span-9'}`}
-            >
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="font-heading text-lg">Layout das Mesas</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="text"
-                        placeholder="Nome da mesa"
-                        value={newTableLabel}
-                        onChange={(e) => setNewTableLabel(e.target.value)}
-                        className="w-32 text-sm"
-                      />
-                      <Input
-                        type="number"
-                        min="2"
-                        max="20"
-                        value={newTableCapacity}
-                        onChange={(e) => setNewTableCapacity(parseInt(e.target.value) || 8)}
-                        className="w-20 text-sm"
-                      />
-                      <Button size="sm" onClick={handleCreateTable}>
-                        <Plus className="mr-1 size-4" />
-                        Mesa
-                      </Button>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-[auto,1fr] md:gap-6">
+            <div className="md:hidden">
+              <Accordion type="single" collapsible className="rounded-3xl border border-border bg-card">
+                <AccordionItem value="guest-panel" className="border-none">
+                  <AccordionTrigger className="px-4 py-3 text-left text-sm font-semibold transition-colors ease-smooth hover:bg-muted/60 data-[state=open]:rounded-t-3xl data-[state=open]:bg-muted/50">
+                    <span className="flex items-center gap-2">
+                      <Users className="size-5" aria-hidden="true" />
+                      Convidados ({unassigned.length})
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="animate-accordion-down data-[state=closed]:animate-accordion-up">
+                    <div className="max-h-[60vh] space-y-3 overflow-y-auto px-4 pb-4">
+                      <UnassignedZone>
+                        {unassigned.length === 0 ? (
+                          <p className="py-6 text-center text-sm text-celebre-muted">
+                            Todos os convidados foram alocados
+                          </p>
+                        ) : (
+                          unassigned.map((guest) => <GuestChip key={guest.id} guest={guest} />)
+                        )}
+                      </UnassignedZone>
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="overflow-auto p-4">
-                  <TablesCanvas
-                    tables={tables}
-                    zoom={zoom}
-                    canvasWidth={CANVAS_W}
-                    canvasHeight={CANVAS_H}
-                    onEditTable={setEditingTable}
-                    onDeleteTable={handleDeleteTable}
-                  />
-                </CardContent>
-              </Card>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
 
-            {/* Sidebar Direita: Elementos (condicional) */}
-            {showElementsPalette && (
-              <div className="col-span-12 lg:col-span-3">
-                <div className="sticky top-4">
-                  <ElementsPalette />
-                </div>
-              </div>
-            )}
+            <AnimatePresence initial={false}>
+              {guestPanelOpen && (
+                <motion.aside
+                  key="guest-panel-desktop"
+                  layout
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: GUEST_PANEL_WIDTH, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={PANEL_TRANSITION}
+                  className="hidden md:flex md:overflow-hidden"
+                >
+                  <div className="md:sticky md:top-4">
+                    <Card
+                      id="guest-panel-desktop"
+                      className="h-full w-[18rem] border border-border bg-card shadow-elevation-2"
+                    >
+                      <CardHeader className="flex flex-col gap-2 pb-3">
+                        <CardTitle className="flex items-center gap-2 font-heading text-lg">
+                          <Users className="size-5" aria-hidden="true" />
+                          Convidados ({unassigned.length})
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
+                        <UnassignedZone>
+                          {unassigned.length === 0 ? (
+                            <p className="py-8 text-center text-sm text-celebre-muted">
+                              Todos os convidados foram alocados
+                            </p>
+                          ) : (
+                            unassigned.map((guest) => <GuestChip key={guest.id} guest={guest} />)
+                          )}
+                        </UnassignedZone>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </motion.aside>
+              )}
+            </AnimatePresence>
+
+            <div className="flex min-w-0 flex-col gap-4">
+              <motion.div layout className="flex min-w-0 flex-col gap-4 lg:flex-row">
+                <motion.div layout className="flex min-w-0 flex-1">
+                  <Card className="w-full border border-border bg-card shadow-elevation-2">
+                    <CardHeader className="flex flex-col gap-3 pb-3">
+                      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                        <CardTitle className="font-heading text-lg">Layout das Mesas</CardTitle>
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                          <Input
+                            type="text"
+                            placeholder="Nome da mesa"
+                            value={newTableLabel}
+                            onChange={(e) => setNewTableLabel(e.target.value)}
+                            className="w-full sm:max-w-[10rem]"
+                          />
+                          <Input
+                            type="number"
+                            min="2"
+                            max="20"
+                            value={newTableCapacity}
+                            onChange={(e) => setNewTableCapacity(parseInt(e.target.value) || 8)}
+                            className="w-full sm:max-w-[5.5rem]"
+                          />
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={handleCreateTable}
+                            className={cn('rounded-full sm:ml-1', interactiveButtonClasses)}
+                          >
+                            <Plus className="mr-1 size-4" />
+                            Mesa
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="overflow-auto rounded-3xl border border-dashed border-muted/50 bg-white p-4 transition-colors duration-200 ease-smooth">
+                      <TablesCanvas
+                        tables={tables}
+                        zoom={zoom}
+                        canvasWidth={CANVAS_W}
+                        canvasHeight={CANVAS_H}
+                        onEditTable={setEditingTable}
+                        onDeleteTable={handleDeleteTable}
+                      />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+                <AnimatePresence initial={false}>
+                  {showElementsPalette && (
+                    <motion.aside
+                      key="elements-desktop"
+                      layout
+                      initial={{ width: 0, opacity: 0 }}
+                      animate={{ width: ELEMENT_PANEL_WIDTH, opacity: 1 }}
+                      exit={{ width: 0, opacity: 0 }}
+                      transition={PANEL_TRANSITION}
+                      className="hidden lg:flex lg:overflow-hidden"
+                    >
+                      <div className="w-80">
+                        <ElementsPalette />
+                      </div>
+                    </motion.aside>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+              <AnimatePresence>
+                {showElementsPalette && (
+                  <motion.div
+                    key="elements-mobile"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={mobilePanelTransition}
+                    className="lg:hidden"
+                  >
+                    <ElementsPalette />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           <DragOverlay dropAnimation={null}>
             {activeId ? (
-              <div className="border-celebre-brand rounded-lg border-2 bg-white p-3 shadow-lg">
+              <div className="rounded-lg border-2 border-celebre-brand bg-white p-3 shadow-elevation-2 transition-shadow duration-200 ease-smooth">
                 {activeId.startsWith('guest-') && (
                   <div className="flex items-center gap-2">
                     <Users className="size-4" />
                     <span className="text-sm font-medium">
-                      {unassigned.find((g) => `guest-${g.id}` === activeId)?.contact.fullName ||
-                        'Convidado'}
+                      {unassigned.find((g) => `guest-${g.id}` === activeId)?.contact.fullName || 'Convidado'}
                     </span>
                   </div>
                 )}

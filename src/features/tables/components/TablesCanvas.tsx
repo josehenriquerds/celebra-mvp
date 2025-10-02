@@ -1,6 +1,8 @@
 'use client'
 
 import { useDroppable } from '@dnd-kit/core'
+
+import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 import { TableItem } from './TableItem'
 
@@ -33,7 +35,10 @@ export function TablesCanvas({
     <div
       ref={setNodeRef}
       id="tables-canvas"
-      className="relative overflow-hidden rounded-lg border-2 border-dashed border-gray-300 bg-white"
+      className={cn(
+        'relative overflow-hidden rounded-3xl border-2 border-dashed border-muted/40 bg-white transition-colors duration-200 ease-smooth',
+        isOver && 'border-celebre-brand/70'
+      )}
       style={{
         width: renderWidth,
         height: renderHeight,
@@ -43,7 +48,6 @@ export function TablesCanvas({
         `,
         backgroundSize: `${16 * zoom}px ${16 * zoom}px`,
         touchAction: 'none',
-        borderColor: isOver ? 'var(--celebre-brand)' : undefined,
       }}
     >
       {tables.map((table) => (

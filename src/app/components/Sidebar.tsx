@@ -1,8 +1,8 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { FiClipboard, FiGift, FiHome, FiSettings, FiUsers } from 'react-icons/fi'
 
 const navItems = [
@@ -17,7 +17,9 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="fixed h-screen w-64 border-r border-border bg-[var(--celebre-bg)] px-6 py-8">
+    <aside
+      className="w-full border-b border-border bg-[var(--celebre-bg)] px-4 py-6 md:sticky md:top-0 md:h-screen md:w-64 md:border-b-0 md:border-r md:px-6 md:py-8"
+    >
       <h1 className="font-heading mb-10 text-2xl text-[var(--celebre-ink)]">Celebre</h1>
       <nav className="space-y-4">
         {navItems.map(({ name, icon, href }) => {
@@ -33,7 +35,7 @@ export default function Sidebar() {
               {isActive && (
                 <motion.div
                   layoutId="activeSidebar"
-                  className="absolute bottom-0 left-0 top-0 w-1 rounded bg-primary"
+                  className="absolute inset-y-0 left-0 w-1 rounded bg-primary"
                 />
               )}
             </Link>

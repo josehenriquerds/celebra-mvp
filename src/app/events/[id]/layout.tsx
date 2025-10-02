@@ -70,10 +70,13 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
 
   const collapsed = !(pinned || hovering) // colapsa por padrão; expande ao hover ou se “fixar”
   const width = collapsed ? 80 : 264
+  const layoutStyle = {
+    "--rail-width": `${width}px`,
+  } as React.CSSProperties
 
   return (
     <TooltipProvider delayDuration={150}>
-      <div className="min-h-dvh bg-[#FAF7F4] text-[var(--ink)]">
+      <div className="min-h-dvh bg-[#FAF7F4] text-[var(--ink)]" style={layoutStyle}>
         {/* --- Desktop Sidebar (rail pastel + pill) --- */}
         <aside
           className="fixed inset-y-0 left-0 z-50 hidden lg:block"
@@ -234,7 +237,7 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
         )}
 
         {/* --- Main content --- */}
-        <main className="lg:pl-[264px]">
+        <main className="pl-0 lg:pl-[calc(var(--rail-width)+1rem)]">
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
 

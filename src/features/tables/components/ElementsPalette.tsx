@@ -12,7 +12,9 @@ import {
   WineIcon,
   Camera,
 } from 'lucide-react'
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import type { ElementType } from '@/schemas'
 
 interface ElementDef {
@@ -116,29 +118,34 @@ function DraggableElement({ element }: { element: ElementDef }) {
   return (
     <div
       ref={setNodeRef}
-      style={{
-        transform: CSS.Translate.toString(transform),
-        opacity: isDragging ? 0.6 : 1,
-      }}
+      style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.6 : 1 }}
       {...listeners}
       {...attributes}
-      className="flex cursor-grab touch-none select-none flex-col items-center gap-2 rounded-lg border border-gray-200 bg-white p-3 transition-all hover:border-gray-300 hover:shadow-sm active:cursor-grabbing"
+      tabIndex={0}
+      role="button"
+      aria-grabbed={isDragging}
+      className={cn(
+        'group flex cursor-grab touch-none select-none flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-card p-3 transition duration-200 ease-smooth hover:border-celebre-brand/40 hover:bg-muted/60 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:cursor-grabbing',
+        isDragging && 'ring-2 ring-primary ring-offset-2'
+      )}
       title={element.label}
     >
       <div
-        className="flex h-12 w-12 items-center justify-center rounded-lg"
+        className="flex h-12 w-12 items-center justify-center rounded-lg transition-colors duration-200 ease-smooth"
         style={{ backgroundColor: `${element.color}20` }}
       >
-        <Icon className="h-6 w-6" color={element.color} />
+        <Icon className="h-6 w-6" color={element.color} aria-hidden="true" />
       </div>
-      <span className="text-center text-xs font-medium text-celebre-ink">{element.label}</span>
+      <span className="text-center text-xs font-medium text-celebre-ink transition-colors duration-200 ease-smooth group-hover:text-celebre-ink/80">
+        {element.label}
+      </span>
     </div>
   )
 }
 
 export function ElementsPalette() {
   return (
-    <Card className="h-full">
+    <Card className="h-full border border-border bg-card shadow-elevation-2">
       <CardHeader className="border-b pb-4">
         <CardTitle className="font-heading text-lg">Elementos do Espaço</CardTitle>
         <p className="text-xs text-celebre-muted">

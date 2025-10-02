@@ -30,20 +30,21 @@ export default function Dashboard() {
   const percent = Math.round((evento.confirmados / evento.total) * 100)
 
   return (
-    <div className="font-[\'Nova Slim\',sans-serif] grid min-h-screen grid-cols-[auto_1fr] bg-white">
+    <div className="font-['Nova Slim',sans-serif] grid min-h-screen grid-cols-1 bg-white md:grid-cols-[auto_1fr]">
       <Sidebar />
-      <main className="ml-0 min-h-screen w-full bg-white px-4 py-8 md:ml-64 md:px-8 md:py-12">
-        {/* Cabeçalho do evento */}
-        <header className="mb-8 flex flex-col gap-2">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#B87D8A]">
-            Resumo do Evento
-          </span>
-          <h1 className="font-[\'Nova Slim\',sans-serif] text-2xl font-[600] text-[#2B2B2B] md:text-3xl">
-            {evento.nome}
-          </h1>
-          <div className="flex items-center gap-2 text-base text-[#6B6B6B]">
-            <Calendar size={18} className="text-[#B87D8A]" />
-            {new Date(evento.data).toLocaleDateString()} • {evento.local}
+      <main className="min-h-screen w-full bg-white px-4 py-8 md:px-8 md:py-12">
+        <div className="mx-auto w-full max-w-6xl">
+          {/* Cabeçalho do evento */}
+          <header className="mb-8 flex flex-col gap-2">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#B87D8A]">
+              Resumo do Evento
+            </span>
+            <h1 className="font-[\'Nova Slim\',sans-serif] text-2xl font-[600] text-[#2B2B2B] md:text-3xl">
+              {evento.nome}
+            </h1>
+            <div className="flex items-center gap-2 text-base text-[#6B6B6B]">
+              <Calendar size={18} className="text-[#B87D8A]" />
+              {new Date(evento.data).toLocaleDateString()} • {evento.local}
           </div>
         </header>
         {/* Cards informativos - layout fluido */}
@@ -113,6 +114,7 @@ export default function Dashboard() {
             ))}
           </div>
         </motion.section>
+        </div>
       </main>
     </div>
   )

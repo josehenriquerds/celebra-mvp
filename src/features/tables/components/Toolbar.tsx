@@ -1,7 +1,9 @@
 'use client'
 
 import { Download, LayoutGrid, Redo, Undo, ZoomIn, ZoomOut, Shapes } from 'lucide-react'
+
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { usePlannerStore } from '../stores/usePlannerStore'
 
 interface ToolbarProps {
@@ -10,6 +12,9 @@ interface ToolbarProps {
   onAutoAllocate: () => void
   exporting?: boolean
 }
+
+const controlButtonClasses =
+  'transition-transform duration-200 ease-smooth hover:bg-muted/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]'
 
 export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: ToolbarProps) {
   const {
@@ -25,48 +30,83 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
   } = usePlannerStore()
 
   return (
-    <div className="flex items-center gap-2">
-      {/* Zoom Controls */}
-      <div className="flex items-center gap-1 rounded-lg border bg-white px-2 py-1">
-        <Button variant="ghost" size="sm" onClick={zoomOut} disabled={zoom <= 0.5}>
-          <ZoomOut className="h-4 w-4" />
+    <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-1 rounded-full border border-border bg-card px-2 py-1 shadow-sm transition-colors duration-200 ease-smooth">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={zoomOut}
+          disabled={zoom <= 0.5}
+          aria-label="Diminuir zoom"
+          className={controlButtonClasses}
+        >
+          <ZoomOut className="h-4 w-4" aria-hidden="true" />
         </Button>
-        <span className="min-w-[3rem] text-center text-xs font-medium">
-          {Math.round(zoom * 100)}%
-        </span>
-        <Button variant="ghost" size="sm" onClick={zoomIn} disabled={zoom >= 2}>
-          <ZoomIn className="h-4 w-4" />
+        <span className="min-w-[3rem] text-center text-xs font-medium">{Math.round(zoom * 100)}%</span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={zoomIn}
+          disabled={zoom >= 2}
+          aria-label="Aumentar zoom"
+          className={controlButtonClasses}
+        >
+          <ZoomIn className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
 
-      {/* Undo/Redo */}
-      <div className="flex items-center gap-1 rounded-lg border bg-white px-1 py-1">
-        <Button variant="ghost" size="sm" onClick={undo} disabled={!canUndo()} title="Desfazer">
-          <Undo className="h-4 w-4" />
+      <div className="flex items-center gap-1 rounded-full border border-border bg-card px-1 py-1 shadow-sm transition-colors duration-200 ease-smooth">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={undo}
+          disabled={!canUndo()}
+          aria-label="Desfazer"
+          className={controlButtonClasses}
+        >
+          <Undo className="h-4 w-4" aria-hidden="true" />
         </Button>
-        <Button variant="ghost" size="sm" onClick={redo} disabled={!canRedo()} title="Refazer">
-          <Redo className="h-4 w-4" />
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={redo}
+          disabled={!canRedo()}
+          aria-label="Refazer"
+          className={controlButtonClasses}
+        >
+          <Redo className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
 
-      {/* Actions */}
       <Button
         variant="outline"
         size="sm"
         onClick={toggleElementsPalette}
-        title="Elementos do espaço"
+        aria-pressed={showElementsPalette}
+        data-state={showElementsPalette ? 'open' : 'closed'}
+        className={cn(
+          'rounded-full border border-border px-3 py-2 text-sm font-medium',
+          controlButtonClasses,
+          'data-[state=open]:bg-muted/60'
+        )}
       >
-        <Shapes className="mr-2 h-4 w-4" />
-        {showElementsPalette ? 'Ocultar' : 'Elementos'}
+        <Shapes
+          className={cn(
+            'mr-2 h-4 w-4 transition-transform duration-200 ease-smooth',
+            showElementsPalette && 'scale-110'
+          )}
+          aria-hidden="true"
+        />
+        {showElementsPalette ? 'Ocultar elementos' : 'Elementos'}
       </Button>
 
       <Button
         variant="outline"
         size="sm"
         onClick={onAutoArrange}
-        title="Organizar mesas automaticamente"
+        className={cn('rounded-full border border-border px-3 py-2 text-sm font-medium', controlButtonClasses)}
       >
-        <LayoutGrid className="mr-2 h-4 w-4" />
+        <LayoutGrid className="mr-2 h-4 w-4" aria-hidden="true" />
         Auto-Organizar
       </Button>
 
@@ -74,7 +114,7 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
         variant="outline"
         size="sm"
         onClick={onAutoAllocate}
-        title="Alocar convidados automaticamente"
+        className={cn('rounded-full border border-border px-3 py-2 text-sm font-medium', controlButtonClasses)}
       >
         Auto-Alocar
       </Button>
@@ -84,9 +124,9 @@ export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: 
         size="sm"
         onClick={onExport}
         disabled={exporting}
-        title="Exportar como imagem"
+        className={cn('rounded-full border border-border px-3 py-2 text-sm font-medium', controlButtonClasses)}
       >
-        <Download className="mr-2 h-4 w-4" />
+        <Download className="mr-2 h-4 w-4" aria-hidden="true" />
         {exporting ? 'Exportando...' : 'Exportar'}
       </Button>
     </div>

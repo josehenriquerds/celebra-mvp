@@ -3,12 +3,17 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { Baby, Star, Users } from 'lucide-react'
+
 import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 import type { UnassignedGuest } from '@/schemas'
 
 interface GuestChipProps {
   guest: UnassignedGuest
 }
+
+const chipBaseClasses =
+  'group cursor-grab touch-none select-none rounded-xl border border-border bg-card p-3 transition duration-200 ease-smooth hover:bg-muted/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:cursor-grabbing'
 
 export function GuestChip({ guest }: GuestChipProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -22,24 +27,34 @@ export function GuestChip({ guest }: GuestChipProps) {
       style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.6 : 1 }}
       {...listeners}
       {...attributes}
-      className="cursor-grab touch-none select-none rounded-lg border bg-white p-3 transition-shadow hover:shadow-sm active:cursor-grabbing"
+      tabIndex={0}
+      role="button"
+      aria-grabbed={isDragging}
+      className={cn(
+        chipBaseClasses,
+        isDragging && 'ring-2 ring-primary ring-offset-2'
+      )}
       title={guest.contact.fullName}
     >
       <div className="flex items-center gap-2">
-        {guest.contact.isVip && <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />}
-        <span className="truncate text-sm font-medium">{guest.contact.fullName}</span>
+        {guest.contact.isVip && (
+          <Star className="h-4 w-4 text-yellow-500 transition-colors duration-200 ease-smooth group-hover:text-yellow-600" />
+        )}
+        <span className="truncate text-sm font-medium transition-colors duration-200 ease-smooth group-hover:text-celebre-ink">
+          {guest.contact.fullName}
+        </span>
       </div>
       {guest.household && (
         <p className="mt-1 text-xs text-celebre-muted">{guest.household.label}</p>
       )}
       <div className="mt-2 flex items-center gap-2">
-        <Badge variant="outline" className="text-xs">
-          <Users className="mr-1 h-3 w-3" />
+        <Badge variant="outline" className="flex items-center gap-1 text-xs">
+          <Users className="h-3 w-3" aria-hidden="true" />
           {guest.seats}
         </Badge>
         {guest.children > 0 && (
-          <Badge variant="outline" className="text-xs">
-            <Baby className="mr-1 h-3 w-3" />
+          <Badge variant="outline" className="flex items-center gap-1 text-xs">
+            <Baby className="h-3 w-3" aria-hidden="true" />
             {guest.children}
           </Badge>
         )}
