@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
-    const type = formData.get('type') as string // 'logo', 'cover', 'gallery'
+    const _type = formData.get('type') as string // 'logo', 'cover', 'gallery'
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: 'Nenhum arquivo enviado' }, { status: 400 })

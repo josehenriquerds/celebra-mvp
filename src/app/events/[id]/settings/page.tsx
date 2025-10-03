@@ -1,7 +1,6 @@
 'use client'
 
 import {
-  Settings as SettingsIcon,
   Palette,
   Shield,
   Plug,
@@ -11,7 +10,7 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -71,11 +70,7 @@ export default function EventSettingsPage() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  useEffect(() => {
-    fetchSettings()
-  }, [eventId])
-
-  async function fetchSettings() {
+  const fetchSettings = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/events/${eventId}/settings`)
@@ -87,7 +82,11 @@ export default function EventSettingsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchSettings()
+  }, [fetchSettings])
 
   async function handleSave() {
     try {

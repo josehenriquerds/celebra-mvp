@@ -13,6 +13,7 @@ import {
 } from 'recharts'
 import { formatCurrency } from '@/lib/utils'
 import type { GiftOfferPriceHistory } from '@/schemas'
+import type { TooltipProps, ValueType, NameType } from 'recharts'
 
 interface PriceHistoryMiniChartProps {
   history: GiftOfferPriceHistory[]
@@ -26,9 +27,10 @@ interface ChartPoint {
   rawDate: Date
 }
 
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (!active || !payload || payload.length === 0) return null
-  const data = payload[0].payload as ChartPoint
+  const data = payload[0]?.payload as ChartPoint | undefined
+  if (!data) return null
   return (
     <div className="rounded-lg bg-white px-3 py-2 shadow-lg">
       <p className="text-xs font-medium text-[#4E7E5E]">

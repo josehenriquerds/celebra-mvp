@@ -6,16 +6,14 @@ import {
   CheckCircle,
   Gift,
   ClipboardList,
-  Filter,
   Search,
   Download,
   Calendar,
-  TrendingUp,
   Users,
   Activity,
 } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,7 +36,7 @@ interface TimelineItem {
   contactName: string
   contactPhone: string | null
   occurredAt: string
-  metadata: any
+  metadata: Record<string, unknown>
 }
 
 interface TimelineStats {
@@ -67,7 +65,7 @@ const TYPE_COLORS: Record<string, string> = {
   task: 'bg-orange-100 text-orange-800',
 }
 
-const TYPE_ICONS: Record<string, any> = {
+const TYPE_ICONS: Record<string, LucideIcon> = {
   timeline: Clock,
   interaction: MessageSquare,
   checkin: CheckCircle,
@@ -85,11 +83,7 @@ export default function EventTimelinePage() {
   const [typeFilter, setTypeFilter] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
-    fetchTimeline()
-  }, [eventId, typeFilter, searchQuery])
-
-  async function fetchTimeline() {
+  const fetchTimeline = useCallback(async () => {
     try {
       setLoading(true)
       const params = new URLSearchParams()
@@ -106,7 +100,11 @@ export default function EventTimelinePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId, searchQuery, typeFilter])
+
+  useEffect(() => {
+    void fetchTimeline()
+  }, [fetchTimeline])
 
   async function handleExport() {
     try {

@@ -1,25 +1,68 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
+
+type SegmentRule = {
+  field: string
+  operator: string
+  value: string
+}
+
+type SegmentRuleGroup = {
+  and?: SegmentRule[]
+}
+
+function isSegmentRuleGroup(value: unknown): value is SegmentRuleGroup {
+  if (!value || typeof value !== 'object') return false
+
+  const group = value as SegmentRuleGroup
+  if (!Array.isArray(group.and)) return false
+
+  return group.and.every(
+    (rule) =>
+      rule !== null &&
+      typeof rule === 'object' &&
+      typeof rule.field === 'string' &&
+      typeof rule.operator === 'string' &&
+      typeof rule.value === 'string'
+  )
+}
 
 // PATCH /api/segments/:id - Update segment
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
-    const { label, description, rules } = body
+    const {
+      label,
+      description,
+      rules,
+    } = body as {
+      label?: string
+      description?: string | null
+      rules?: unknown
+    }
 
-    const updateData: any = {}
+    const updateData: Record<string, unknown> = {}
     if (label !== undefined) updateData.label = label
     if (description !== undefined) updateData.description = description || null
-    if (rules !== undefined) updateData.rulesDsl = rules
+
+    let parsedRules: SegmentRuleGroup | undefined
+    if (rules !== undefined) {
+      if (!isSegmentRuleGroup(rules)) {
+        return NextResponse.json({ error: 'Invalid rules payload' }, { status: 400 })
+      }
+      updateData.rulesDsl = rules
+      parsedRules = rules
+    }
 
     const segment = await prisma.segmentTag.update({
       where: { id: params.id },
-      data: updateData,
+      data: updateData as Prisma.SegmentTagUpdateInput,
     })
 
     // Reapply rules if changed
-    if (rules) {
-      await applySegmentRules(segment.id, segment.eventId, rules)
+    if (parsedRules) {
+      await applySegmentRules(segment.id, segment.eventId, parsedRules)
     }
 
     return NextResponse.json(segment)
@@ -43,7 +86,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
   }
 }
 
-async function applySegmentRules(segmentId: string, eventId: string, rules: any) {
+async function applySegmentRules(segmentId: string, eventId: string, rules: SegmentRuleGroup) {
   const whereClause = buildWhereClause(rules)
 
   const matchingGuests = await prisma.guest.findMany({
@@ -71,10 +114,10 @@ async function applySegmentRules(segmentId: string, eventId: string, rules: any)
   }
 }
 
-function buildWhereClause(rules: any): any {
-  if (!rules.and || rules.and.length === 0) return {}
+function buildWhereClause(rules: SegmentRuleGroup): Prisma.GuestWhereInput {
+  if (!rules.and?.length) return {}
 
-  const conditions: any[] = []
+  const conditions: Prisma.GuestWhereInput[] = []
 
   for (const rule of rules.and) {
     const { field, operator, value } = rule
@@ -82,9 +125,11 @@ function buildWhereClause(rules: any): any {
     if (field.includes('.')) {
       const [parent, child] = field.split('.')
       if (parent === 'contact') {
-        conditions.push({ contact: buildFieldCondition(child, operator, value) })
+        conditions.push({ contact: buildFieldCondition(child, operator, value) as Prisma.ContactWhereInput })
       } else if (parent === 'engagementScore') {
-        conditions.push({ engagementScore: buildFieldCondition(child, operator, value) })
+        conditions.push({
+          engagementScore: buildFieldCondition(child, operator, value) as Prisma.EngagementScoreWhereInput,
+        })
       }
     } else {
       conditions.push(buildFieldCondition(field, operator, value))
@@ -94,32 +139,38 @@ function buildWhereClause(rules: any): any {
   return conditions.length > 0 ? { AND: conditions } : {}
 }
 
-function buildFieldCondition(field: string, operator: string, value: string): any {
-  let typedValue: any = value
+function buildFieldCondition(
+  field: string,
+  operator: string,
+  value: string
+): Prisma.GuestWhereInput | Prisma.ContactWhereInput | Prisma.EngagementScoreWhereInput {
+  let typedValue: string | number | boolean = value
   if (value === 'true') typedValue = true
   else if (value === 'false') typedValue = false
   else if (!isNaN(Number(value))) typedValue = Number(value)
 
   if (field === 'household') {
     return operator === 'eq' && typedValue === true
-      ? { household: { isNot: null } }
-      : { household: null }
+      ? ({ household: { isNot: null } } satisfies Prisma.GuestWhereInput)
+      : ({ household: null } satisfies Prisma.GuestWhereInput)
   }
 
   switch (operator) {
     case 'eq':
-      return { [field]: typedValue }
+      return { [field]: typedValue } as Prisma.GuestWhereInput
     case 'contains':
-      return { [field]: { contains: typedValue, mode: 'insensitive' } }
+      return {
+        [field]: { contains: typedValue, mode: 'insensitive' },
+      } as Prisma.GuestWhereInput
     case 'gt':
-      return { [field]: { gt: typedValue } }
+      return { [field]: { gt: typedValue } } as Prisma.GuestWhereInput
     case 'lt':
-      return { [field]: { lt: typedValue } }
+      return { [field]: { lt: typedValue } } as Prisma.GuestWhereInput
     case 'gte':
-      return { [field]: { gte: typedValue } }
+      return { [field]: { gte: typedValue } } as Prisma.GuestWhereInput
     case 'lte':
-      return { [field]: { lte: typedValue } }
+      return { [field]: { lte: typedValue } } as Prisma.GuestWhereInput
     default:
-      return { [field]: typedValue }
+      return { [field]: typedValue } as Prisma.GuestWhereInput
   }
 }

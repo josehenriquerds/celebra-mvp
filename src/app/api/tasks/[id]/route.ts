@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
 
-// Mock data (would be shared in real app)
-const mockTasks: any[] = []
-
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const body = await request.json()
 
@@ -14,7 +11,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   })
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_request: Request, { params: _params }: { params: { id: string } }) {
   // In a real app, delete from database
   return NextResponse.json({ success: true })
 }

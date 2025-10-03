@@ -65,7 +65,7 @@ async function main() {
     data: { label: 'Família Silva', sizeCached: 6 },
   })
 
-  const contactsSilva = await prisma.contact.createMany({
+  await prisma.contact.createMany({
     data: [
       {
         fullName: 'João Silva',
@@ -721,7 +721,7 @@ async function main() {
           eventId: event1.id,
           contactId: contact.id,
           channel: 'whatsapp',
-          kind: ['mensagem', 'clique', 'foto'][Math.floor(Math.random() * 3)] as any,
+          kind: (['mensagem', 'clique', 'foto'][Math.floor(Math.random() * 3)] as 'mensagem' | 'clique' | 'foto') || 'mensagem',
           payloadJson: { text: 'Sample interaction' },
           occurredAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
         },
@@ -737,7 +737,7 @@ async function main() {
         contactId: contact.id,
         eventId: event1.id,
         value: score,
-        tier: tier as any,
+        tier: tier as 'bronze' | 'prata' | 'ouro',
       },
     })
   }

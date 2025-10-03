@@ -8,12 +8,11 @@ import {
   CheckCircle,
   XCircle,
   Users,
-  TrendingUp,
   Star,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState, useRef } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import { DonutProgress } from '@/components/dashboard/donut-progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -63,26 +62,7 @@ export default function CheckinPage() {
   const [loading, setLoading] = useState(true)
   const [lastCheckin, setLastCheckin] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchGuests()
-    const interval = setInterval(fetchGuests, 10000) // Refresh every 10s
-    return () => clearInterval(interval)
-  }, [eventId])
-
-  useEffect(() => {
-    if (search) {
-      const filtered = guests.filter(
-        (g) =>
-          g.contact.fullName.toLowerCase().includes(search.toLowerCase()) ||
-          g.contact.phone.includes(search)
-      )
-      setFilteredGuests(filtered)
-    } else {
-      setFilteredGuests(guests)
-    }
-  }, [search, guests])
-
-  async function fetchGuests() {
+  const fetchGuests = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/events/${eventId}/checkins`)
@@ -96,7 +76,28 @@ export default function CheckinPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchGuests()
+    const interval = setInterval(() => {
+      void fetchGuests()
+    }, 10000) // Refresh every 10s
+    return () => clearInterval(interval)
+  }, [fetchGuests])
+
+  useEffect(() => {
+    if (search) {
+      const filtered = guests.filter(
+        (g) =>
+          g.contact.fullName.toLowerCase().includes(search.toLowerCase()) ||
+          g.contact.phone.includes(search)
+      )
+      setFilteredGuests(filtered)
+    } else {
+      setFilteredGuests(guests)
+    }
+  }, [search, guests])
 
   async function handleManualCheckin(guestId: string) {
     try {
@@ -156,7 +157,7 @@ export default function CheckinPage() {
           qrbox: { width: 250, height: 250 },
         },
         handleQRScan,
-        (errorMessage) => {
+        (_errorMessage) => {
           // Ignore decode errors
         }
       )

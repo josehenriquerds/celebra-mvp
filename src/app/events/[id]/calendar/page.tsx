@@ -19,7 +19,7 @@ interface TimelineItem {
   occurredAt: string
   dueAt?: string | null
   status?: string
-  metadata: any
+  metadata: Record<string, unknown>
 }
 
 interface Task {
@@ -62,15 +62,10 @@ export default function EventCalendarPage() {
     tasks: 0,
   })
 
-  useEffect(() => {
-    fetchActivities()
-  }, [eventId, typeFilter])
-
-  async function fetchActivities() {
+  const fetchActivities = useCallback(async () => {
     try {
       setLoading(true)
 
-      // Fetch timeline events
       const timelineParams = new URLSearchParams()
       if (typeFilter !== 'all' && typeFilter !== 'task') {
         timelineParams.set('type', typeFilter)
@@ -80,14 +75,11 @@ export default function EventCalendarPage() {
       const timelineData = await timelineRes.json()
       const timelineItems: TimelineItem[] = timelineData.timeline || []
 
-      // Fetch tasks
       const tasksRes = await fetch(`/api/events/${eventId}/tasks`)
       const tasks: Task[] = await tasksRes.json()
 
-      // Combine and transform to calendar events
       const allActivities: EventActivity[] = []
 
-      // Add timeline items
       if (typeFilter === 'all' || typeFilter !== 'task') {
         timelineItems.forEach((item) => {
           const startDate = new Date(item.occurredAt)
@@ -102,12 +94,11 @@ export default function EventCalendarPage() {
             occurredAt: item.occurredAt,
             metadata: item.metadata,
             start: startDate,
-            end: addHours(startDate, 1), // Default 1 hour duration
+            end: addHours(startDate, 1),
           })
         })
       }
 
-      // Add tasks
       if (typeFilter === 'all' || typeFilter === 'task') {
         tasks.forEach((task) => {
           if (task.dueAt) {
@@ -132,7 +123,6 @@ export default function EventCalendarPage() {
         })
       }
 
-      // Update stats
       setStats({
         total: allActivities.length,
         timeline: timelineItems.filter((i) => i.type === 'timeline').length,
@@ -149,7 +139,11 @@ export default function EventCalendarPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId, typeFilter])
+
+  useEffect(() => {
+    void fetchActivities()
+  }, [fetchActivities])
 
   async function handleExport() {
     try {

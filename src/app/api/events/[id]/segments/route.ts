@@ -1,5 +1,32 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
+
+type SegmentRule = {
+  field: string
+  operator: string
+  value: string
+}
+
+type SegmentRuleGroup = {
+  and?: SegmentRule[]
+}
+
+function isSegmentRuleGroup(value: unknown): value is SegmentRuleGroup {
+  if (!value || typeof value !== 'object') return false
+
+  const group = value as SegmentRuleGroup
+  if (!Array.isArray(group.and)) return false
+
+  return group.and.every(
+    (rule) =>
+      rule !== null &&
+      typeof rule === 'object' &&
+      typeof rule.field === 'string' &&
+      typeof rule.operator === 'string' &&
+      typeof rule.value === 'string'
+  )
+}
 
 // GET /api/events/:id/segments - List all segments
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
@@ -25,9 +52,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
-    const { label, description, rules } = body
+    const { label, rules } = body as { label?: string; rules?: unknown }
 
-    if (!label || !rules) {
+    if (!label || !isSegmentRuleGroup(rules)) {
       return NextResponse.json({ error: 'Missing required fields: label, rules' }, { status: 400 })
     }
 
@@ -50,7 +77,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 }
 
 // Helper function to apply segment rules
-async function applySegmentRules(segmentId: string, eventId: string, rules: any) {
+async function applySegmentRules(segmentId: string, eventId: string, rules: SegmentRuleGroup) {
   const whereClause = buildWhereClause(rules)
 
   const matchingGuests = await prisma.guest.findMany({
@@ -67,29 +94,27 @@ async function applySegmentRules(segmentId: string, eventId: string, rules: any)
 }
 
 // Helper to build Prisma where clause from DSL
-function buildWhereClause(rules: any): any {
-  if (!rules.and || rules.and.length === 0) return {}
+function buildWhereClause(rules: SegmentRuleGroup): Prisma.GuestWhereInput {
+  if (!rules.and?.length) return {}
 
-  const conditions: any[] = []
+  const conditions: Prisma.GuestWhereInput[] = []
 
   for (const rule of rules.and) {
     const { field, operator, value } = rule
 
-    // Handle nested fields (e.g., "contact.isVip")
     if (field.includes('.')) {
       const [parent, child] = field.split('.')
 
       if (parent === 'contact') {
         conditions.push({
-          contact: buildFieldCondition(child, operator, value),
+          contact: buildFieldCondition(child, operator, value) as Prisma.ContactWhereInput,
         })
       } else if (parent === 'engagementScore') {
         conditions.push({
-          engagementScore: buildFieldCondition(child, operator, value),
+          engagementScore: buildFieldCondition(child, operator, value) as Prisma.EngagementScoreWhereInput,
         })
       }
     } else {
-      // Direct field
       conditions.push(buildFieldCondition(field, operator, value))
     }
   }
@@ -97,36 +122,39 @@ function buildWhereClause(rules: any): any {
   return conditions.length > 0 ? { AND: conditions } : {}
 }
 
-function buildFieldCondition(field: string, operator: string, value: string): any {
-  // Convert string values to appropriate types
-  let typedValue: any = value
+function buildFieldCondition(
+  field: string,
+  operator: string,
+  value: string
+): Prisma.GuestWhereInput | Prisma.ContactWhereInput | Prisma.EngagementScoreWhereInput {
+  let typedValue: string | number | boolean = value
 
   if (value === 'true') typedValue = true
   else if (value === 'false') typedValue = false
   else if (!isNaN(Number(value))) typedValue = Number(value)
 
-  // Handle special field cases
   if (field === 'household') {
     return operator === 'eq' && typedValue === true
-      ? { household: { isNot: null } }
-      : { household: null }
+      ? ({ household: { isNot: null } } satisfies Prisma.GuestWhereInput)
+      : ({ household: null } satisfies Prisma.GuestWhereInput)
   }
 
-  // Build condition based on operator
   switch (operator) {
     case 'eq':
-      return { [field]: typedValue }
+      return { [field]: typedValue } as Prisma.GuestWhereInput
     case 'contains':
-      return { [field]: { contains: typedValue, mode: 'insensitive' } }
+      return {
+        [field]: { contains: typedValue, mode: 'insensitive' },
+      } as Prisma.GuestWhereInput
     case 'gt':
-      return { [field]: { gt: typedValue } }
+      return { [field]: { gt: typedValue } } as Prisma.GuestWhereInput
     case 'lt':
-      return { [field]: { lt: typedValue } }
+      return { [field]: { lt: typedValue } } as Prisma.GuestWhereInput
     case 'gte':
-      return { [field]: { gte: typedValue } }
+      return { [field]: { gte: typedValue } } as Prisma.GuestWhereInput
     case 'lte':
-      return { [field]: { lte: typedValue } }
+      return { [field]: { lte: typedValue } } as Prisma.GuestWhereInput
     default:
-      return { [field]: typedValue }
+      return { [field]: typedValue } as Prisma.GuestWhereInput
   }
 }

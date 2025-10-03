@@ -1,18 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface VendorPartner {
@@ -53,7 +46,7 @@ export default function VendorCRMPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, pages: 0 })
 
-  const fetchVendors = async () => {
+  const fetchVendors = useCallback(async () => {
     setLoading(true)
     try {
       const params = new URLSearchParams({
@@ -75,11 +68,11 @@ export default function VendorCRMPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [activeTab, pagination.limit, pagination.page, searchQuery, selectedCity, selectedCategory])
 
   useEffect(() => {
-    fetchVendors()
-  }, [activeTab, pagination.page, searchQuery, selectedCity, selectedCategory])
+    void fetchVendors()
+  }, [fetchVendors])
 
   const handleStatusChange = async (
     vendorId: string,
@@ -111,7 +104,7 @@ export default function VendorCRMPage() {
   }
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, any> = {
+    const variants: Record<string, { label: string; className: string }> = {
       pending_review: { label: 'Pendente', className: 'bg-yellow-100 text-yellow-800' },
       approved: { label: 'Aprovado', className: 'bg-green-100 text-green-800' },
       rejected: { label: 'Reprovado', className: 'bg-red-100 text-red-800' },

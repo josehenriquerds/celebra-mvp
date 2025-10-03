@@ -199,10 +199,10 @@ export default function TablePlannerPage() {
   async function handleDragEnd(e: DragEndEvent) {
     const { active, over, delta } = e
     const id = String(active.id)
-    const aData = active.data.current as any
+    const aData = active.data.current as DragData | null
     setActiveId(null, null)
 
-    const overData = over?.data.current as any
+    const overData = over?.data.current as DragData | null
 
     // Mover mesa (tanto sobre canvas quanto fora)
     if (id.startsWith('table-')) {
@@ -221,6 +221,7 @@ export default function TablePlannerPage() {
           data: { x: safe.x, y: safe.y },
         })
       } catch (error) {
+        console.error(error)
         toast({
           title: 'Erro',
           description: 'Não foi possível mover a mesa',
@@ -248,6 +249,7 @@ export default function TablePlannerPage() {
           description: `${guest.contact.fullName} foi alocado com sucesso`,
         })
       } catch (error) {
+        console.error(error)
         toast({
           title: 'Erro',
           description: 'Não foi possível alocar o convidado',
@@ -273,6 +275,7 @@ export default function TablePlannerPage() {
           description: 'O convidado foi movido com sucesso',
         })
       } catch (error) {
+        console.error(error)
         toast({
           title: 'Erro',
           description: 'Não foi possível realocar o convidado',
@@ -291,6 +294,7 @@ export default function TablePlannerPage() {
           description: 'O convidado foi removido do assento',
         })
       } catch (error) {
+        console.error(error)
         toast({
           title: 'Erro',
           description: 'Não foi possível desalocar o convidado',
@@ -326,6 +330,7 @@ export default function TablePlannerPage() {
         description: 'A mesa foi adicionada com sucesso',
       })
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Erro',
         description: 'Não foi possível criar a mesa',
@@ -355,6 +360,7 @@ export default function TablePlannerPage() {
 
       setEditingTable(null)
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Erro',
         description: 'Não foi possível atualizar a mesa',
@@ -373,6 +379,7 @@ export default function TablePlannerPage() {
         description: 'A mesa foi removida com sucesso',
       })
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Erro',
         description: 'Não foi possível excluir a mesa',
@@ -401,6 +408,7 @@ export default function TablePlannerPage() {
         description: 'As mesas foram reorganizadas automaticamente',
       })
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Erro',
         description: 'Não foi possível organizar as mesas',
@@ -433,6 +441,7 @@ export default function TablePlannerPage() {
         description: 'O layout foi exportado como imagem',
       })
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Erro',
         description: 'Não foi possível exportar a imagem',

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
 
 // PATCH /api/tables/:id - Update table position or properties
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
@@ -7,7 +8,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     const body = await request.json()
     const { x, y, label, capacity } = body
 
-    const updateData: any = {}
+    const updateData: Prisma.TableUpdateInput = {}
     if (x !== undefined) updateData.x = x
     if (y !== undefined) updateData.y = y
     if (label !== undefined) updateData.label = label

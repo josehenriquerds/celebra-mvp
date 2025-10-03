@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -83,10 +83,6 @@ export default function VendorsPage() {
   })
 
   useEffect(() => {
-    fetchVendors()
-  }, [eventId])
-
-  useEffect(() => {
     let filtered = vendors
 
     if (search) {
@@ -108,7 +104,7 @@ export default function VendorsPage() {
     setFilteredVendors(filtered)
   }, [search, filterCategory, filterPayment, vendors])
 
-  async function fetchVendors() {
+  const fetchVendors = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/events/${eventId}/vendors`)
@@ -120,7 +116,11 @@ export default function VendorsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchVendors()
+  }, [fetchVendors])
 
   function openCreateModal() {
     setEditingVendor(null)

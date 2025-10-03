@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   BarChart,
   Bar,
@@ -67,11 +67,7 @@ export default function ReportsPage() {
   const [data, setData] = useState<ReportData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchReports()
-  }, [eventId])
-
-  async function fetchReports() {
+  const fetchReports = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/events/${eventId}/reports`)
@@ -82,7 +78,11 @@ export default function ReportsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchReports()
+  }, [fetchReports])
 
   if (loading) {
     return (

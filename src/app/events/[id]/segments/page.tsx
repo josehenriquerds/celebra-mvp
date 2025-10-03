@@ -3,8 +3,7 @@
 import { ArrowLeft, Plus, Edit2, Trash2, X, Users, Filter, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -15,11 +14,15 @@ interface SegmentRule {
   value: string
 }
 
+interface SegmentRuleGroup {
+  and?: SegmentRule[]
+}
+
 interface Segment {
   id: string
   label: string
   description: string | null
-  rules: any
+  rules: SegmentRuleGroup
   _count: {
     guests: number
   }
@@ -71,11 +74,7 @@ export default function SegmentsPage() {
   const [previewCount, setPreviewCount] = useState<number | null>(null)
   const [previewLoading, setPreviewLoading] = useState(false)
 
-  useEffect(() => {
-    fetchSegments()
-  }, [eventId])
-
-  async function fetchSegments() {
+  const fetchSegments = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/events/${eventId}/segments`)
@@ -86,7 +85,11 @@ export default function SegmentsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchSegments()
+  }, [fetchSegments])
 
   function openCreateModal() {
     setEditingSegment(null)
@@ -123,7 +126,6 @@ export default function SegmentsPage() {
 
     // Reset operator and value when field changes
     if (field === 'field') {
-      const fieldConfig = FIELDS.find((f) => f.value === value)
       newRules[index].operator = 'eq'
       newRules[index].value = ''
     }
@@ -486,7 +488,7 @@ export default function SegmentsPage() {
                   {/* Rules Display */}
                   <div className="mb-4 space-y-2">
                     <p className="text-xs font-medium text-celebre-muted">Regras:</p>
-                    {(segment.rules?.and || []).map((rule: any, index: number) => {
+                    {(segment.rules?.and || []).map((rule, index) => {
                       const field = FIELDS.find((f) => f.value === rule.field)
                       return (
                         <div

@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getEngagementTier } from '@/lib/utils'
+import type { Contact } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -156,7 +157,7 @@ export async function POST(request: NextRequest) {
 async function handleRSVP(
   guestId: string,
   rsvp: 'sim' | 'nao' | 'talvez',
-  contact: any,
+  contact: Contact,
   eventId: string
 ) {
   await prisma.guest.update({

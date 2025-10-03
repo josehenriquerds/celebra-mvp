@@ -1,4 +1,4 @@
-﻿import type { ReactNode, ElementType } from 'react'
+﻿import type { ElementType } from 'react'
 
 export type SidebarItem = {
   name: string

@@ -23,12 +23,13 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { formatDate, formatTime, getSLABadgeColor } from '@/lib/utils'
+import type { LucideIcon } from 'lucide-react'
 
 interface Task {
   id: string
@@ -51,8 +52,15 @@ interface TasksData {
   concluida: Task[]
 }
 
+const SLA_BADGE_CLASSES: Record<'success' | 'warning' | 'danger', string> = {
+  success: 'bg-green-100 text-green-800 border-green-200',
+  warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  danger: 'bg-red-100 text-red-800 border-red-200',
+}
+
 // Draggable Task Card
 function DraggableTask({ task }: { task: Task }) {
+  const slaStatus = task.dueAt ? getSLABadgeColor(task.dueAt) : null
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
     data: { type: 'task', task },
@@ -73,9 +81,9 @@ function DraggableTask({ task }: { task: Task }) {
     >
       <div className="mb-2 flex items-start justify-between">
         <h3 className="text-sm font-semibold text-celebre-ink">{task.title}</h3>
-        {task.dueAt && (
-          <Badge variant={getSLABadgeColor(task.dueAt) as any} className="ml-2 text-xs">
-            {getSLABadgeColor(task.dueAt) === 'danger' ? 'Atrasada' : 'No prazo'}
+        {slaStatus && (
+          <Badge variant="outline" className={`ml-2 text-xs ${SLA_BADGE_CLASSES[slaStatus]}`}>
+            {slaStatus === 'danger' ? 'Atrasada' : 'No prazo'}
           </Badge>
         )}
       </div>
@@ -127,7 +135,7 @@ function DroppableColumn({
   status: string
   tasks: Task[]
   title: string
-  icon: any
+  icon: LucideIcon
   color: string
 }) {
   const { setNodeRef, isOver } = useDroppable({
@@ -188,11 +196,7 @@ export default function TasksPage() {
     })
   )
 
-  useEffect(() => {
-    fetchTasks()
-  }, [eventId])
-
-  async function fetchTasks() {
+  const fetchTasks = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/events/${eventId}/tasks`)
@@ -217,7 +221,11 @@ export default function TasksPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchTasks()
+  }, [fetchTasks])
 
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as string)

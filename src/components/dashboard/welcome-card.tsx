@@ -4,14 +4,12 @@ import { Card } from '@/components/ui/card'
 interface WelcomeCardProps {
   eventName: string
   userName?: string
-  eventDate?: Date
   daysUntilEvent?: number
 }
 
 export function WelcomeCard({
   eventName,
   userName = 'Organizador',
-  eventDate,
   daysUntilEvent,
 }: WelcomeCardProps) {
   return (

@@ -1,7 +1,8 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { Search, Bell, Settings, User } from 'lucide-react'
-import { motion } from 'motion/react'
+import Image from 'next/image'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -102,10 +103,13 @@ const Topbar = React.forwardRef<HTMLElement, TopbarProps>(
                 >
                   <div className="flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-pastel-lavender-400 to-pastel-lavender-500 text-sm font-semibold text-white">
                     {userAvatar ? (
-                      <img
+                      <Image
                         src={userAvatar}
                         alt={userName}
-                        className="size-8 rounded-full object-cover"
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover"
+                        unoptimized
                       />
                     ) : (
                       <User className="size-4" />

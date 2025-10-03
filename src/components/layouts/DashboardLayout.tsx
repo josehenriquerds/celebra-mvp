@@ -6,9 +6,6 @@ import {
   Gift,
   MessageCircle,
   Settings,
-  Calendar,
-  Heart,
-  ClipboardList,
 } from 'lucide-react'
 import { NavigationRail } from '@/components/ui/navigation-rail'
 import { Topbar } from '@/components/ui/topbar'

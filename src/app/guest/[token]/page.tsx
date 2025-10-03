@@ -1,11 +1,9 @@
 'use client'
 
 import {
-  User,
   Calendar,
   MapPin,
   Users,
-  Clock,
   Shield,
   Download,
   Trash2,
@@ -14,8 +12,7 @@ import {
   AlertCircle,
 } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { Badge } from '@/components/ui/badge'
+import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatDate, formatTime } from '@/lib/utils'
@@ -30,7 +27,7 @@ interface GuestPortalData {
       fullName: string
       phone: string
       email: string | null
-      restrictions: any
+      restrictions: string | null
     }
     household: {
       label: string
@@ -76,11 +73,7 @@ export default function GuestPortalPage() {
   const [error, setError] = useState<string | null>(null)
   const [updating, setUpdating] = useState(false)
 
-  useEffect(() => {
-    fetchPortalData()
-  }, [token])
-
-  async function fetchPortalData() {
+  const fetchPortalData = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/guest-portal/${token}`)
@@ -102,7 +95,11 @@ export default function GuestPortalPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [token])
+
+  useEffect(() => {
+    void fetchPortalData()
+  }, [fetchPortalData])
 
   async function handleUpdateRSVP(newRsvp: string) {
     try {

@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Shirt,
 } from 'lucide-react'
+import Image from 'next/image'
 import { useState } from 'react'
 
 export default function ConfiguracoesEvento() {
@@ -157,13 +158,18 @@ export default function ConfiguracoesEvento() {
               placeholder="URL da imagem de capa"
               className="mt-1 rounded-lg border px-4 py-2 outline-none transition-all focus:ring-2 focus:ring-[#B87D8A]"
             />
-            {form.capa && (
-              <img
-                src={form.capa}
-                alt="Capa do evento"
-                className="mt-2 h-32 w-full rounded-lg border object-cover"
-              />
-            )}
+            {form.capa ? (
+              <div className="relative mt-2 h-32 w-full overflow-hidden rounded-lg border">
+                <Image
+                  src={form.capa}
+                  alt="Capa do evento"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  unoptimized
+                />
+              </div>
+            ) : null}
           </div>
           {/* RSVP toggle */}
           <div className="flex flex-col gap-1">

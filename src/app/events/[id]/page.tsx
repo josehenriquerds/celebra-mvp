@@ -1,6 +1,7 @@
 'use client'
 
 import { Search, Users, CheckCircle, Calendar as CalendarIcon, Clock } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -38,11 +39,17 @@ interface EventSummary {
   }
 }
 
+
+interface WindowWithCover extends Window {
+  __cele_cover_url__?: string
+}
+
 export default function EventDashboard() {
   const { id } = useParams()
   const eventId = id as string
   const [data, setData] = useState<EventSummary | null>(null)
   const [loading, setLoading] = useState(true)
+  const [coverVisible, setCoverVisible] = useState(true)
 
   useEffect(() => {
     async function fetchEventSummary() {
@@ -59,6 +66,12 @@ export default function EventDashboard() {
     }
     if (eventId) fetchEventSummary()
   }, [eventId])
+
+  useEffect(() => {
+    if (data) {
+      setCoverVisible(true)
+    }
+  }, [data])
 
   if (loading) {
     return (
@@ -100,8 +113,8 @@ export default function EventDashboard() {
 
   // imagem de capa (substitua pela sua – aqui tem fallback)
   const coverUrl =
-  (typeof window !== 'undefined' && (window as any).__cele_cover_url__) ||
-  '/referencias/illustrations/casamento.png'
+    (typeof window !== 'undefined' && (window as WindowWithCover).__cele_cover_url__) ||
+    '/referencias/illustrations/casamento.png'
 
 
   return (
@@ -124,15 +137,18 @@ export default function EventDashboard() {
 
           {/* CARD DE CAPA COM IMAGEM + SOBREPOSIÇÃO ROSE */}
           <div className="mx-auto grid max-w-[720px] gap-4">
-            <div className="relative overflow-hidden rounded-3xl shadow-elevation-2">
-              <img
-                src={coverUrl}
-                alt="Capa do evento"
-                className="h-[220px] w-full object-cover md:h-[260px]"
-                onError={(e) => {
-                  ;(e.currentTarget as HTMLImageElement).style.display = 'none'
-                }}
-              />
+            <div className="relative h-[220px] overflow-hidden rounded-3xl shadow-elevation-2 md:h-[260px]">
+              {coverVisible ? (
+                <Image
+                  src={coverUrl}
+                  alt="Capa do evento"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 720px"
+                  onError={() => setCoverVisible(false)}
+                  unoptimized
+                />
+              ) : null}
               {/* overlay rose com título, igual à ref */}
               <div className="pointer-events-none absolute inset-x-4 bottom-4">
                 <div className="inline-flex max-w-full items-center rounded-2xl bg-pastel-rose-300/90 px-5 py-3">
@@ -244,36 +260,44 @@ export default function EventDashboard() {
 
           {/* Lista de tarefas no estilo “chips” grandes */}
           <div className="space-y-3">
-            {data.nextTasks.slice(0, 3).map((t, idx) => (
-              <div
-                key={t.id}
-                className={[
-                  'rounded-2xl p-4 shadow-elevation-1',
-                  idx === 0
-                    ? 'bg-pastel-rose-200/60'
-                    : idx === 1
-                      ? 'bg-pastel-sky-100'
-                      : 'bg-pastel-lavender-100',
-                ].join(' ')}
-              >
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium">{t.title}</p>
-                  <Badge variant={getSLABadgeColor(t.dueAt) as any}>
-                    {t.status === 'aberta'
-                      ? 'Aberta'
-                      : t.status === 'em_andamento'
-                        ? 'Em andamento'
-                        : 'Atrasada'}
-                  </Badge>
+            {data.nextTasks.slice(0, 3).map((t, idx) => {
+              const slaStatus = t.dueAt ? getSLABadgeColor(t.dueAt) : null
+              const statusLabel =
+                t.status === 'aberta'
+                  ? 'Aberta'
+                  : t.status === 'em_andamento'
+                    ? 'Em andamento'
+                    : 'Concluída'
+
+              return (
+                <div
+                  key={t.id}
+                  className={[
+                    'rounded-2xl p-4 shadow-elevation-1',
+                    idx === 0
+                      ? 'bg-pastel-rose-200/60'
+                      : idx === 1
+                        ? 'bg-pastel-sky-100'
+                        : 'bg-pastel-lavender-100',
+                  ].join(' ')}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">{t.title}</p>
+                    {slaStatus && (
+                      <Badge variant="outline" className={`ml-2 text-xs ${SLA_BADGE_CLASSES[slaStatus]}`}>
+                        {statusLabel}
+                      </Badge>
+                    )}
+                  </div>
+                  {t.dueAt && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      <Clock className="mr-1 inline size-3" />
+                      {formatDate(t.dueAt)} ��s {formatTime(t.dueAt)}
+                    </p>
+                  )}
                 </div>
-                {t.dueAt && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    <Clock className="mr-1 inline size-3" />
-                    {formatDate(t.dueAt)} às {formatTime(t.dueAt)}
-                  </p>
-                )}
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Card “Product / Revenue” (adaptado p/ Progresso do Evento) */}

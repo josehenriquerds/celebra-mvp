@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils'
 import { Button } from './button'
 
 const AlertDialog = AlertDialogPrimitive.Root
-const AlertDialogTrigger = AlertDialogPrimitive.Trigger
 const AlertDialogPortal = AlertDialogPrimitive.Portal
 const AlertDialogOverlay = AlertDialogPrimitive.Overlay
 

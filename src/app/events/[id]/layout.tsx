@@ -22,9 +22,6 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
-
-
-
 // ⚠️ Corrige o import do shadcn (normalmente é este caminho)
 import {
   Tooltip,

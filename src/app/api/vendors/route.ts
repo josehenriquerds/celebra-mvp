@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { vendorListSchema } from '@/lib/validations/vendor'
+import type { Prisma } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Construir filtros
-    const where: any = {}
+    const where: Prisma.VendorPartnerWhereInput = {}
 
     if (query.status) {
       where.status = query.status
@@ -57,13 +58,14 @@ export async function GET(request: NextRequest) {
     }
 
     if (query.priceFromMin !== undefined || query.priceFromMax !== undefined) {
-      where.priceFromCents = {}
+      const priceFilter: Prisma.IntNullableFilter = {}
       if (query.priceFromMin !== undefined) {
-        where.priceFromCents.gte = query.priceFromMin
+        priceFilter.gte = query.priceFromMin
       }
       if (query.priceFromMax !== undefined) {
-        where.priceFromCents.lte = query.priceFromMax
+        priceFilter.lte = query.priceFromMax
       }
+      where.priceFromCents = priceFilter
     }
 
     // Contar total

@@ -2,7 +2,6 @@
 
 import {
   Search,
-  Filter,
   Download,
   Send,
   Users,
@@ -17,7 +16,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -31,7 +30,7 @@ interface Guest {
     email: string | null
     relation: string
     isVip: boolean
-    restrictions: any
+    restrictions: string | null
   }
   household: {
     id: string
@@ -104,12 +103,7 @@ export default function GuestsPage() {
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
 
-  useEffect(() => {
-    fetchGuests()
-    fetchGroups()
-  }, [eventId, filter, search, page])
-
-  async function fetchGuests() {
+  const fetchGuests = useCallback(async () => {
     try {
       setLoading(true)
       const queryParams = new URLSearchParams({
@@ -130,9 +124,9 @@ export default function GuestsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId, filter, page, search])
 
-  async function fetchGroups() {
+  const fetchGroups = useCallback(async () => {
     try {
       const res = await fetch(`/api/events/${eventId}/groups`)
       const data = await res.json()
@@ -140,7 +134,12 @@ export default function GuestsPage() {
     } catch (error) {
       console.error('Error fetching groups:', error)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    void fetchGuests()
+    void fetchGroups()
+  }, [fetchGuests, fetchGroups])
 
   async function createGroup() {
     if (!newGroupName.trim()) return
@@ -155,7 +154,7 @@ export default function GuestsPage() {
       if (res.ok) {
         setNewGroupName('')
         setShowGroupModal(false)
-        fetchGroups()
+        await fetchGroups()
       }
     } catch (error) {
       console.error('Error creating group:', error)
@@ -175,8 +174,8 @@ export default function GuestsPage() {
       if (res.ok) {
         setShowAssignModal(false)
         setSelectedGuests(new Set())
-        fetchGuests()
-        fetchGroups()
+        await fetchGuests()
+        await fetchGroups()
       }
     } catch (error) {
       console.error('Error assigning guests:', error)
@@ -192,8 +191,8 @@ export default function GuestsPage() {
       })
 
       if (res.ok) {
-        fetchGroups()
-        fetchGuests()
+        await fetchGroups()
+        await fetchGuests()
       }
     } catch (error) {
       console.error('Error deleting group:', error)

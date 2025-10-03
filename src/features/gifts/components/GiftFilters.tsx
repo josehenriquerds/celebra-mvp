@@ -33,7 +33,7 @@ const sortLabels: Record<GiftSortOption, string> = {
   recent: 'Mais recentes',
 }
 
-export function GiftFilters({ search, onSearchChange, status, onStatusChange, sort, onSortChange, counters }: GiftFiltersProps) {
+export function GiftFilters({ search, onSearchChange, status, onStatusChange, sort, onSortChange, }: GiftFiltersProps) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

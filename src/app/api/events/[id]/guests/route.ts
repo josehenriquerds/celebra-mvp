@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const limit = parseInt(searchParams.get('limit') || '50')
 
     // Build where clause
-    const where: any = {
+    const where: Record<string, unknown> = {
       eventId,
     }
 

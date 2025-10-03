@@ -29,11 +29,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       name,
       category,
       contact,
-      email,
       phone,
       contractValue,
-      amountPaid,
-      paymentStatus,
       notes,
     } = body
 

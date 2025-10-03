@@ -1,5 +1,30 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
+
+type TimelineCategory = 'timeline' | 'interaction' | 'checkin' | 'gift' | 'task'
+
+interface TimelineItem {
+  id: string
+  type: TimelineCategory
+  subtype: string | null
+  title: string
+  description: string
+  contactName: string | null
+  contactPhone: string | null
+  occurredAt: Date
+  metadata: Record<string, unknown>
+}
+
+const SYSTEM_CONTACT = 'Sistema'
+
+function isJsonObject(value: Prisma.JsonValue | null): value is Prisma.JsonObject {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+}
+
+function toMetadata(value: Prisma.JsonValue | null): Record<string, unknown> {
+  return isJsonObject(value) ? value : {}
+}
 
 // GET /api/events/:id/timeline - Get aggregated timeline
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
@@ -64,21 +89,22 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     })
 
     // Aggregate all entries into unified timeline
-    const timeline: any[] = []
+    const timeline: TimelineItem[] = []
 
     // Add timeline entries
     timelineEntries.forEach((entry) => {
-      const meta = (entry.metaJson as any) || {}
+      const metadata = toMetadata(entry.metaJson)
+      const contactName = typeof metadata.contactId === 'string' ? metadata.contactId : SYSTEM_CONTACT
       timeline.push({
         id: `timeline-${entry.id}`,
         type: 'timeline',
         subtype: entry.type,
         title: `Timeline: ${entry.type}`,
-        description: JSON.stringify(meta),
-        contactName: meta.contactId || 'Sistema',
+        description: JSON.stringify(metadata),
+        contactName,
         contactPhone: null,
         occurredAt: entry.occurredAt,
-        metadata: meta,
+        metadata,
       })
     })
 
@@ -159,7 +185,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     timeline.sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
 
     // Apply filters
-    let filteredTimeline = timeline
+    let filteredTimeline: TimelineItem[] = timeline
 
     if (type && type !== 'all') {
       filteredTimeline = filteredTimeline.filter((item) => item.type === type)

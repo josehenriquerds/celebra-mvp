@@ -24,11 +24,11 @@ interface FilterState {
   guests: GuestFilters
   tasks: TaskFilters
   vendors: VendorFilters
-  setGuestFilter: (key: keyof GuestFilters, value: any) => void
+  setGuestFilter: <K extends keyof GuestFilters>(key: K, value: GuestFilters[K]) => void
   clearGuestFilters: () => void
-  setTaskFilter: (key: keyof TaskFilters, value: any) => void
+  setTaskFilter: <K extends keyof TaskFilters>(key: K, value: TaskFilters[K]) => void
   clearTaskFilters: () => void
-  setVendorFilter: (key: keyof VendorFilters, value: any) => void
+  setVendorFilter: <K extends keyof VendorFilters>(key: K, value: VendorFilters[K]) => void
   clearVendorFilters: () => void
 }
 

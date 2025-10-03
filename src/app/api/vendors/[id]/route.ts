@@ -1,10 +1,23 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
+
+type VendorUpdatePayload = {
+  name?: string
+  category?: string
+  contact?: string
+  email?: string | null
+  phone?: string | null
+  contractValue?: number
+  amountPaid?: number
+  paymentStatus?: string
+  notes?: string | null
+}
 
 // PATCH /api/vendors/:id - Update vendor
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const body = await request.json()
+    const body = (await request.json()) as VendorUpdatePayload
     const {
       name,
       category,
@@ -17,7 +30,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       notes,
     } = body
 
-    const updateData: any = {}
+    const updateData: VendorUpdatePayload = {}
     if (name !== undefined) updateData.name = name
     if (category !== undefined) updateData.category = category
     if (contact !== undefined) updateData.contact = contact
@@ -30,7 +43,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     const vendor = await prisma.vendor.update({
       where: { id: params.id },
-      data: updateData,
+      data: updateData as Prisma.VendorUpdateInput,
     })
 
     return NextResponse.json(vendor)

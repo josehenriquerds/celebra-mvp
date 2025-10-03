@@ -1,5 +1,5 @@
+import { motion } from 'framer-motion'
 import { type LucideIcon } from 'lucide-react'
-import { motion } from 'motion/react'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Badge } from './badge'

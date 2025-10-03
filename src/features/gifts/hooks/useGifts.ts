@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import type { Gift, GiftStatus } from '@/schemas'
+import type { GiftStatus } from '@/schemas'
 import {
   createGift,
   createGiftOffer,
@@ -19,8 +19,6 @@ import {
 import type {
   CreateGiftPayload,
   GiftOffersResponse,
-  ImportGiftLinksResult,
-  ScrapedGiftProduct,
   UpdateGiftPayload,
 } from '../services/gifts.api'
 
@@ -150,7 +148,7 @@ export function useRefreshGiftOffer() {
   const eventId = params.id as string
 
   return useMutation({
-    mutationFn: ({ giftId, offerId }: { giftId: string; offerId: string }) => refreshGiftOffer(offerId),
+    mutationFn: ({ giftId: _giftId, offerId }: { giftId: string; offerId: string }) => refreshGiftOffer(offerId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.giftId) })
       queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })
@@ -164,7 +162,7 @@ export function useDeleteGiftOffer() {
   const eventId = params.id as string
 
   return useMutation({
-    mutationFn: ({ giftId, offerId }: { giftId: string; offerId: string }) => deleteGiftOffer(offerId),
+    mutationFn: ({ giftId: _giftId, offerId }: { giftId: string; offerId: string }) => deleteGiftOffer(offerId),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: giftOffersKeys.list(variables.giftId) })
       queryClient.invalidateQueries({ queryKey: giftsKeys.list(eventId) })

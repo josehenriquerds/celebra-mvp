@@ -1,8 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Calendar, Users, Gift, Mail, Plus, Edit3, CheckCircle, AlertCircle } from 'lucide-react'
+import { Calendar, Users, Gift, Mail, Plus, Edit3 } from 'lucide-react'
 import { useState } from 'react'
-import DashboardCard from '../components/DashboardCard'
 import QuickActionButton from '../components/QuickActionButton'
 import Sidebar from '../components/Sidebar'
 
@@ -27,7 +26,6 @@ const TIMELINE = [
 export default function Dashboard() {
   const [evento] = useState(EVENTO)
   const [timeline] = useState(TIMELINE)
-  const percent = Math.round((evento.confirmados / evento.total) * 100)
 
   return (
     <div className="font-['Nova Slim',sans-serif] grid min-h-screen grid-cols-1 bg-white md:grid-cols-[auto_1fr]">

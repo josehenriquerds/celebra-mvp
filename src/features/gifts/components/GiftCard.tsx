@@ -1,4 +1,5 @@
 import { MoreHorizontal, Pencil, ShoppingBag, Users } from 'lucide-react'
+import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -83,10 +84,13 @@ export function GiftCard({
     <Card className="group flex h-full flex-col overflow-hidden rounded-3xl border border-[#E5EEF5] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#F6F8FC]">
         {gift.imageUrl ? (
-          <img
+          <Image
             src={gift.imageUrl}
             alt={gift.title}
-            className="size-full object-cover transition duration-300 group-hover:scale-105"
+            fill
+            className="object-cover transition duration-300 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            unoptimized
           />
         ) : (
           <div className="flex h-full items-center justify-center text-sm text-[#8AA0B8]">

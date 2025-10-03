@@ -1,4 +1,5 @@
 ﻿import { Link2, Loader2, RefreshCcw } from 'lucide-react'
+import Image from 'next/image'
 import { useEffect, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -122,7 +123,16 @@ export function GiftLinkImporter({ initialUrl = '', onImported, onImageSelected,
           <div className="space-y-2">
             <div className="aspect-square overflow-hidden rounded-2xl border border-[#E5EEF5] bg-[#F5F9FC]">
               {selectedImage ? (
-                <img src={selectedImage} alt={result.title} className="size-full object-cover" />
+                <div className="relative size-full">
+                  <Image
+                    src={selectedImage}
+                    alt={result.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 40vw, 140px"
+                    unoptimized
+                  />
+                </div>
               ) : (
                 <div className="flex h-full items-center justify-center text-xs text-[#8AA0B8]">
                   Sem imagem
@@ -140,7 +150,14 @@ export function GiftLinkImporter({ initialUrl = '', onImported, onImageSelected,
                     }`}
                     onClick={() => handleSelectImage(image)}
                   >
-                    <img src={image} alt="Opção de imagem" className="h-12 w-full object-cover" />
+                    <Image
+                      src={image}
+                      alt="Opção de imagem"
+                      width={96}
+                      height={48}
+                      className="h-12 w-full object-cover"
+                      unoptimized
+                    />
                   </button>
                 ))}
               </div>

@@ -2,9 +2,9 @@
 
 import { format, parse, startOfWeek, getDay } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { X, Calendar as CalendarIcon, Clock, User, Phone, Tag } from 'lucide-react'
+import { X, Calendar as CalendarIcon, Clock, User, Tag } from 'lucide-react'
 import { useState } from 'react'
-import { Calendar, dateFnsLocalizer, type View } from 'react-big-calendar'
+import { Calendar, dateFnsLocalizer, type View, type SlotInfo } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import './calendar-custom.css'
 
@@ -31,7 +31,7 @@ export interface EventActivity {
   occurredAt?: string
   dueAt?: string | null
   status?: string
-  metadata?: any
+  metadata?: Record<string, unknown>
   start: Date
   end: Date
 }
@@ -39,7 +39,7 @@ export interface EventActivity {
 interface EventCalendarProps {
   activities: EventActivity[]
   onSelectEvent?: (event: EventActivity) => void
-  onSelectSlot?: (slotInfo: any) => void
+  onSelectSlot?: (slotInfo: SlotInfo) => void
 }
 
 const TYPE_COLORS = {
@@ -75,7 +75,7 @@ export function EventCalendar({ activities, onSelectEvent, onSelectSlot }: Event
     onSelectEvent?.(event)
   }
 
-  const handleSelectSlot = (slotInfo: any) => {
+  const handleSelectSlot = (slotInfo: SlotInfo) => {
     onSelectSlot?.(slotInfo)
   }
 

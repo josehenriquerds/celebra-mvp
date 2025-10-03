@@ -1,6 +1,6 @@
 'use client'
 
-import { LucideIcon } from 'lucide-react'
+import Image from 'next/image'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from './button'
@@ -47,10 +47,13 @@ const Hero = React.forwardRef<HTMLElement, HeroProps>(
         <div className="grid gap-8 p-8 lg:grid-cols-2 lg:p-12">
           {/* Coluna Esquerda: Imagem */}
           <div className="relative h-[400px] overflow-hidden rounded-3xl shadow-lg lg:h-[500px]">
-            <img
+            <Image
               src={image}
               alt={imageAlt}
-              className="absolute inset-0 size-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
             />
             {/* Overlay sutil */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />

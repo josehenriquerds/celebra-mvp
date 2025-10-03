@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string; segmentId: string } }
+  _request: Request,
+  { params: _params }: { params: { id: string; segmentId: string } }
 ) {
   // In a real app, this would recalculate segment membership
   return NextResponse.json({

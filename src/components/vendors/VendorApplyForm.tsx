@@ -19,13 +19,6 @@ export function VendorApplyForm() {
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState<{
-    logo?: string
-    cover?: string
-    gallery: string[]
-  }>({
-    gallery: [],
-  })
 
   const {
     register,
@@ -34,7 +27,7 @@ export function VendorApplyForm() {
     setValue,
     formState: { errors },
   } = useForm<VendorApplyInput>({
-    resolver: zodResolver(vendorApplySchema) as any,
+    resolver: zodResolver(vendorApplySchema),
     defaultValues: {
       country: 'BR',
       categories: [],
@@ -52,42 +45,6 @@ export function VendorApplyForm() {
       )
     } else {
       setValue('categories', [...current, category])
-    }
-  }
-
-  const handleFileUpload = async (files: FileList | null, type: 'logo' | 'cover' | 'gallery') => {
-    if (!files || files.length === 0) return
-
-    const formData = new FormData()
-    Array.from(files).forEach((file) => {
-      formData.append('files', file)
-    })
-    formData.append('type', type)
-
-    try {
-      const res = await fetch('/api/uploads', {
-        method: 'POST',
-        body: formData,
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        if (type === 'gallery') {
-          setUploadedFiles((prev) => ({
-            ...prev,
-            gallery: [...prev.gallery, ...data.files.map((f: any) => f.url)],
-          }))
-        } else {
-          setUploadedFiles((prev) => ({
-            ...prev,
-            [type]: data.files[0].url,
-          }))
-        }
-      }
-    } catch (error) {
-      console.error('Upload error:', error)
-      alert('Erro ao fazer upload. Tente novamente.')
     }
   }
 

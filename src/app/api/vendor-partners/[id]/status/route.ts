@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { vendorStatusChangeSchema } from '@/lib/validations/vendor'
-import type { VendorPartnerStatus } from '@prisma/client'
+import type { VendorPartnerStatus, VendorStatusAction } from '@prisma/client'
 
 /**
  * POST /api/vendor-partners/:id/status
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Mapear ação para status
     let newStatus: VendorPartnerStatus
-    let actionLog: string
+    let actionLog: VendorStatusAction
 
     switch (validated.action) {
       case 'approve':
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     await prisma.vendorStatusLog.create({
       data: {
         vendorId: params.id,
-        action: actionLog as any,
+        action: actionLog,
         actorUserId: validated.actorUserId || null,
         reason: validated.reason || null,
       },

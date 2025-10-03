@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
-import './globals.css'
 import { GeistSans, GeistMono } from 'geist/font'
+import './globals.css'
 import { Providers } from './providers'
+import type { Metadata } from 'next'
 
 const geistSans = GeistSans
 const geistMono = GeistMono

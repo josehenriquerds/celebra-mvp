@@ -1,7 +1,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
-import type { MobileBottomNavProps } from "./types"
 import { cn } from "@/lib/utils"
+import type { MobileBottomNavProps } from "./types"
 
 export function MobileBottomNav({ items, eventId, isActive }: MobileBottomNavProps) {
   return (
@@ -29,7 +29,7 @@ export function MobileBottomNav({ items, eventId, isActive }: MobileBottomNavPro
               <Icon className={cn("h-5 w-5", active && "scale-110")} />
               <span className="truncate">{item.name.split(" ")[0]}</span>
             </Link>
-          )}
+          )
         })}
       </nav>
     </div>

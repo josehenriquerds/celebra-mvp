@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import Link from "next/link"
-import type { MobileNavProps } from "./types"
 import { cn } from "@/lib/utils"
+import type { MobileNavProps } from "./types"
 
 export function MobileNav({ items, eventId, isActive, open, setOpen }: MobileNavProps) {
   return (
@@ -22,9 +22,9 @@ export function MobileNav({ items, eventId, isActive, open, setOpen }: MobileNav
             exit={{ x: "-100%" }}
             transition={{ type: "spring", stiffness: 280, damping: 32 }}
           >
-            <div className="flex items-center justify-between border-b border-black/10 px-4 py-4">
+            <div className="flex items-center justify-between border-b border-black/10 p-4">
               <span className="font-heading text-base font-semibold text-[var(--sidebar-primary)]">
-                Navegação
+                Navegaï¿½ï¿½o
               </span>
               <button
                 type="button"
@@ -32,7 +32,7 @@ export function MobileNav({ items, eventId, isActive, open, setOpen }: MobileNav
                 onClick={() => setOpen(false)}
                 className="rounded-full border border-black/10 bg-white p-2"
               >
-                <X className="h-4 w-4" />
+                <X className="size-4" />
               </button>
             </div>
             <nav className="space-y-1 px-3 py-4">
@@ -52,10 +52,10 @@ export function MobileNav({ items, eventId, isActive, open, setOpen }: MobileNav
                         : "text-muted-foreground hover:bg-muted"
                     )}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="size-5" />
                     {item.name}
                   </Link>
-                )}
+                )
               })}
             </nav>
           </motion.div>

@@ -6,14 +6,13 @@ import {
   Download,
   FileText,
   FileSpreadsheet,
-  Image as ImageIcon,
   Tag,
   QrCode,
   Loader2,
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import QRCodeLib from 'qrcode'
+import { toDataURL as generateQrCode } from 'qrcode'
 import { useState } from 'react'
 import * as XLSX from 'xlsx'
 import { Button } from '@/components/ui/button'
@@ -22,8 +21,52 @@ import 'jspdf-autotable'
 
 declare module 'jspdf' {
   interface jsPDF {
-    autoTable: (options: any) => jsPDF
+    autoTable: (options: UserOptions) => jsPDF
   }
+}
+
+interface GuestExport {
+  id: string
+  contact: {
+    fullName: string
+    phone: string
+    email?: string | null
+    relation?: string | null
+    isVip?: boolean
+    restrictions?: string | null
+  }
+  rsvp: string
+  seats: number
+  children: number
+  table?: { label?: string | null } | null
+  household?: { label?: string | null } | null
+}
+
+interface TaskExport {
+  title: string
+  status: string
+  dueAt?: string | null
+  assignedTo?: string | null
+  vendor?: { name?: string | null } | null
+  cost?: number | null
+}
+
+interface VendorExport {
+  name: string
+  category: string
+  contact?: string | null
+  phone?: string | null
+  email?: string | null
+  contractValue?: number | null
+  amountPaid?: number | null
+  paymentStatus?: string | null
+}
+
+interface GiftExport {
+  title: string
+  price?: number | null
+  status: string
+  guest?: { contact: { fullName: string } } | null
 }
 
 export default function ExportsPage() {
@@ -38,8 +81,8 @@ export default function ExportsPage() {
 
       // Fetch guests data
       const res = await fetch(`/api/events/${eventId}/guests?limit=1000`)
-      const data = await res.json()
-      const guests = data.guests || []
+      const data = (await res.json()) as { guests?: GuestExport[] }
+      const guests = data.guests ?? []
 
       // Create PDF
       const doc = new jsPDF()
@@ -54,19 +97,19 @@ export default function ExportsPage() {
       doc.text(`Data de exportação: ${new Date().toLocaleDateString('pt-BR')}`, 14, 35)
 
       // Table
-      const tableData = guests.map((g: any) => [
-        g.contact.fullName,
-        g.contact.phone,
-        g.contact.email || '-',
-        g.rsvp === 'sim'
+      const tableData = guests.map((guest) => [
+        guest.contact.fullName,
+        guest.contact.phone,
+        guest.contact.email || '-',
+        guest.rsvp === 'sim'
           ? 'Confirmado'
-          : g.rsvp === 'nao'
+          : guest.rsvp === 'nao'
             ? 'Recusou'
-            : g.rsvp === 'talvez'
+            : guest.rsvp === 'talvez'
               ? 'Talvez'
               : 'Pendente',
-        g.table?.label || 'Não alocado',
-        g.household?.label || '-',
+        guest.table?.label || 'Não alocado',
+        guest.household?.label || '-',
       ])
 
       doc.autoTable({
@@ -100,32 +143,32 @@ export default function ExportsPage() {
       ])
 
       const guests = (await guestsRes.json()).guests || []
-      const tasks = await tasksRes.json()
-      const vendors = await vendorsRes.json()
-      const gifts = await giftsRes.json()
+      const tasks = (await tasksRes.json()) as TaskExport[]
+      const vendors = (await vendorsRes.json()) as VendorExport[]
+      const gifts = (await giftsRes.json()) as GiftExport[]
 
       // Create workbook
       const wb = XLSX.utils.book_new()
 
       // Sheet 1: Guests
-      const guestsData = guests.map((g: any) => ({
-        Nome: g.contact.fullName,
-        Telefone: g.contact.phone,
-        Email: g.contact.email || '',
-        Relação: g.contact.relation,
-        VIP: g.contact.isVip ? 'Sim' : 'Não',
-        RSVP: g.rsvp,
+      const guestsData = guests.map((g) => ({
+        Nome: guest.contact.fullName,
+        Telefone: guest.contact.phone,
+        Email: guest.contact.email || '',
+        Relação: guest.contact.relation,
+        VIP: guest.contact.isVip ? 'Sim' : 'Não',
+        RSVP: guest.rsvp,
         Assentos: g.seats,
         Crianças: g.children,
-        Mesa: g.table?.label || '',
-        Família: g.household?.label || '',
-        Restrições: g.contact.restrictions || '',
+        Mesa: guest.table?.label || '',
+        Família: guest.household?.label || '',
+        Restrições: guest.contact.restrictions || '',
       }))
       const ws1 = XLSX.utils.json_to_sheet(guestsData)
       XLSX.utils.book_append_sheet(wb, ws1, 'Convidados')
 
       // Sheet 2: Tasks
-      const tasksData = tasks.map((t: any) => ({
+      const tasksData = tasks.map((t) => ({
         Título: t.title,
         Status: t.status,
         Prazo: t.dueAt ? new Date(t.dueAt).toLocaleDateString('pt-BR') : '',
@@ -137,7 +180,7 @@ export default function ExportsPage() {
       XLSX.utils.book_append_sheet(wb, ws2, 'Tarefas')
 
       // Sheet 3: Vendors
-      const vendorsData = vendors.map((v: any) => ({
+      const vendorsData = vendors.map((v) => ({
         Nome: v.name,
         Categoria: v.category,
         Contato: v.contact,
@@ -151,7 +194,7 @@ export default function ExportsPage() {
       XLSX.utils.book_append_sheet(wb, ws3, 'Fornecedores')
 
       // Sheet 4: Gifts
-      const giftsData = gifts.map((g: any) => ({
+      const giftsData = gifts.map((g) => ({
         Presente: g.title,
         Preço: g.price,
         Status: g.status,
@@ -176,13 +219,12 @@ export default function ExportsPage() {
 
       // Fetch guests data
       const res = await fetch(`/api/events/${eventId}/guests?limit=1000`)
-      const data = await res.json()
-      const guests = data.guests || []
+      const data = (await res.json()) as { guests?: GuestExport[] }
+      const guests = data.guests ?? []
 
       // Create PDF with labels (2 columns, 5 rows per page)
       const doc = new jsPDF()
       const pageWidth = doc.internal.pageSize.width
-      const pageHeight = doc.internal.pageSize.height
       const labelWidth = (pageWidth - 30) / 2
       const labelHeight = 50
       const marginX = 10
@@ -192,7 +234,7 @@ export default function ExportsPage() {
       let y = marginY
       let count = 0
 
-      guests.forEach((guest: any, index: number) => {
+      guests.forEach((guest, index) => {
         // Draw label border
         doc.rect(x, y, labelWidth, labelHeight)
 
@@ -238,8 +280,8 @@ export default function ExportsPage() {
 
       // Fetch guests data
       const res = await fetch(`/api/events/${eventId}/guests?limit=1000`)
-      const data = await res.json()
-      const guests = data.guests || []
+      const data = (await res.json()) as { guests?: GuestExport[] }
+      const guests = data.guests ?? []
 
       // Create PDF with QR codes (3 per page)
       const doc = new jsPDF()
@@ -261,7 +303,7 @@ export default function ExportsPage() {
           const y = 20 + row * (qrSize + 40)
 
           // Generate QR code
-          const qrDataUrl = await QRCodeLib.toDataURL(guest.id, {
+          const qrDataUrl = await generateQrCode(guest.id, {
             width: 200,
             margin: 1,
           })

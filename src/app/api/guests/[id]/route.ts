@@ -1,5 +1,16 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
+
+type GuestUpdatePayload = {
+  rsvp?: Prisma.RsvpStatus
+  seats?: number
+  children?: number
+  transportNeeded?: boolean
+  optOut?: boolean
+  restrictions?: Prisma.JsonValue | null
+  notes?: string | null
+}
 
 export const dynamic = 'force-dynamic'
 
@@ -137,12 +148,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const guestId = params.id
-    const body = await request.json()
+    const body = (await request.json()) as GuestUpdatePayload
 
     const { rsvp, seats, children, transportNeeded, optOut, restrictions, notes } = body
 
     // Update guest
-    const updateData: any = {}
+    const updateData: Prisma.GuestUpdateInput = {}
     if (rsvp !== undefined) updateData.rsvp = rsvp
     if (seats !== undefined) updateData.seats = seats
     if (children !== undefined) updateData.children = children

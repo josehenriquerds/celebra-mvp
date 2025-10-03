@@ -7,10 +7,8 @@ import {
   Image as ImageIcon,
   User,
   Smile,
-  Heart,
-  PartyPopper,
-  Star,
 } from 'lucide-react'
+import Image from 'next/image'
 import { useState, useRef } from 'react'
 
 interface Mensagem {
@@ -161,7 +159,14 @@ export default function MensagensPage() {
         />
         {imagem && (
           <div className="flex items-center gap-2">
-            <img src={imagem} alt="Preview" className="size-16 rounded-lg border object-cover" />
+            <Image
+              src={imagem}
+              alt="Preview"
+              width={64}
+              height={64}
+              className="size-16 rounded-lg border object-cover"
+              unoptimized
+            />
             <button
               type="button"
               onClick={() => setImagem(null)}
@@ -233,10 +238,13 @@ export default function MensagensPage() {
               </div>
               <div className="whitespace-pre-line text-base text-[#2B2B2B]">{msg.texto}</div>
               {msg.imagem && (
-                <img
+                <Image
                   src={msg.imagem}
                   alt="Imagem da mensagem"
+                  width={128}
+                  height={128}
                   className="mt-2 size-32 rounded-lg border object-cover"
+                  unoptimized
                 />
               )}
               <div className="mt-1 flex gap-2">
