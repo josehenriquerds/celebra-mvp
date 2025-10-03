@@ -8,9 +8,6 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/use-toast'
 import {
   GiftCard,
-  GiftFormModal,
-  GiftsStats,
-  GiftsFilters,
   GiftsEmptyState,
 } from '@/features/gifts/components'
 import {
