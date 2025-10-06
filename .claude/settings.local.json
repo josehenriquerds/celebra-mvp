@@ -47,7 +47,12 @@
       "Bash(npm run lint:*)",
       "Bash(npm run lint:fix:*)",
       "Bash(dotnet run:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(mkdir:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(dotnet --version)",
+      "Bash(if exist .next rmdir /s /q .next)"
     ],
     "deny": [],
     "ask": []

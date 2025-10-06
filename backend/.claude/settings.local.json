@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet build)",
+      "Read(//c/Users/NPC TECH/Downloads/Celebre/celebra-mvp/**)",
+      "Bash(taskkill:*)",
+      "Bash(Select-Object -First 100)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(dotnet ef database update:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
