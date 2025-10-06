@@ -62,17 +62,33 @@ NEXTAUTH_SECRET="your-nextauth-secret-for-token-generation"
 TZ="America/Sao_Paulo"
 ```
 
-## Começando
+## Começando - Início Rápido ⚡
 
-### 1. Restaurar pacotes
+### Opção 1: Usando o script (Windows) - Recomendado
+
+```bash
+cd backend
+run.bat
+```
+
+Este script irá:
+1. Aplicar migrations automaticamente
+2. Iniciar a API
+
+### Opção 2: Manual
+
+#### 1. Restaurar pacotes
 
 ```bash
 cd backend
 dotnet restore
 ```
 
-### 2. Criar banco de dados
+#### 2. Criar banco de dados
 
+Por padrão, usa **SQLite** em desenvolvimento - não precisa instalar nada!
+
+Para usar PostgreSQL:
 ```bash
 # Via Docker Compose
 docker-compose up -d db
@@ -80,22 +96,21 @@ docker-compose up -d db
 # Ou instalar PostgreSQL localmente
 ```
 
-### 3. Aplicar Migrations
+#### 3. Aplicar Migrations
 
 ```bash
-cd src/Celebre.Infrastructure
-dotnet ef migrations add InitialCreate --startup-project ../Celebre.Api
-dotnet ef database update --startup-project ../Celebre.Api
+cd src/Celebre.Api
+dotnet ef database update --project ../Celebre.Infrastructure --startup-project .
 ```
 
-### 4. Seed de dados
+#### 4. Seed de dados (opcional)
 
 ```bash
 cd src/Celebre.Api
 dotnet run --seed
 ```
 
-### 5. Executar API
+#### 5. Executar API
 
 ```bash
 cd src/Celebre.Api
@@ -106,7 +121,8 @@ A API estará disponível em:
 
 - HTTP: http://localhost:5000
 - HTTPS: https://localhost:5001
-- Swagger: https://localhost:5001/swagger
+- Swagger: http://localhost:5000/swagger (apenas em desenvolvimento)
+- Health Check: http://localhost:5000/health
 
 ## Estrutura do Domínio
 

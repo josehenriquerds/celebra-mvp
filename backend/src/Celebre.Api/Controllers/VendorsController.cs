@@ -129,10 +129,10 @@ public class VendorsController : ControllerBase
     /// Add vendor to event (stub)
     /// </summary>
     [HttpPost("vendor-partners")]
-    public async Task<IActionResult> AddVendorPartner([FromBody] CreateVendorPartnerRequest request)
+    public System.Threading.Tasks.Task<IActionResult> AddVendorPartner([FromBody] CreateVendorPartnerRequest request)
     {
         // Stub implementation - would create association in full version
-        return Ok(new { message = "Vendor partner added", eventId = request.EventId, vendorId = request.VendorId });
+        return System.Threading.Tasks.Task.FromResult<IActionResult>(Ok(new { message = "Vendor partner added", eventId = request.EventId, vendorId = request.VendorId }));
     }
 
     /// <summary>

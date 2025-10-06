@@ -100,7 +100,13 @@ const ELEMENT_DEFS: ElementDef[] = [
   },
 ]
 
-function DraggableElement({ element }: { element: ElementDef }) {
+interface DraggableElementProps {
+  element: ElementDef;
+  onClick?: (element: ElementDef) => void;
+  isDragMode?: boolean;
+}
+
+function DraggableElement({ element, onClick, isDragMode = false }: DraggableElementProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `new-element-${element.type}`,
     data: {
@@ -110,21 +116,33 @@ function DraggableElement({ element }: { element: ElementDef }) {
       height: element.defaultHeight,
       color: element.color,
     },
+    disabled: !isDragMode, // Desabilita drag quando em click mode
   })
 
   const Icon = element.icon
 
+  const handleClick = () => {
+    if (!isDragMode && onClick) {
+      onClick(element);
+    }
+  };
+
   return (
     <div
       ref={setNodeRef}
-      style={{ transform: CSS.Translate.toString(transform), opacity: isDragging ? 0.6 : 1 }}
-      {...listeners}
-      {...attributes}
+      style={{
+        transform: CSS.Translate.toString(transform),
+        opacity: isDragging ? 0.6 : 1
+      }}
+      {...(isDragMode ? listeners : {})}
+      {...(isDragMode ? attributes : {})}
+      onClick={handleClick}
       tabIndex={0}
       role="button"
       aria-grabbed={isDragging}
       className={cn(
-        'group flex cursor-grab touch-none select-none flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-card p-3 transition duration-200 ease-smooth hover:border-celebre-brand/40 hover:bg-muted/60 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:cursor-grabbing',
+        'group flex select-none flex-col items-center gap-2 rounded-lg border border-dashed border-border bg-card p-3 transition duration-200 ease-smooth hover:border-celebre-brand/40 hover:bg-muted/60 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+        isDragMode ? 'cursor-grab touch-none active:cursor-grabbing' : 'cursor-pointer',
         isDragging && 'ring-2 ring-primary ring-offset-2'
       )}
       title={element.label}
@@ -142,22 +160,38 @@ function DraggableElement({ element }: { element: ElementDef }) {
   )
 }
 
-export function ElementsPalette() {
+interface ElementsPaletteProps {
+  onElementClick?: (element: ElementDef) => void;
+  isDragMode?: boolean;
+}
+
+export function ElementsPalette({ onElementClick, isDragMode = false }: ElementsPaletteProps) {
   return (
     <Card className="h-full border border-border bg-card shadow-elevation-2">
       <CardHeader className="border-b pb-4">
         <CardTitle className="font-heading text-lg">Elementos do Espaço</CardTitle>
         <p className="text-xs text-celebre-muted">
-          Arraste elementos para o canvas para organizar o layout do evento
+          {isDragMode
+            ? 'Arraste elementos para o canvas para organizar o layout do evento'
+            : 'Clique nos elementos para adicioná-los ao canvas'}
         </p>
       </CardHeader>
       <CardContent className="p-4">
         <div className="grid grid-cols-2 gap-3">
           {ELEMENT_DEFS.map((element) => (
-            <DraggableElement key={element.type} element={element} />
+            <DraggableElement
+              key={element.type}
+              element={element}
+              onClick={onElementClick}
+              isDragMode={isDragMode}
+            />
           ))}
         </div>
       </CardContent>
     </Card>
   )
 }
+
+// Export para uso externo
+export { ELEMENT_DEFS }
+export type { ElementDef }

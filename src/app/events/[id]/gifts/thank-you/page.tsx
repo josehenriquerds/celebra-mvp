@@ -4,19 +4,20 @@ import { ArrowLeft, Send, MessageCircle, Mail, Calendar, Gift } from 'lucide-rea
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useMemo } from 'react'
+
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
+import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
 import {
   useThankYouNotes,
   useSendThankYou,
   useGiftContributions,
 } from '@/hooks/useGiftsApi'
-import type { ThankYouNote, GiftContribution } from '@/types/api'
+import type { GiftContribution } from '@/types/api'
 
 type ThankYouStatus = 'pending' | 'sent' | 'all'
 

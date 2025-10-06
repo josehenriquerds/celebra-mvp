@@ -3,12 +3,6 @@
  * TanStack Query hooks for guest-related operations
  */
 
-import { useMutation, useQuery, useQueryClient } from '@tantml:parameter>
-<parameter name="content">/**
- * Guests Hooks
- * TanStack Query hooks for guest-related operations
- */
-
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { guestsService, type GetGuestsParams } from '@/services'
 import { queryKeys } from '@/lib/query-client'

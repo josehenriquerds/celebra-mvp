@@ -19,12 +19,23 @@ public static class DependencyInjection
 
         services.AddDbContext<CelebreDbContext>(options =>
         {
-            options.UseNpgsql(connectionString, npgsqlOptions =>
+            // Support both SQLite (development) and PostgreSQL (production)
+            if (connectionString.Contains("Data Source=") || connectionString.EndsWith(".db"))
             {
-                npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
-                npgsqlOptions.MigrationsAssembly(typeof(CelebreDbContext).Assembly.FullName);
-            });
-            options.UseSnakeCaseNamingConvention();
+                options.UseSqlite(connectionString, sqliteOptions =>
+                {
+                    sqliteOptions.MigrationsAssembly(typeof(CelebreDbContext).Assembly.FullName);
+                });
+            }
+            else
+            {
+                options.UseNpgsql(connectionString, npgsqlOptions =>
+                {
+                    npgsqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+                    npgsqlOptions.MigrationsAssembly(typeof(CelebreDbContext).Assembly.FullName);
+                });
+                options.UseSnakeCaseNamingConvention();
+            }
 
             if (configuration.GetValue<bool>("EnableSensitiveDataLogging"))
             {

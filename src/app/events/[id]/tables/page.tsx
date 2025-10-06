@@ -14,7 +14,7 @@ import {
 } from '@dnd-kit/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import { toPng } from 'html-to-image'
-import { ArrowLeft, Plus, Users, X } from 'lucide-react'
+import { ArrowLeft, Plus, Users, X, LayoutGrid } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -30,6 +30,8 @@ import {
   TablesCanvas,
   Toolbar,
   UnassignedZone,
+  TableStage,
+  TableLayoutToolbar,
 } from '@/features/tables/components'
 import {
   useAssignGuestToSeat,
@@ -44,8 +46,16 @@ import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 
 /* =========================
-   Constantes / Utils
+   Constantes / Utils / Types
    ========================= */
+
+interface DragData {
+  type?: string;
+  tableId?: string;
+  seatId?: string;
+  guestId?: string;
+  fromSeatId?: string;
+}
 
 const CANVAS_W = 2000
 const CANVAS_H = 1500
@@ -164,6 +174,11 @@ export default function TablePlannerPage() {
   const [editingTable, setEditingTable] = useState<Table | null>(null)
   const [exporting, setExporting] = useState(false)
   const [guestPanelOpen, setGuestPanelOpen] = useState(true)
+  const [useStageMode, setUseStageMode] = useState(true) // NEW: Stage mode toggle
+  const [selectedTableId, setSelectedTableId] = useState<string | null>(null)
+  const [snapToGrid, setSnapToGrid] = useState(true)
+  const [decorativeElements, setDecorativeElements] = useState<any[]>([])
+  const [selectedElementId, setSelectedElementId] = useState<string | null>(null)
 
   const interactiveButtonClasses = 'transition-transform duration-200 ease-smooth hover:bg-muted/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]'
   const mobilePanelTransition = { duration: 0.3, ease: EASE_SMOOTH }
@@ -495,17 +510,29 @@ export default function TablePlannerPage() {
           <div className="flex flex-wrap items-center gap-2">
             <Button
               type="button"
-              variant="outline"
+              variant={useStageMode ? 'default' : 'outline'}
               size="sm"
-              onClick={() => setGuestPanelOpen((prev) => !prev)}
-              aria-expanded={guestPanelOpen}
-              aria-controls="guest-panel-desktop"
-              data-state={guestPanelOpen ? 'open' : 'closed'}
-              className={cn("hidden items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium md:inline-flex", interactiveButtonClasses, "data-[state=open]:bg-muted/60")}
+              onClick={() => setUseStageMode(!useStageMode)}
+              className={cn('rounded-full', interactiveButtonClasses)}
             >
-              <Users className="size-4" aria-hidden="true" />
-              {guestPanelOpen ? 'Ocultar nomes' : 'Mostrar nomes'}
+              <LayoutGrid className="size-4 mr-1" />
+              {useStageMode ? 'Editar Mapa dos Convidados' : 'Implementar Convidados'}
             </Button>
+            {!useStageMode && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setGuestPanelOpen((prev) => !prev)}
+                aria-expanded={guestPanelOpen}
+                aria-controls="guest-panel-desktop"
+                data-state={guestPanelOpen ? 'open' : 'closed'}
+                className={cn("hidden items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium md:inline-flex", interactiveButtonClasses, "data-[state=open]:bg-muted/60")}
+              >
+                <Users className="size-4" aria-hidden="true" />
+                {guestPanelOpen ? 'Ocultar nomes' : 'Mostrar nomes'}
+              </Button>
+            )}
             <Toolbar
               onExport={handleExport}
               onAutoArrange={handleAutoArrange}
@@ -695,12 +722,51 @@ export default function TablePlannerPage() {
             </AnimatePresence>
 
             <div className="flex min-w-0 flex-col gap-4">
-              <motion.div layout className="flex min-w-0 flex-col gap-4 lg:flex-row">
-                <motion.div layout className="flex min-w-0 flex-1">
-                  <Card className="w-full border border-border bg-card shadow-elevation-2">
-                    <CardHeader className="flex flex-col gap-3 pb-3">
+              {useStageMode ? (
+                /* ===== STAGE MODE ===== */
+                <div className="flex gap-4 h-[calc(100vh-200px)]">
+                  <AnimatePresence initial={false}>
+                    {showElementsPalette && (
+                      <motion.aside
+                        key="elements-stage"
+                        layout
+                        initial={{ width: 0, opacity: 0 }}
+                        animate={{ width: ELEMENT_PANEL_WIDTH, opacity: 1 }}
+                        exit={{ width: 0, opacity: 0 }}
+                        transition={PANEL_TRANSITION}
+                        className="overflow-hidden"
+                      >
+                        <div className="w-80">
+                          <ElementsPalette
+                            isDragMode={false}
+                            onElementClick={(element) => {
+                              // Adiciona elemento no centro do canvas
+                              const newElement = {
+                                id: `element-${Date.now()}`,
+                                type: element.type,
+                                x: (CANVAS_W / 2) - (element.defaultWidth / 2),
+                                y: (CANVAS_H / 2) - (element.defaultHeight / 2),
+                                width: element.defaultWidth,
+                                height: element.defaultHeight,
+                                color: element.color,
+                              };
+                              setDecorativeElements([...decorativeElements, newElement]);
+                              setSelectedElementId(newElement.id);
+
+                              toast({
+                                title: 'Elemento adicionado',
+                                description: `${element.label} foi adicionado ao canvas`,
+                              });
+                            }}
+                          />
+                        </div>
+                      </motion.aside>
+                    )}
+                  </AnimatePresence>
+                  <Card className="flex-1 border border-border bg-card shadow-elevation-2 flex flex-col">
+                    <CardHeader className="flex flex-col gap-3 pb-3 border-b">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                        <CardTitle className="font-heading text-lg">Layout das Mesas</CardTitle>
+                        <CardTitle className="font-heading text-lg">Layout Visual das Mesas</CardTitle>
                         <Button
                           type="button"
                           size="sm"
@@ -712,18 +778,91 @@ export default function TablePlannerPage() {
                         </Button>
                       </div>
                     </CardHeader>
-                    <CardContent className="overflow-auto rounded-3xl border border-dashed border-muted/50 bg-white p-4 transition-colors duration-200 ease-smooth">
-                      <TablesCanvas
+                    <CardContent className="flex-1 p-0">
+                      <TableStage
                         tables={tables}
-                        zoom={zoom}
-                        canvasWidth={CANVAS_W}
-                        canvasHeight={CANVAS_H}
+                        width={CANVAS_W}
+                        height={CANVAS_H}
+                        showGrid={true}
+                        snapToGrid={snapToGrid}
+                        onUpdateTable={async (id, updates) => {
+                          try {
+                            await updateTableMutation.mutateAsync({ id, data: updates })
+                          } catch (error) {
+                            toast({
+                              title: 'Erro',
+                              description: 'Não foi possível atualizar a mesa',
+                              variant: 'destructive',
+                            })
+                          }
+                        }}
                         onEditTable={setEditingTable}
                         onDeleteTable={handleDeleteTable}
+                        selectedTableId={selectedTableId}
+                        onSelectTable={setSelectedTableId}
+                        decorativeElements={decorativeElements}
+                        onAddElement={(element) => setDecorativeElements([...decorativeElements, element])}
+                        onUpdateElement={(id, updates) => {
+                          setDecorativeElements(decorativeElements.map((el) =>
+                            el.id === id ? { ...el, ...updates } : el
+                          ))
+                        }}
+                        onDeleteElement={(id) => setDecorativeElements(decorativeElements.filter((el) => el.id !== id))}
+                        selectedElementId={selectedElementId}
+                        onSelectElement={setSelectedElementId}
                       />
                     </CardContent>
                   </Card>
-                </motion.div>
+                  <TableLayoutToolbar
+                    tables={tables}
+                    selectedTable={tables.find((t) => t.id === selectedTableId) || null}
+                    onUpdateTable={async (id, updates) => {
+                      try {
+                        await updateTableMutation.mutateAsync({ id, data: updates })
+                      } catch (error) {
+                        toast({
+                          title: 'Erro',
+                          description: 'Não foi possível atualizar a mesa',
+                          variant: 'destructive',
+                        })
+                      }
+                    }}
+                    snapToGrid={snapToGrid}
+                    onToggleSnapToGrid={() => setSnapToGrid(!snapToGrid)}
+                  />
+                </div>
+              ) : (
+                /* ===== CLASSIC MODE ===== */
+                <>
+                <motion.div layout className="flex min-w-0 flex-col gap-4 lg:flex-row">
+                  <motion.div layout className="flex min-w-0 flex-1">
+                    <Card className="w-full border border-border bg-card shadow-elevation-2">
+                      <CardHeader className="flex flex-col gap-3 pb-3">
+                        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                          <CardTitle className="font-heading text-lg">Layout das Mesas</CardTitle>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => setCreatingTable(true)}
+                            className={cn('rounded-full', interactiveButtonClasses)}
+                          >
+                            <Plus className="mr-1 size-4" />
+                            Nova Mesa
+                          </Button>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="overflow-auto rounded-3xl border border-dashed border-muted/50 bg-white p-4 transition-colors duration-200 ease-smooth">
+                        <TablesCanvas
+                          tables={tables}
+                          zoom={zoom}
+                          canvasWidth={CANVAS_W}
+                          canvasHeight={CANVAS_H}
+                          onEditTable={setEditingTable}
+                          onDeleteTable={handleDeleteTable}
+                        />
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 <AnimatePresence initial={false}>
                   {showElementsPalette && (
                     <motion.aside
@@ -741,21 +880,23 @@ export default function TablePlannerPage() {
                     </motion.aside>
                   )}
                 </AnimatePresence>
-              </motion.div>
-              <AnimatePresence>
-                {showElementsPalette && (
-                  <motion.div
-                    key="elements-mobile"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={mobilePanelTransition}
-                    className="lg:hidden"
-                  >
-                    <ElementsPalette />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                </motion.div>
+                <AnimatePresence>
+                  {showElementsPalette && (
+                    <motion.div
+                      key="elements-mobile"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={mobilePanelTransition}
+                      className="lg:hidden"
+                    >
+                      <ElementsPalette />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                </>
+              )}
             </div>
           </div>
           <DragOverlay dropAnimation={null}>

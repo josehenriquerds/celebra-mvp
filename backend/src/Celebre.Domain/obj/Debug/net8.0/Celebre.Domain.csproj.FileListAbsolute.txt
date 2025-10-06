@@ -10,3 +10,14 @@ C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Domain\obj\D
 C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Domain\obj\Debug\net8.0\refint\Celebre.Domain.dll
 C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.pdb
 C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Domain\obj\Debug\net8.0\ref\Celebre.Domain.dll
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\bin\Debug\net8.0\Celebre.Domain.deps.json
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\bin\Debug\net8.0\Celebre.Domain.dll
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\bin\Debug\net8.0\Celebre.Domain.pdb
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.AssemblyInfoInputs.cache
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.AssemblyInfo.cs
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.csproj.CoreCompileInputs.cache
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.dll
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\refint\Celebre.Domain.dll
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\Celebre.Domain.pdb
+C:\Users\NPC TECH\Downloads\Celebre\Nova pasta (2)\backend\src\Celebre.Domain\obj\Debug\net8.0\ref\Celebre.Domain.dll

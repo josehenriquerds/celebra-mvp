@@ -12,6 +12,7 @@ import {
   GiftDrawerForm,
   KpiGifts,
   GiftFilters,
+  type GiftSortOption,
 } from '@/features/gifts/components'
 import {
   useGiftsApi,
@@ -42,10 +43,11 @@ export default function GiftsPage() {
   // Local state
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<GiftStatus | 'all'>('all')
+  const [sort, setSort] = useState<GiftSortOption>('recent')
   const [showDrawer, setShowDrawer] = useState(false)
   const [editingGift, setEditingGift] = useState<Gift | null>(null)
 
-  // Cotão flow state
+  // CotÃƒÆ’Ã‚Â£o flow state
   const [selectedGift, setSelectedGift] = useState<Gift | null>(null)
   const [showReserveModal, setShowReserveModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
@@ -54,22 +56,86 @@ export default function GiftsPage() {
     reservationId: string
     pixQRCode?: string
   } | null>(null)
-  const [contributionId, setContributionId] = useState<string | null>(null)
+  const [contributionId, _setContributionId] = useState<string | null>(null)
 
   // Filtered gifts
+  const counters = useMemo(() => {
+    const counts = {
+      total: gifts.length,
+      available: 0,
+      reserved: 0,
+      purchased: 0,
+    }
+
+    for (const gift of gifts) {
+      const status = gift.status as string
+
+      if (status === 'disponivel') {
+        counts.available += 1
+      } else if (status === 'reservado') {
+        counts.reserved += 1
+      } else if (status === 'comprado' || status === 'recebido') {
+        counts.purchased += 1
+      }
+    }
+
+    return counts
+  }, [gifts])
+
   const filteredGifts = useMemo(() => {
     let filtered = gifts
 
     if (search) {
-      filtered = filtered.filter((g) => g.title.toLowerCase().includes(search.toLowerCase()))
+      const normalizedSearch = search.toLowerCase()
+      filtered = filtered.filter((g) => g.title.toLowerCase().includes(normalizedSearch))
     }
 
     if (statusFilter !== 'all') {
-      filtered = filtered.filter((g) => g.status === statusFilter)
+      filtered = filtered.filter((g) => {
+        if (statusFilter === 'comprado') {
+          return g.status === 'comprado' || (g.status as string) === 'recebido'
+        }
+
+        return g.status === statusFilter
+      })
     }
 
-    return filtered
-  }, [gifts, search, statusFilter])
+    const sorted = [...filtered]
+
+    const valueForBestPrice = (gift: Gift) =>
+      gift.quotaValue ?? gift.price ?? Number.POSITIVE_INFINITY
+
+    switch (sort) {
+      case 'price-asc': {
+        sorted.sort((a, b) => {
+          const aPrice = a.price ?? Number.POSITIVE_INFINITY
+          const bPrice = b.price ?? Number.POSITIVE_INFINITY
+          return aPrice - bPrice
+        })
+        break
+      }
+      case 'price-desc': {
+        sorted.sort((a, b) => {
+          const aPrice = a.price ?? Number.NEGATIVE_INFINITY
+          const bPrice = b.price ?? Number.NEGATIVE_INFINITY
+          return bPrice - aPrice
+        })
+        break
+      }
+      case 'best-price': {
+        sorted.sort((a, b) => valueForBestPrice(a) - valueForBestPrice(b))
+        break
+      }
+      case 'recent':
+      default:
+        sorted.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        break
+    }
+
+    return sorted
+  }, [gifts, search, statusFilter, sort])
 
   // Handlers
   function handleCreateClick() {
@@ -118,8 +184,8 @@ export default function GiftsPage() {
     try {
       await deleteMutation.mutateAsync(id)
       toast({
-        title: 'Presente excluído',
-        description: 'O presente foi excluído com sucesso.',
+        title: 'Presente excluÃƒÆ’Ã‚Â­do',
+        description: 'O presente foi excluÃƒÆ’Ã‚Â­do com sucesso.',
       })
     } catch (error) {
       toast({
@@ -131,8 +197,8 @@ export default function GiftsPage() {
     }
   }
 
-  // Cotão flow handlers
-  function handleReserveClick(gift: Gift) {
+  // CotÃƒÆ’Ã‚Â£o flow handlers
+  function _handleReserveClick(gift: Gift) {
     setSelectedGift(gift)
     setShowReserveModal(true)
   }
@@ -151,7 +217,7 @@ export default function GiftsPage() {
     setShowConfirmModal(false)
     toast({
       title: 'Pagamento enviado!',
-      description: 'Aguarde a confirmação dos noivos.',
+      description: 'Aguarde a confirmaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o dos noivos.',
     })
     // Could automatically open thank you modal after confirmation
   }
@@ -216,7 +282,7 @@ export default function GiftsPage() {
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
 
-      {/* Cotão Flow Modals */}
+      {/* CotÃƒÆ’Ã‚Â£o Flow Modals */}
       {selectedGift && (
         <>
           <ReserveCotaoModal
@@ -254,7 +320,7 @@ export default function GiftsPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Row */}
         <div className="mb-8">
-          <KpiGifts eventId={eventId} />
+          <KpiGifts gifts={gifts} />
         </div>
 
         {/* Filters */}
@@ -264,6 +330,9 @@ export default function GiftsPage() {
             onSearchChange={setSearch}
             statusFilter={statusFilter}
             onStatusFilterChange={setStatusFilter}
+            sort={sort}
+            onSortChange={setSort}
+            counters={counters}
           />
         </div>
 

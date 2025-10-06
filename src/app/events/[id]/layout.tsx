@@ -18,6 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
+  LayoutGrid,
 } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -47,6 +48,7 @@ const navigation: Item[] = [
   { name: 'Mesas', href: '/tables', icon: Utensils },
   { name: 'Presentes', href: '/gifts', icon: Gift },
   { name: 'Check-in', href: '/checkin', icon: ClipboardCheck },
+  { name: 'Gerar Cartelas', href: '/bingo', icon: LayoutGrid },
   { name: 'Relatórios', href: '/reports', icon: TrendingUp },
   { name: 'Exportações', href: '/exports', icon: FileBarChart },
   { name: 'Timeline', href: '/timeline', icon: Clock },
@@ -133,7 +135,6 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
                     className="flex min-w-0 flex-1 flex-col"
                   >
                     <h1 className="truncate text-xl font-bold text-foreground">Celebre</h1>
-                    <span className="mt-0.5 text-xs text-muted-foreground">Gestão de Eventos</span>
                   </motion.div>
                 )}
               </AnimatePresence>

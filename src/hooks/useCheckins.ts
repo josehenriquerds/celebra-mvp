@@ -22,6 +22,19 @@ export function useCheckins(eventId: string) {
 }
 
 /**
+ * Get check-in stats for an event
+ */
+export function useCheckinStats(eventId: string) {
+  const { data: checkins } = useCheckins(eventId)
+
+  return {
+    total: checkins?.length || 0,
+    checkedIn: checkins?.filter((c: any) => c.checkedIn).length || 0,
+    pending: checkins?.filter((c: any) => !c.checkedIn).length || 0,
+  }
+}
+
+/**
  * Create check-in
  */
 export function useCreateCheckin(eventId: string) {

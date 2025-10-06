@@ -43,20 +43,20 @@ model Event {
 }
 
 model Contact {
-  id              String          @id @default(cuid())
-  fullName        String          @map("full_name")
-  phone           String          @unique
-  email           String?
-  relation        ContactRelation @default(amigo)
-  notes           String?
-  restrictionsJson Json?          @map("restrictions_json") // Food allergies, mobility, etc.
-  isVip           Boolean         @default(false) @map("is_vip")
-  householdId     String?         @map("household_id")
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
+  id               String          @id @default(cuid())
+  fullName         String          @map("full_name")
+  phone            String          @unique
+  email            String?
+  relation         ContactRelation @default(amigo)
+  notes            String?
+  restrictionsJson Json?           @map("restrictions_json") // Food allergies, mobility, etc.
+  isVip            Boolean         @default(false) @map("is_vip")
+  householdId      String?         @map("household_id")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
 
   // Relations
-  household        Household?        @relation(fields: [householdId], references: [id])
+  household        Household?         @relation(fields: [householdId], references: [id])
   guests           Guest[]
   interactions     Interaction[]
   engagementScores EngagementScore[]
@@ -68,11 +68,11 @@ model Contact {
 }
 
 model Household {
-  id          String   @id @default(cuid())
-  label       String // "Família Silva", "Amigos da Faculdade"
-  sizeCached  Int      @default(1) @map("size_cached") // Denormalized count
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id         String   @id @default(cuid())
+  label      String // "Família Silva", "Amigos da Faculdade"
+  sizeCached Int      @default(1) @map("size_cached") // Denormalized count
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   // Relations
   contacts Contact[]
@@ -81,24 +81,27 @@ model Household {
 }
 
 model Guest {
-  id             String       @id @default(cuid())
-  eventId        String       @map("event_id")
-  contactId      String       @map("contact_id")
-  inviteStatus   InviteStatus @default(nao_enviado) @map("invite_status")
-  rsvp           RsvpStatus   @default(pendente)
-  seats          Int          @default(1) // Number of seats reserved
-  children       Int          @default(0) // Number of children
-  transportNeeded Boolean     @default(false) @map("transport_needed")
-  optOut         Boolean      @default(false) @map("opt_out")
-  createdAt      DateTime     @default(now()) @map("created_at")
-  updatedAt      DateTime     @updatedAt @map("updated_at")
+  id              String       @id @default(cuid())
+  eventId         String       @map("event_id")
+  contactId       String       @map("contact_id")
+  inviteStatus    InviteStatus @default(nao_enviado) @map("invite_status")
+  rsvp            RsvpStatus   @default(pendente)
+  seats           Int          @default(1) // Number of seats reserved
+  children        Int          @default(0) // Number of children
+  transportNeeded Boolean      @default(false) @map("transport_needed")
+  optOut          Boolean      @default(false) @map("opt_out")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
 
   // Relations
-  event           Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  contact         Contact          @relation(fields: [contactId], references: [id])
-  tags            GuestTag[]
-  seatAssignments SeatAssignment[]
-  checkins        Checkin[]
+  event             Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  contact           Contact            @relation(fields: [contactId], references: [id])
+  tags              GuestTag[]
+  seatAssignments   SeatAssignment[]
+  checkins          Checkin[]
+  giftReservations  GiftReservation[]
+  giftPurchases     GiftPurchase[]
+  giftContributions GiftContribution[]
 
   @@unique([eventId, contactId])
   @@index([eventId])
@@ -117,7 +120,7 @@ model SegmentTag {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  event Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  event  Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
   guests GuestTag[]
 
   @@map("segment_tags")
@@ -140,13 +143,13 @@ model GuestTag {
 // ============================================
 
 model Interaction {
-  id         String      @id @default(cuid())
-  eventId    String      @map("event_id")
-  contactId  String      @map("contact_id")
-  channel    Channel
-  kind       InteractionKind
-  payloadJson Json       @map("payload_json")
-  occurredAt DateTime    @default(now()) @map("occurred_at")
+  id          String          @id @default(cuid())
+  eventId     String          @map("event_id")
+  contactId   String          @map("contact_id")
+  channel     Channel
+  kind        InteractionKind
+  payloadJson Json            @map("payload_json")
+  occurredAt  DateTime        @default(now()) @map("occurred_at")
 
   // Relations
   event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
@@ -175,13 +178,13 @@ model EngagementScore {
 }
 
 model TimelineEntry {
-  id         String         @id @default(cuid())
-  eventId    String         @map("event_id")
-  actorType  ActorType      @map("actor_type")
+  id         String       @id @default(cuid())
+  eventId    String       @map("event_id")
+  actorType  ActorType    @map("actor_type")
   type       TimelineType
-  refId      String?        @map("ref_id") // Reference to related entity
-  occurredAt DateTime       @default(now()) @map("occurred_at")
-  metaJson   Json?          @map("meta_json")
+  refId      String?      @map("ref_id") // Reference to related entity
+  occurredAt DateTime     @default(now()) @map("occurred_at")
+  metaJson   Json?        @map("meta_json")
 
   // Relations
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
@@ -244,45 +247,45 @@ model Vendor {
 // ============================================
 
 model VendorPartner {
-  id               String               @id @default(cuid())
-  userId           String?              @map("user_id") // For login/auth
-  slug             String               @unique
-  companyName      String               @map("company_name")
-  contactName      String               @map("contact_name")
-  email            String               @unique
-  phoneE164        String               @unique @map("phone_e164")
-  instagramHandle  String?              @map("instagram_handle")
-  websiteUrl       String?              @map("website_url")
-  whatsappUrl      String?              @map("whatsapp_url")
+  id              String  @id @default(cuid())
+  userId          String? @map("user_id") // For login/auth
+  slug            String  @unique
+  companyName     String  @map("company_name")
+  contactName     String  @map("contact_name")
+  email           String  @unique
+  phoneE164       String  @unique @map("phone_e164")
+  instagramHandle String? @map("instagram_handle")
+  websiteUrl      String? @map("website_url")
+  whatsappUrl     String? @map("whatsapp_url")
 
   // Location
-  city             String
-  state            String
-  country          String               @default("BR")
-  serviceRadiusKm  Int?                 @map("service_radius_km")
+  city            String
+  state           String
+  country         String @default("BR")
+  serviceRadiusKm Int?   @map("service_radius_km")
 
   // Business info
   categories       String[] // Array: ["Buffet", "Doces"]
-  priceFromCents   Int?                 @map("price_from_cents")
-  descriptionShort String?              @map("description_short") @db.VarChar(280)
-  descriptionLong  String?              @map("description_long") @db.Text
+  priceFromCents   Int?     @map("price_from_cents")
+  descriptionShort String?  @map("description_short") @db.VarChar(280)
+  descriptionLong  String?  @map("description_long") @db.Text
 
   // Status & moderation
-  status           VendorPartnerStatus  @default(pending_review)
-  profileScore     Int                  @default(0) @map("profile_score") // 0-100
+  status       VendorPartnerStatus @default(pending_review)
+  profileScore Int                 @default(0) @map("profile_score") // 0-100
 
   // LGPD
-  consentText      String?              @map("consent_text") @db.Text
-  consentAt        DateTime?            @map("consent_at")
+  consentText String?   @map("consent_text") @db.Text
+  consentAt   DateTime? @map("consent_at")
 
-  createdAt        DateTime             @default(now()) @map("created_at")
-  updatedAt        DateTime             @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  media            VendorMedia[]
-  reviews          VendorReview[]
-  notes            VendorNote[]
-  statusLog        VendorStatusLog[]
+  media     VendorMedia[]
+  reviews   VendorReview[]
+  notes     VendorNote[]
+  statusLog VendorStatusLog[]
 
   @@index([status])
   @@index([city, state])
@@ -341,12 +344,12 @@ model VendorNote {
 }
 
 model VendorStatusLog {
-  id            String              @id @default(cuid())
-  vendorId      String              @map("vendor_id")
-  action        VendorStatusAction
-  actorUserId   String?             @map("actor_user_id")
-  reason        String?             @db.Text
-  createdAt     DateTime            @default(now()) @map("created_at")
+  id          String             @id @default(cuid())
+  vendorId    String             @map("vendor_id")
+  action      VendorStatusAction
+  actorUserId String?            @map("actor_user_id")
+  reason      String?            @db.Text
+  createdAt   DateTime           @default(now()) @map("created_at")
 
   // Relations
   vendor VendorPartner @relation(fields: [vendorId], references: [id], onDelete: Cascade)
@@ -361,37 +364,38 @@ model VendorStatusLog {
 // ============================================
 
 model GiftRegistryItem {
-  id                     String           @id @default(cuid())
-  eventId                String           @map("event_id")
-  title                  String
-  description            String?          @db.Text
-  link                   String?
-  imageUrl               String?          @map("image_url")
-  price                  Float?
-  currency               String           @default("BRL")
-  category               String?
-  status                 GiftStatus       @default(disponivel)
-  targetQuantity         Int              @default(1) @map("target_quantity")
-  purchasedQuantity      Int              @default(0) @map("purchased_quantity")
-  reservedQuantity       Int              @default(0) @map("reserved_quantity")
-  allowContributions     Boolean          @default(false) @map("allow_contributions")
-  contributionGoalCents  Int?             @map("contribution_goal_cents")
-  contributionRaisedCents Int             @default(0) @map("contribution_raised_cents")
-  buyerContactId         String?          @map("buyer_contact_id")
-  primaryOfferId         String?          @map("primary_offer_id")
-  createdAt              DateTime         @default(now()) @map("created_at")
-  updatedAt              DateTime         @updatedAt @map("updated_at")
+  id                      String     @id @default(cuid())
+  eventId                 String     @map("event_id")
+  title                   String
+  description             String?    @db.Text
+  link                    String?
+  imageUrl                String?    @map("image_url")
+  price                   Float?
+  currency                String     @default("BRL")
+  category                String?
+  status                  GiftStatus @default(disponivel)
+  targetQuantity          Int        @default(1) @map("target_quantity")
+  purchasedQuantity       Int        @default(0) @map("purchased_quantity")
+  reservedQuantity        Int        @default(0) @map("reserved_quantity")
+  allowContributions      Boolean    @default(false) @map("allow_contributions")
+  contributionGoalCents   Int?       @map("contribution_goal_cents")
+  contributionRaisedCents Int        @default(0) @map("contribution_raised_cents")
+  buyerContactId          String?    @map("buyer_contact_id")
+  primaryOfferId          String?    @map("primary_offer_id")
+  createdAt               DateTime   @default(now()) @map("created_at")
+  updatedAt               DateTime   @updatedAt @map("updated_at")
 
   // Relations
-  event          Event                @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  buyerContact   Contact?             @relation(fields: [buyerContactId], references: [id])
-  offers         GiftOffer[]
-  primaryOffer   GiftOffer?           @relation("PrimaryGiftOffer", fields: [primaryOfferId], references: [id])
-  reservations   GiftReservation[]
-  purchases      GiftPurchase[]
-  contributions  GiftContribution[]
-  offerClicks    GiftOfferClick[]
+  event         Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  buyerContact  Contact?           @relation(fields: [buyerContactId], references: [id])
+  offers        GiftOffer[]
+  primaryOffer  GiftOffer?         @relation("PrimaryGiftOffer", fields: [primaryOfferId], references: [id])
+  reservations  GiftReservation[]
+  purchases     GiftPurchase[]
+  contributions GiftContribution[]
+  offerClicks   GiftOfferClick[]
 
+  @@unique([primaryOfferId])
   @@index([eventId])
   @@index([status])
   @@index([primaryOfferId])
@@ -399,26 +403,26 @@ model GiftRegistryItem {
 }
 
 model GiftOffer {
-  id            String           @id @default(cuid())
-  giftId        String           @map("gift_id")
+  id            String    @id @default(cuid())
+  giftId        String    @map("gift_id")
   store         String
   domain        String
   title         String?
-  url           String           @unique
-  canonicalUrl  String?          @map("canonical_url")
-  imageUrl      String?          @map("image_url")
-  priceCents    Int?             @map("price_cents")
-  currency      String           @default("BRL")
-  lastCheckedAt DateTime?        @map("last_checked_at")
-  isPrimary     Boolean          @default(false) @map("is_primary")
-  createdAt     DateTime         @default(now()) @map("created_at")
-  updatedAt     DateTime         @updatedAt @map("updated_at")
+  url           String    @unique
+  canonicalUrl  String?   @map("canonical_url")
+  imageUrl      String?   @map("image_url")
+  priceCents    Int?      @map("price_cents")
+  currency      String    @default("BRL")
+  lastCheckedAt DateTime? @map("last_checked_at")
+  isPrimary     Boolean   @default(false) @map("is_primary")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  gift        GiftRegistryItem  @relation(fields: [giftId], references: [id], onDelete: Cascade)
-  primaryFor  GiftRegistryItem? @relation("PrimaryGiftOffer")
+  gift         GiftRegistryItem        @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  primaryFor   GiftRegistryItem?       @relation("PrimaryGiftOffer")
   priceHistory GiftOfferPriceHistory[]
-  clicks      GiftOfferClick[]
+  clicks       GiftOfferClick[]
 
   @@index([giftId, isPrimary])
   @@map("gift_offer")
@@ -438,12 +442,12 @@ model GiftOfferPriceHistory {
 }
 
 model GiftOfferClick {
-  id        String           @id @default(cuid())
-  offerId   String           @map("offer_id")
-  giftId    String           @map("gift_id")
+  id        String   @id @default(cuid())
+  offerId   String   @map("offer_id")
+  giftId    String   @map("gift_id")
   ip        String?
-  userAgent String?          @map("user_agent")
-  clickedAt DateTime         @default(now()) @map("clicked_at")
+  userAgent String?  @map("user_agent")
+  clickedAt DateTime @default(now()) @map("clicked_at")
 
   // Relations
   offer GiftOffer        @relation(fields: [offerId], references: [id], onDelete: Cascade)
@@ -455,13 +459,13 @@ model GiftOfferClick {
 }
 
 model GiftReservation {
-  id            String   @id @default(cuid())
-  giftId        String   @map("gift_id")
-  guestId       String   @map("guest_id")
+  id            String    @id @default(cuid())
+  giftId        String    @map("gift_id")
+  guestId       String    @map("guest_id")
   reservedUntil DateTime? @map("reserved_until")
-  notes         String?  @db.Text
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  notes         String?   @db.Text
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
   // Relations
   gift  GiftRegistryItem @relation(fields: [giftId], references: [id], onDelete: Cascade)
@@ -485,8 +489,8 @@ model GiftPurchase {
   updatedAt       DateTime @updatedAt @map("updated_at")
 
   // Relations
-  gift    GiftRegistryItem @relation(fields: [giftId], references: [id], onDelete: Cascade)
-  guest   Guest?           @relation(fields: [guestId], references: [id])
+  gift          GiftRegistryItem   @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  guest         Guest?             @relation(fields: [guestId], references: [id])
   contributions GiftContribution[] @relation("PurchaseContributions")
 
   @@index([giftId])
@@ -520,12 +524,12 @@ model GiftContribution {
 // ============================================
 
 model ConsentLog {
-  id        String       @id @default(cuid())
-  contactId String       @map("contact_id")
+  id        String        @id @default(cuid())
+  contactId String        @map("contact_id")
   source    ConsentSource
   action    ConsentAction
   text      String? // Full text of what was agreed to
-  createdAt DateTime     @default(now()) @map("created_at")
+  createdAt DateTime      @default(now()) @map("created_at")
 
   // Relations
   contact Contact @relation(fields: [contactId], references: [id])
@@ -539,17 +543,17 @@ model ConsentLog {
 // ============================================
 
 model Table {
-  id       String     @id @default(cuid())
-  eventId  String     @map("event_id")
-  label    String // "Mesa 1", "Mesa Principal"
-  capacity Int
-  zone     String? // "Salão Principal", "Varanda"
-  x        Float      @default(0) // Canvas position
-  y        Float      @default(0)
-  rotation Float      @default(0)
-  shape    TableShape @default(round)
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id        String     @id @default(cuid())
+  eventId   String     @map("event_id")
+  label     String // "Mesa 1", "Mesa Principal"
+  capacity  Int
+  zone      String? // "Salão Principal", "Varanda"
+  x         Float      @default(0) // Canvas position
+  y         Float      @default(0)
+  rotation  Float      @default(0)
+  shape     TableShape @default(round)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
 
   // Relations
   event Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)

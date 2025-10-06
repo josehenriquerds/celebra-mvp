@@ -14,11 +14,11 @@ export type GiftSortOption = 'best-price' | 'price-asc' | 'price-desc' | 'recent
 interface GiftFiltersProps {
   search: string
   onSearchChange: (value: string) => void
-  status: GiftStatus | 'all'
-  onStatusChange: (status: GiftStatus | 'all') => void
+  statusFilter: GiftStatus | 'all'
+  onStatusFilterChange: (status: GiftStatus | 'all') => void
   sort: GiftSortOption
   onSortChange: (value: GiftSortOption) => void
-  counters: {
+  counters?: {
     total: number
     available: number
     reserved: number
@@ -27,13 +27,37 @@ interface GiftFiltersProps {
 }
 
 const sortLabels: Record<GiftSortOption, string> = {
-  'best-price': 'Melhor preço',
-  'price-asc': 'Preço · menor',
-  'price-desc': 'Preço · maior',
+  'best-price': 'Melhor preco',
+  'price-asc': 'Preco - menor',
+  'price-desc': 'Preco - maior',
   recent: 'Mais recentes',
 }
 
-export function GiftFilters({ search, onSearchChange, status, onStatusChange, sort, onSortChange, }: GiftFiltersProps) {
+const EMPTY_COUNTERS = {
+  total: 0,
+  available: 0,
+  reserved: 0,
+  purchased: 0,
+}
+
+export function GiftFilters({
+  search,
+  onSearchChange,
+  statusFilter,
+  onStatusFilterChange,
+  sort,
+  onSortChange,
+  counters = EMPTY_COUNTERS,
+}: GiftFiltersProps) {
+  const { total, available, reserved, purchased } = counters
+
+  const filterLabels = {
+    all: `Todos (${total})`,
+    available: `Disponiveis (${available})`,
+    reserved: `Reservados (${reserved})`,
+    purchased: `Comprados (${purchased})`,
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -92,24 +116,24 @@ export function GiftFilters({ search, onSearchChange, status, onStatusChange, so
                   <Label className="text-sm text-[#5B6C92]">Status</Label>
                   <ChipFilterGroup className="mt-2">
                     <ChipFilter
-                      label={Todos ()}
-                      active={status === 'all'}
-                      onClick={() => onStatusChange('all')}
+                      label={filterLabels.all}
+                      active={statusFilter === 'all'}
+                      onClick={() => onStatusFilterChange('all')}
                     />
                     <ChipFilter
-                      label={Disponíveis ()}
-                      active={status === 'disponivel'}
-                      onClick={() => onStatusChange('disponivel')}
+                      label={filterLabels.available}
+                      active={statusFilter === 'disponivel'}
+                      onClick={() => onStatusFilterChange('disponivel')}
                     />
                     <ChipFilter
-                      label={Reservados ()}
-                      active={status === 'reservado'}
-                      onClick={() => onStatusChange('reservado')}
+                      label={filterLabels.reserved}
+                      active={statusFilter === 'reservado'}
+                      onClick={() => onStatusFilterChange('reservado')}
                     />
                     <ChipFilter
-                      label={Comprados ()}
-                      active={status === 'comprado'}
-                      onClick={() => onStatusChange('comprado')}
+                      label={filterLabels.purchased}
+                      active={statusFilter === 'comprado'}
+                      onClick={() => onStatusFilterChange('comprado')}
                     />
                   </ChipFilterGroup>
                 </div>
@@ -122,24 +146,24 @@ export function GiftFilters({ search, onSearchChange, status, onStatusChange, so
       <div className="hidden md:block">
         <ChipFilterGroup>
           <ChipFilter
-            label={Todos ()}
-            active={status === 'all'}
-            onClick={() => onStatusChange('all')}
+            label={filterLabels.all}
+            active={statusFilter === 'all'}
+            onClick={() => onStatusFilterChange('all')}
           />
           <ChipFilter
-            label={Disponíveis ()}
-            active={status === 'disponivel'}
-            onClick={() => onStatusChange('disponivel')}
+            label={filterLabels.available}
+            active={statusFilter === 'disponivel'}
+            onClick={() => onStatusFilterChange('disponivel')}
           />
           <ChipFilter
-            label={Reservados ()}
-            active={status === 'reservado'}
-            onClick={() => onStatusChange('reservado')}
+            label={filterLabels.reserved}
+            active={statusFilter === 'reservado'}
+            onClick={() => onStatusFilterChange('reservado')}
           />
           <ChipFilter
-            label={Comprados ()}
-            active={status === 'comprado'}
-            onClick={() => onStatusChange('comprado')}
+            label={filterLabels.purchased}
+            active={statusFilter === 'comprado'}
+            onClick={() => onStatusFilterChange('comprado')}
           />
         </ChipFilterGroup>
       </div>

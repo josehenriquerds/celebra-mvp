@@ -80,11 +80,11 @@ public class CheckinsController : ControllerBase
     [HttpPost("checkins")]
     [ProducesResponseType(typeof(CheckinDto), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateCheckin([FromBody] CreateCheckinRequest request)
+    public Task<IActionResult> CreateCheckin([FromBody] CreateCheckinRequest request)
     {
         // EventId should be extracted from the request context or passed explicitly
         // For now, we'll require it in the request body
-        return BadRequest(new { error = "EventId is required. Use POST /events/{eventId}/checkins instead" });
+        return Task.FromResult<IActionResult>(BadRequest(new { error = "EventId is required. Use POST /events/{eventId}/checkins instead" }));
     }
 
     /// <summary>

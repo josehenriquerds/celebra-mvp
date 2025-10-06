@@ -1,9 +1,28 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\celebra-mvp\\backend\\",
+  "WorkspaceRootPath": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FFD7CA10-018E-48FD-AB2B-716E2D8AC3F8}|src\\Celebre.Api\\Celebre.Api.csproj|c:\\users\\npc tech\\downloads\\celebre\\celebra-mvp\\backend\\src\\celebre.api\\controllers\\checkinscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5851BCFA-0187-4D36-9095-D75A21F4D80D}|src\\Celebre.Application\\Celebre.Application.csproj|c:\\users\\npc tech\\downloads\\celebre\\nova pasta (2)\\backend\\src\\celebre.application\\celebre.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5851BCFA-0187-4D36-9095-D75A21F4D80D}|src\\Celebre.Application\\Celebre.Application.csproj|solutionrelative:src\\celebre.application\\celebre.application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FAA94395-8812-4786-874C-745E1752BD3A}|src\\Celebre.Infrastructure\\Celebre.Infrastructure.csproj|c:\\users\\npc tech\\downloads\\celebre\\nova pasta (2)\\backend\\src\\celebre.infrastructure\\celebre.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{FAA94395-8812-4786-874C-745E1752BD3A}|src\\Celebre.Infrastructure\\Celebre.Infrastructure.csproj|solutionrelative:src\\celebre.infrastructure\\celebre.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D7FF17A-F0D1-4755-9418-44E57097BCE3}|src\\Celebre.Integrations\\Celebre.Integrations.csproj|c:\\users\\npc tech\\downloads\\celebre\\nova pasta (2)\\backend\\src\\celebre.integrations\\celebre.integrations.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{9D7FF17A-F0D1-4755-9418-44E57097BCE3}|src\\Celebre.Integrations\\Celebre.Integrations.csproj|solutionrelative:src\\celebre.integrations\\celebre.integrations.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFD7CA10-018E-48FD-AB2B-716E2D8AC3F8}|src\\Celebre.Api\\Celebre.Api.csproj|c:\\users\\npc tech\\downloads\\celebre\\nova pasta (2)\\backend\\src\\celebre.api\\celebre.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{FFD7CA10-018E-48FD-AB2B-716E2D8AC3F8}|src\\Celebre.Api\\Celebre.Api.csproj|solutionrelative:src\\celebre.api\\celebre.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFD7CA10-018E-48FD-AB2B-716E2D8AC3F8}|src\\Celebre.Api\\Celebre.Api.csproj|c:\\users\\npc tech\\downloads\\celebre\\nova pasta (2)\\backend\\src\\celebre.api\\controllers\\checkinscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FFD7CA10-018E-48FD-AB2B-716E2D8AC3F8}|src\\Celebre.Api\\Celebre.Api.csproj|solutionrelative:src\\celebre.api\\controllers\\checkinscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -19,15 +38,79 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "CheckinsController.cs",
-              "DocumentMoniker": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\celebra-mvp\\backend\\src\\Celebre.Api\\Controllers\\CheckinsController.cs",
-              "RelativeDocumentMoniker": "src\\Celebre.Api\\Controllers\\CheckinsController.cs",
-              "ToolTip": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\celebra-mvp\\backend\\src\\Celebre.Api\\Controllers\\CheckinsController.cs",
-              "RelativeToolTip": "src\\Celebre.Api\\Controllers\\CheckinsController.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAIIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-02T03:32:14.986Z",
+              "Title": "Celebre.Application",
+              "DocumentMoniker": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Application\\Celebre.Application.csproj",
+              "RelativeDocumentMoniker": "src\\Celebre.Application\\Celebre.Application.csproj",
+              "ToolTip": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Application\\Celebre.Application.csproj",
+              "RelativeToolTip": "src\\Celebre.Application\\Celebre.Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-06T14:15:13.632Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Celebre.Infrastructure",
+              "DocumentMoniker": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Infrastructure\\Celebre.Infrastructure.csproj",
+              "RelativeDocumentMoniker": "src\\Celebre.Infrastructure\\Celebre.Infrastructure.csproj",
+              "ToolTip": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Infrastructure\\Celebre.Infrastructure.csproj",
+              "RelativeToolTip": "src\\Celebre.Infrastructure\\Celebre.Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-06T14:15:12.557Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Celebre.Integrations",
+              "DocumentMoniker": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Integrations\\Celebre.Integrations.csproj",
+              "RelativeDocumentMoniker": "src\\Celebre.Integrations\\Celebre.Integrations.csproj",
+              "ToolTip": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Integrations\\Celebre.Integrations.csproj",
+              "RelativeToolTip": "src\\Celebre.Integrations\\Celebre.Integrations.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-06T14:15:11.085Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Celebre.Api",
+              "DocumentMoniker": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Api\\Celebre.Api.csproj",
+              "RelativeDocumentMoniker": "src\\Celebre.Api\\Celebre.Api.csproj",
+              "ToolTip": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Api\\Celebre.Api.csproj",
+              "RelativeToolTip": "src\\Celebre.Api\\Celebre.Api.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-10-06T14:15:10.504Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAAIwTAAAAAAAAAAApwKQTAABlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2025-10-05T22:30:43.229Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CheckinsController.cs",
+              "DocumentMoniker": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Api\\Controllers\\CheckinsController.cs",
+              "RelativeDocumentMoniker": "src\\Celebre.Api\\Controllers\\CheckinsController.cs",
+              "ToolTip": "C:\\Users\\NPC TECH\\Downloads\\Celebre\\Nova pasta (2)\\backend\\src\\Celebre.Api\\Controllers\\CheckinsController.cs",
+              "RelativeToolTip": "src\\Celebre.Api\\Controllers\\CheckinsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAABVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-02T03:32:14.986Z"
             }
           ]
         }

@@ -23,7 +23,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useGuests } from '@/hooks'
 import type { GetGuestsParams } from '@/services'
 
-interface Guest {
+interface _Guest {
   id: string
   contact: {
     id: string
@@ -96,7 +96,7 @@ export default function GuestsPage() {
   const [search, setSearch] = useState('')
   const [selectedGuests, setSelectedGuests] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
-  const [groups, setGroups] = useState<GuestGroup[]>([])
+  const [_groups, _setGroups] = useState<GuestGroup[]>([])
   const [showGroupModal, setShowGroupModal] = useState(false)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')

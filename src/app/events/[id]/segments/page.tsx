@@ -80,7 +80,7 @@ export default function SegmentsPage() {
   const updateMutation = useUpdateSegment(eventId)
   const deleteMutation = useDeleteSegment(eventId)
   const previewMutation = usePreviewSegment(eventId)
-  const sendToSegmentMutation = useSendToSegment()
+  const _sendToSegmentMutation = useSendToSegment()
 
   // Local state
   const [showModal, setShowModal] = useState(false)
