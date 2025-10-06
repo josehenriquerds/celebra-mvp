@@ -3,10 +3,19 @@
 import { ArrowLeft, Plus, Edit2, Trash2, X, Users, Filter, Send } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  useSegments,
+  useCreateSegment,
+  useUpdateSegment,
+  useDeleteSegment,
+  usePreviewSegment,
+  useSendToSegment,
+} from '@/hooks'
 
 interface SegmentRule {
   field: string
@@ -61,9 +70,19 @@ const TIER_OPTIONS = ['bronze', 'prata', 'ouro']
 export default function SegmentsPage() {
   const params = useParams()
   const eventId = params.id as string
+  const { toast } = useToast()
 
-  const [segments, setSegments] = useState<Segment[]>([])
-  const [loading, setLoading] = useState(true)
+  // Queries
+  const { data: segments = [], isLoading: loading } = useSegments(eventId)
+
+  // Mutations
+  const createMutation = useCreateSegment(eventId)
+  const updateMutation = useUpdateSegment(eventId)
+  const deleteMutation = useDeleteSegment(eventId)
+  const previewMutation = usePreviewSegment(eventId)
+  const sendToSegmentMutation = useSendToSegment()
+
+  // Local state
   const [showModal, setShowModal] = useState(false)
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null)
   const [formData, setFormData] = useState({
@@ -72,24 +91,6 @@ export default function SegmentsPage() {
     rules: [] as SegmentRule[],
   })
   const [previewCount, setPreviewCount] = useState<number | null>(null)
-  const [previewLoading, setPreviewLoading] = useState(false)
-
-  const fetchSegments = useCallback(async () => {
-    try {
-      setLoading(true)
-      const res = await fetch(`/api/events/${eventId}/segments`)
-      const data = await res.json()
-      setSegments(data || [])
-    } catch (error) {
-      console.error('Error fetching segments:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [eventId])
-
-  useEffect(() => {
-    void fetchSegments()
-  }, [fetchSegments])
 
   function openCreateModal() {
     setEditingSegment(null)
@@ -141,61 +142,103 @@ export default function SegmentsPage() {
   }
 
   async function handlePreview() {
-    try {
-      setPreviewLoading(true)
-      const res = await fetch(`/api/events/${eventId}/segments/preview`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rules: { and: formData.rules } }),
-      })
-      const data = await res.json()
-      setPreviewCount(data.count)
-    } catch (error) {
-      console.error('Error previewing segment:', error)
-    } finally {
-      setPreviewLoading(false)
-    }
+    previewMutation.mutate(
+      { and: formData.rules },
+      {
+        onSuccess: (data) => {
+          setPreviewCount(data.count)
+          toast({
+            title: 'Preview gerado',
+            description: `${data.count} convidados correspondem aos critérios.`,
+          })
+        },
+        onError: (error: any) => {
+          toast({
+            title: 'Erro no preview',
+            description: error.message || 'Não foi possível gerar o preview.',
+            variant: 'destructive',
+          })
+        },
+      }
+    )
   }
 
   async function handleSubmit() {
-    try {
-      const url = editingSegment
-        ? `/api/segments/${editingSegment.id}`
-        : `/api/events/${eventId}/segments`
-
-      const res = await fetch(url, {
-        method: editingSegment ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          label: formData.label,
-          description: formData.description,
-          rules: { and: formData.rules },
-        }),
+    if (!formData.label.trim()) {
+      toast({
+        title: 'Erro',
+        description: 'O nome do segmento é obrigatório.',
+        variant: 'destructive',
       })
+      return
+    }
 
-      if (res.ok) {
-        setShowModal(false)
-        await fetchSegments()
-      }
-    } catch (error) {
-      console.error('Error saving segment:', error)
+    const segmentData = {
+      name: formData.label,
+      criteria: { and: formData.rules },
+    }
+
+    if (editingSegment) {
+      updateMutation.mutate(
+        {
+          id: editingSegment.id,
+          data: segmentData,
+        },
+        {
+          onSuccess: () => {
+            toast({
+              title: 'Segmento atualizado',
+              description: 'O segmento foi atualizado com sucesso.',
+            })
+            setShowModal(false)
+          },
+          onError: (error: any) => {
+            toast({
+              title: 'Erro ao atualizar',
+              description: error.message || 'Não foi possível atualizar o segmento.',
+              variant: 'destructive',
+            })
+          },
+        }
+      )
+    } else {
+      createMutation.mutate(segmentData, {
+        onSuccess: () => {
+          toast({
+            title: 'Segmento criado',
+            description: 'O segmento foi criado com sucesso.',
+          })
+          setShowModal(false)
+        },
+        onError: (error: any) => {
+          toast({
+            title: 'Erro ao criar',
+            description: error.message || 'Não foi possível criar o segmento.',
+            variant: 'destructive',
+          })
+        },
+      })
     }
   }
 
   async function handleDelete(segmentId: string) {
     if (!confirm('Tem certeza que deseja deletar este segmento?')) return
 
-    try {
-      const res = await fetch(`/api/segments/${segmentId}`, {
-        method: 'DELETE',
-      })
-
-      if (res.ok) {
-        await fetchSegments()
-      }
-    } catch (error) {
-      console.error('Error deleting segment:', error)
-    }
+    deleteMutation.mutate(segmentId, {
+      onSuccess: () => {
+        toast({
+          title: 'Segmento deletado',
+          description: 'O segmento foi deletado com sucesso.',
+        })
+      },
+      onError: (error: any) => {
+        toast({
+          title: 'Erro ao deletar',
+          description: error.message || 'Não foi possível deletar o segmento.',
+          variant: 'destructive',
+        })
+      },
+    })
   }
 
   async function handleSendMessage(segmentId: string) {

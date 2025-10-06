@@ -16,11 +16,12 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '@/hooks'
 import { formatCurrency } from '@/lib/utils'
 
 interface Vendor {
@@ -62,9 +63,6 @@ export default function VendorsPage() {
   const params = useParams()
   const eventId = params.id as string
 
-  const [vendors, setVendors] = useState<Vendor[]>([])
-  const [filteredVendors, setFilteredVendors] = useState<Vendor[]>([])
-  const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [filterCategory, setFilterCategory] = useState('all')
   const [filterPayment, setFilterPayment] = useState('all')
@@ -82,7 +80,14 @@ export default function VendorsPage() {
     notes: '',
   })
 
-  useEffect(() => {
+  // Use backend API via TanStack Query
+  const { data: vendors = [], isLoading: loading } = useVendors(eventId)
+  const createVendorMutation = useCreateVendor(eventId)
+  const updateVendorMutation = useUpdateVendor(eventId)
+  const deleteVendorMutation = useDeleteVendor(eventId)
+
+  // Client-side filtering
+  const filteredVendors = useMemo(() => {
     let filtered = vendors
 
     if (search) {
@@ -101,26 +106,8 @@ export default function VendorsPage() {
       filtered = filtered.filter((v) => v.paymentStatus === filterPayment)
     }
 
-    setFilteredVendors(filtered)
+    return filtered
   }, [search, filterCategory, filterPayment, vendors])
-
-  const fetchVendors = useCallback(async () => {
-    try {
-      setLoading(true)
-      const res = await fetch(`/api/events/${eventId}/vendors`)
-      const data = await res.json()
-      setVendors(data || [])
-      setFilteredVendors(data || [])
-    } catch (error) {
-      console.error('Error fetching vendors:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [eventId])
-
-  useEffect(() => {
-    void fetchVendors()
-  }, [fetchVendors])
 
   function openCreateModal() {
     setEditingVendor(null)
@@ -155,40 +142,31 @@ export default function VendorsPage() {
   }
 
   async function handleSubmit() {
-    try {
-      const url = editingVendor
-        ? `/api/vendors/${editingVendor.id}`
-        : `/api/events/${eventId}/vendors`
-
-      const res = await fetch(url, {
-        method: editingVendor ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+    if (editingVendor) {
+      updateVendorMutation.mutate(
+        {
+          id: editingVendor.id,
+          data: formData as any,
+        },
+        {
+          onSuccess: () => {
+            setShowModal(false)
+          },
+        }
+      )
+    } else {
+      createVendorMutation.mutate(formData as any, {
+        onSuccess: () => {
+          setShowModal(false)
+        },
       })
-
-      if (res.ok) {
-        setShowModal(false)
-        await fetchVendors()
-      }
-    } catch (error) {
-      console.error('Error saving vendor:', error)
     }
   }
 
   async function handleDelete(vendorId: string) {
     if (!confirm('Tem certeza que deseja deletar este fornecedor?')) return
 
-    try {
-      const res = await fetch(`/api/vendors/${vendorId}`, {
-        method: 'DELETE',
-      })
-
-      if (res.ok) {
-        await fetchVendors()
-      }
-    } catch (error) {
-      console.error('Error deleting vendor:', error)
-    }
+    deleteVendorMutation.mutate(vendorId)
   }
 
   function getPaymentLabel(status: string) {

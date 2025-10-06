@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Celebre.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+717df288aba9fc08fd02d2c2d7647de84267c18f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab62facf3663ebea0ca3e277ad579a3f81152dab")]
 [assembly: System.Reflection.AssemblyProductAttribute("Celebre.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Celebre.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -9,15 +9,22 @@ import { useToast } from '@/components/ui/use-toast'
 import {
   GiftCard,
   GiftsEmptyState,
+  GiftDrawerForm,
+  KpiGifts,
+  GiftFilters,
 } from '@/features/gifts/components'
 import {
-  useGifts,
-  useCreateGift,
-  useUpdateGift,
-  useDeleteGift,
-  useUpdateGiftStatus,
-} from '@/features/gifts/hooks/useGifts'
-import type { Gift, GiftFormData, GiftStatus } from '@/schemas'
+  useGiftsApi,
+  useCreateGiftApi,
+  useUpdateGiftApi,
+  useDeleteGiftApi,
+} from '@/hooks/useGiftsApi'
+import type { Gift, GiftStatus } from '@/types/api'
+import {
+  ReserveCotaoModal,
+  ConfirmPaymentModal,
+  ThankYouModal,
+} from './components'
 
 export default function GiftsPage() {
   const params = useParams()
@@ -25,19 +32,29 @@ export default function GiftsPage() {
   const { toast } = useToast()
 
   // Queries
-  const { data: gifts = [], isLoading } = useGifts(eventId)
+  const { data: gifts = [], isLoading } = useGiftsApi(eventId)
 
   // Mutations
-  const createMutation = useCreateGift()
-  const updateMutation = useUpdateGift()
-  const deleteMutation = useDeleteGift()
-  const updateStatusMutation = useUpdateGiftStatus()
+  const createMutation = useCreateGiftApi(eventId)
+  const updateMutation = useUpdateGiftApi()
+  const deleteMutation = useDeleteGiftApi()
 
   // Local state
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<GiftStatus | 'all'>('all')
-  const [showModal, setShowModal] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
   const [editingGift, setEditingGift] = useState<Gift | null>(null)
+
+  // Cotão flow state
+  const [selectedGift, setSelectedGift] = useState<Gift | null>(null)
+  const [showReserveModal, setShowReserveModal] = useState(false)
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [showThankYouModal, setShowThankYouModal] = useState(false)
+  const [reservationData, setReservationData] = useState<{
+    reservationId: string
+    pixQRCode?: string
+  } | null>(null)
+  const [contributionId, setContributionId] = useState<string | null>(null)
 
   // Filtered gifts
   const filteredGifts = useMemo(() => {
@@ -57,15 +74,15 @@ export default function GiftsPage() {
   // Handlers
   function handleCreateClick() {
     setEditingGift(null)
-    setShowModal(true)
+    setShowDrawer(true)
   }
 
   function handleEditClick(gift: Gift) {
     setEditingGift(gift)
-    setShowModal(true)
+    setShowDrawer(true)
   }
 
-  async function handleSubmit(data: GiftFormData) {
+  async function handleSubmit(data: Partial<Gift>) {
     try {
       if (editingGift) {
         await updateMutation.mutateAsync({
@@ -77,13 +94,13 @@ export default function GiftsPage() {
           description: 'O presente foi atualizado com sucesso.',
         })
       } else {
-        await createMutation.mutateAsync(data)
+        await createMutation.mutateAsync(data as any)
         toast({
           title: 'Presente criado',
           description: 'O presente foi criado com sucesso.',
         })
       }
-      setShowModal(false)
+      setShowDrawer(false)
       setEditingGift(null)
     } catch (error) {
       toast({
@@ -114,21 +131,37 @@ export default function GiftsPage() {
     }
   }
 
-  async function handleMarkReceived(id: string) {
-    try {
-      await updateStatusMutation.mutateAsync({ id, status: 'recebido' })
-      toast({
-        title: 'Status atualizado',
-        description: 'O presente foi marcado como recebido.',
-      })
-    } catch (error) {
-      toast({
-        title: 'Erro',
-        description:
-          error instanceof Error ? error.message : 'Ocorreu um erro ao atualizar o status.',
-        variant: 'destructive',
-      })
-    }
+  // Cotão flow handlers
+  function handleReserveClick(gift: Gift) {
+    setSelectedGift(gift)
+    setShowReserveModal(true)
+  }
+
+  function handleReserveSuccess(reservationId: string, pixQRCode?: string) {
+    setReservationData({ reservationId, pixQRCode })
+    setShowReserveModal(false)
+    setShowConfirmModal(true)
+    toast({
+      title: 'Reserva realizada!',
+      description: 'Agora confirme seu pagamento.',
+    })
+  }
+
+  function handleConfirmSuccess() {
+    setShowConfirmModal(false)
+    toast({
+      title: 'Pagamento enviado!',
+      description: 'Aguarde a confirmação dos noivos.',
+    })
+    // Could automatically open thank you modal after confirmation
+  }
+
+  function handleThankYouSuccess() {
+    setShowThankYouModal(false)
+    toast({
+      title: 'Agradecimento enviado!',
+      description: 'Sua mensagem foi enviada com sucesso.',
+    })
   }
 
   if (isLoading) {
@@ -171,28 +204,62 @@ export default function GiftsPage() {
         </div>
       </header>
 
-      {/* Modal */}
-      <GiftFormModal
+      {/* Drawer Form */}
+      <GiftDrawerForm
         gift={editingGift}
-        isOpen={showModal}
+        isOpen={showDrawer}
         onClose={() => {
-          setShowModal(false)
+          setShowDrawer(false)
           setEditingGift(null)
         }}
         onSubmit={handleSubmit}
         isLoading={createMutation.isPending || updateMutation.isPending}
       />
 
+      {/* Cotão Flow Modals */}
+      {selectedGift && (
+        <>
+          <ReserveCotaoModal
+            gift={selectedGift}
+            isOpen={showReserveModal}
+            onClose={() => setShowReserveModal(false)}
+            onSuccess={handleReserveSuccess}
+          />
+
+          {reservationData && (
+            <ConfirmPaymentModal
+              gift={selectedGift}
+              reservationId={reservationData.reservationId}
+              pixQRCode={reservationData.pixQRCode}
+              isOpen={showConfirmModal}
+              onClose={() => setShowConfirmModal(false)}
+              onSuccess={handleConfirmSuccess}
+            />
+          )}
+
+          {contributionId && (
+            <ThankYouModal
+              contributionId={contributionId}
+              guestName="Convidado"
+              eventId={eventId}
+              isOpen={showThankYouModal}
+              onClose={() => setShowThankYouModal(false)}
+              onSuccess={handleThankYouSuccess}
+            />
+          )}
+        </>
+      )}
+
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Stats Row */}
         <div className="mb-8">
-          <GiftsStats gifts={gifts} />
+          <KpiGifts eventId={eventId} />
         </div>
 
         {/* Filters */}
         <div className="mb-6">
-          <GiftsFilters
+          <GiftFilters
             search={search}
             onSearchChange={setSearch}
             statusFilter={statusFilter}
@@ -209,9 +276,8 @@ export default function GiftsPage() {
               <GiftCard
                 key={gift.id}
                 gift={gift}
-                onEdit={handleEditClick}
-                onDelete={handleDelete}
-                onMarkReceived={handleMarkReceived}
+                onEdit={() => handleEditClick(gift)}
+                onDelete={() => handleDelete(gift.id)}
               />
             ))}
           </div>

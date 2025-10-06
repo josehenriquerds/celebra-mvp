@@ -16,10 +16,12 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { useGuests } from '@/hooks'
+import type { GetGuestsParams } from '@/services'
 
 interface Guest {
   id: string
@@ -64,12 +66,12 @@ interface GuestGroup {
 }
 
 const FILTERS = [
-  { value: 'all', label: 'Todos', icon: Users },
-  { value: 'confirmed', label: 'Confirmados', icon: Users },
-  { value: 'pending', label: 'Pendentes', icon: Clock },
-  { value: 'vip', label: 'VIPs', icon: Star },
-  { value: 'children', label: 'Com Crianças', icon: Baby },
-  { value: 'no_phone', label: 'Sem Telefone', icon: Phone },
+  { value: undefined, label: 'Todos', icon: Users },
+  { value: 'confirmed' as const, label: 'Confirmados', icon: Users },
+  { value: 'pending' as const, label: 'Pendentes', icon: Clock },
+  { value: 'vip' as const, label: 'VIPs', icon: Star },
+  { value: 'children' as const, label: 'Com Crianças', icon: Baby },
+  { value: 'no_phone' as const, label: 'Sem Telefone', icon: Phone },
 ]
 
 const RSVP_COLORS = {
@@ -90,56 +92,27 @@ export default function GuestsPage() {
   const router = useRouter()
   const eventId = params.id as string
 
-  const [guests, setGuests] = useState<Guest[]>([])
-  const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState<GetGuestsParams['filter']>()
   const [search, setSearch] = useState('')
   const [selectedGuests, setSelectedGuests] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
-  const [total, setTotal] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
   const [groups, setGroups] = useState<GuestGroup[]>([])
   const [showGroupModal, setShowGroupModal] = useState(false)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
 
-  const fetchGuests = useCallback(async () => {
-    try {
-      setLoading(true)
-      const queryParams = new URLSearchParams({
-        ...(filter !== 'all' && { filter }),
-        ...(search && { search }),
-        page: page.toString(),
-        limit: '50',
-      })
+  // Use backend API via TanStack Query
+  const { data: guestsData, isLoading: loading } = useGuests({
+    eventId,
+    filter,
+    search: search || undefined,
+    page,
+    limit: 50,
+  })
 
-      const res = await fetch(`/api/events/${eventId}/guests?${queryParams}`)
-      const data = await res.json()
-
-      setGuests(data.guests || [])
-      setTotal(data.pagination?.total || 0)
-      setTotalPages(data.pagination?.totalPages || 0)
-    } catch (error) {
-      console.error('Error fetching guests:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [eventId, filter, page, search])
-
-  const fetchGroups = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/events/${eventId}/groups`)
-      const data = await res.json()
-      setGroups(data || [])
-    } catch (error) {
-      console.error('Error fetching groups:', error)
-    }
-  }, [eventId])
-
-  useEffect(() => {
-    void fetchGuests()
-    void fetchGroups()
-  }, [fetchGuests, fetchGroups])
+  const guests = guestsData?.items || []
+  const total = guestsData?.total || 0
+  const totalPages = guestsData?.totalPages || 0
 
   async function createGroup() {
     if (!newGroupName.trim()) return

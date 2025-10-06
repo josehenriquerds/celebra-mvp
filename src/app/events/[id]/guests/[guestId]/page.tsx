@@ -25,7 +25,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useToast } from '@/components/ui/use-toast'
-import { useGuest, useUpdateGuest } from '@/features/guests/hooks/useGuests'
+import { useGuest, useUpdateGuest, useGuestTimeline } from '@/hooks'
 import { formatDate, formatTime } from '@/lib/utils'
 
 const RSVP_COLORS = {
@@ -54,11 +54,12 @@ export default function GuestProfilePage() {
   const guestId = params.guestId as string
   const { toast } = useToast()
 
-  // Queries
+  // Queries - using backend API
   const { data: guest, isLoading } = useGuest(guestId)
+  const { data: timeline = [] } = useGuestTimeline(guestId)
 
   // Mutations
-  const updateMutation = useUpdateGuest()
+  const updateMutation = useUpdateGuest(eventId)
 
   // Local state
   const [editing, setEditing] = useState(false)
@@ -332,14 +333,14 @@ export default function GuestProfilePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {!guest.timeline || guest.timeline.length === 0 ? (
+                {timeline.length === 0 ? (
                   <div className="py-8 text-center text-celebre-muted">
                     <Clock className="mx-auto mb-2 size-12 opacity-50" />
                     <p>Nenhuma interação registrada</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {guest.timeline.map((item) => {
+                    {timeline.map((item) => {
                       const Icon = getInteractionIcon(item.type)
                       return (
                         <div

@@ -4,41 +4,19 @@ import { Search, Users, CheckCircle, Calendar as CalendarIcon, Clock } from 'luc
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { DonutProgress } from '@/components/dashboard/donut-progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEventSummary } from '@/hooks'
 import { formatCurrency, formatDate, formatTime, getDaysUntil, getSLABadgeColor } from '@/lib/utils'
 
-type Task = {
-  id: string
-  title: string
-  dueAt: string | null
-  status: string
-  slaHours: number | null
+const SLA_BADGE_CLASSES: Record<'success' | 'warning' | 'danger', string> = {
+  success: 'bg-green-100 text-green-800 border-green-200',
+  warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  danger: 'bg-red-100 text-red-800 border-red-200',
 }
-
-interface EventSummary {
-  id: string
-  title: string
-  dateTime: string
-  venueName: string
-  address: string
-  hosts: string[]
-  rsvps: { sim: number; nao: number; talvez: number; pendente: number }
-  budget: { total: number; spent: number; remaining: number; percentSpent: number }
-  progress: number
-  nextTasks: Task[]
-  stats: {
-    totalGuests: number
-    confirmedGuests: number
-    vipGuests: number
-    children: number
-    vendors: number
-  }
-}
-
 
 interface WindowWithCover extends Window {
   __cele_cover_url__?: string
@@ -47,31 +25,10 @@ interface WindowWithCover extends Window {
 export default function EventDashboard() {
   const { id } = useParams()
   const eventId = id as string
-  const [data, setData] = useState<EventSummary | null>(null)
-  const [loading, setLoading] = useState(true)
   const [coverVisible, setCoverVisible] = useState(true)
 
-  useEffect(() => {
-    async function fetchEventSummary() {
-      try {
-        const res = await fetch(`/api/events/${eventId}/summary`)
-        const json = await res.json().catch(() => null)
-        if (!res.ok || !json || json.error) setData(null)
-        else setData(json)
-      } catch {
-        setData(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-    if (eventId) fetchEventSummary()
-  }, [eventId])
-
-  useEffect(() => {
-    if (data) {
-      setCoverVisible(true)
-    }
-  }, [data])
+  // Use backend API via TanStack Query
+  const { data, isLoading: loading, error } = useEventSummary(eventId)
 
   if (loading) {
     return (
@@ -84,7 +41,7 @@ export default function EventDashboard() {
     )
   }
 
-  if (!data) {
+  if (error || !data) {
     return (
       <div className="grid h-dvh place-items-center bg-[#FAF7F4]">
         <div className="text-center">

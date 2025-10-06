@@ -12,12 +12,14 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useCallback, useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
 import { DonutProgress } from '@/components/dashboard/donut-progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { useCheckins, useCreateCheckin, useCheckinStats } from '@/hooks'
+import { useToast } from '@/components/ui/use-toast'
 
 interface Guest {
   id: string
@@ -37,112 +39,98 @@ interface Guest {
   } | null
 }
 
-interface CheckinStats {
-  total: number
-  presentes: number
-  ausentes: number
-  percentPresentes: number
-}
-
 export default function CheckinPage() {
   const params = useParams()
   const eventId = params.id as string
+  const { toast } = useToast()
   const qrReaderRef = useRef<Html5Qrcode | null>(null)
   const [scanning, setScanning] = useState(false)
-
-  const [guests, setGuests] = useState<Guest[]>([])
-  const [filteredGuests, setFilteredGuests] = useState<Guest[]>([])
   const [search, setSearch] = useState('')
-  const [stats, setStats] = useState<CheckinStats>({
-    total: 0,
-    presentes: 0,
-    ausentes: 0,
-    percentPresentes: 0,
-  })
-  const [loading, setLoading] = useState(true)
   const [lastCheckin, setLastCheckin] = useState<string | null>(null)
 
-  const fetchGuests = useCallback(async () => {
-    try {
-      setLoading(true)
-      const res = await fetch(`/api/events/${eventId}/checkins`)
-      const data = await res.json()
+  // Queries - Real-time updates every 5 seconds
+  const { data: checkinsData, isLoading: loading } = useCheckins(eventId)
+  const { data: stats } = useCheckinStats(eventId)
 
-      setGuests(data.guests || [])
-      setFilteredGuests(data.guests || [])
-      setStats(data.stats || { total: 0, presentes: 0, ausentes: 0, percentPresentes: 0 })
-    } catch (error) {
-      console.error('Error fetching guests:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [eventId])
+  // Mutations
+  const createCheckinMutation = useCreateCheckin(eventId)
 
-  useEffect(() => {
-    void fetchGuests()
-    const interval = setInterval(() => {
-      void fetchGuests()
-    }, 10000) // Refresh every 10s
-    return () => clearInterval(interval)
-  }, [fetchGuests])
+  // Extract guests from checkins data
+  const guests = useMemo(() => checkinsData?.guests || [], [checkinsData])
 
-  useEffect(() => {
-    if (search) {
-      const filtered = guests.filter(
-        (g) =>
-          g.contact.fullName.toLowerCase().includes(search.toLowerCase()) ||
-          g.contact.phone.includes(search)
-      )
-      setFilteredGuests(filtered)
-    } else {
-      setFilteredGuests(guests)
-    }
+  // Filtered guests based on search
+  const filteredGuests = useMemo(() => {
+    if (!search) return guests
+    return guests.filter(
+      (g: Guest) =>
+        g.contact.fullName.toLowerCase().includes(search.toLowerCase()) ||
+        g.contact.phone.includes(search)
+    )
   }, [search, guests])
 
   async function handleManualCheckin(guestId: string) {
-    try {
-      const res = await fetch(`/api/checkins`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guestId, eventId, method: 'manual' }),
-      })
+    const guest = guests.find((g: Guest) => g.id === guestId)
 
-      if (res.ok) {
-        const guest = guests.find((g) => g.id === guestId)
-        setLastCheckin(guest?.contact.fullName || null)
-        setTimeout(() => setLastCheckin(null), 3000)
-        await fetchGuests()
+    createCheckinMutation.mutate(
+      {
+        guestId,
+        eventId,
+        method: 'manual',
+      },
+      {
+        onSuccess: () => {
+          setLastCheckin(guest?.contact.fullName || null)
+          setTimeout(() => setLastCheckin(null), 3000)
+          toast({
+            title: 'Check-in realizado',
+            description: `${guest?.contact.fullName} foi registrado com sucesso.`,
+          })
+        },
+        onError: (error: any) => {
+          toast({
+            title: 'Erro no check-in',
+            description: error.message || 'Não foi possível realizar o check-in.',
+            variant: 'destructive',
+          })
+        },
       }
-    } catch (error) {
-      console.error('Error doing checkin:', error)
-    }
+    )
   }
 
   async function handleQRScan(decodedText: string) {
-    try {
-      // Expect QR code to contain guestId
-      const guestId = decodedText
+    const guestId = decodedText
+    const guest = guests.find((g: Guest) => g.id === guestId)
 
-      const res = await fetch(`/api/checkins`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ guestId, eventId, method: 'qr_code' }),
-      })
+    createCheckinMutation.mutate(
+      {
+        guestId,
+        eventId,
+        method: 'qr',
+      },
+      {
+        onSuccess: () => {
+          setLastCheckin(guest?.contact.fullName || null)
+          setTimeout(() => setLastCheckin(null), 3000)
 
-      if (res.ok) {
-        const guest = guests.find((g) => g.id === guestId)
-        setLastCheckin(guest?.contact.fullName || null)
-        setTimeout(() => setLastCheckin(null), 3000)
-        await fetchGuests()
+          // Success haptic feedback
+          if (navigator.vibrate) {
+            navigator.vibrate(200)
+          }
 
-        // Success sound/haptic feedback
-        if (navigator.vibrate) {
-          navigator.vibrate(200)
-        }
+          toast({
+            title: 'Check-in QR Code',
+            description: `${guest?.contact.fullName} registrado via QR Code.`,
+          })
+        },
+        onError: (error: any) => {
+          toast({
+            title: 'Erro no QR Code',
+            description: error.message || 'QR Code inválido.',
+            variant: 'destructive',
+          })
+        },
       }
-    } catch (error) {
-      console.error('Error processing QR:', error)
-    }
+    )
   }
 
   async function startScanning() {

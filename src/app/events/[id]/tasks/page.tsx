@@ -23,11 +23,12 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { useTasks, useUpdateTask, useCreateTask } from '@/hooks'
 import { formatDate, formatTime, getSLABadgeColor } from '@/lib/utils'
 import type { LucideIcon } from 'lucide-react'
 
@@ -173,12 +174,6 @@ export default function TasksPage() {
   const params = useParams()
   const eventId = params.id as string
 
-  const [data, setData] = useState<TasksData>({
-    aberta: [],
-    em_andamento: [],
-    concluida: [],
-  })
-  const [loading, setLoading] = useState(true)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [showNewTaskForm, setShowNewTaskForm] = useState(false)
   const [newTask, setNewTask] = useState({
@@ -196,36 +191,27 @@ export default function TasksPage() {
     })
   )
 
-  const fetchTasks = useCallback(async () => {
-    try {
-      setLoading(true)
-      const res = await fetch(`/api/events/${eventId}/tasks`)
-      const tasks = await res.json()
+  // Use backend API via TanStack Query
+  const { data: tasks = [], isLoading: loading } = useTasks(eventId)
+  const updateTaskMutation = useUpdateTask(eventId)
+  const createTaskMutation = useCreateTask(eventId)
 
-      // Group by status
-      const grouped: TasksData = {
-        aberta: [],
-        em_andamento: [],
-        concluida: [],
-      }
-
-      tasks.forEach((task: Task) => {
-        if (task.status in grouped) {
-          grouped[task.status].push(task)
-        }
-      })
-
-      setData(grouped)
-    } catch (error) {
-      console.error('Error fetching tasks:', error)
-    } finally {
-      setLoading(false)
+  // Group tasks by status
+  const data = useMemo<TasksData>(() => {
+    const grouped: TasksData = {
+      aberta: [],
+      em_andamento: [],
+      concluida: [],
     }
-  }, [eventId])
 
-  useEffect(() => {
-    void fetchTasks()
-  }, [fetchTasks])
+    tasks.forEach((task: Task) => {
+      if (task.status in grouped) {
+        grouped[task.status].push(task)
+      }
+    })
+
+    return grouped
+  }, [tasks])
 
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as string)
@@ -238,7 +224,7 @@ export default function TasksPage() {
     if (!over) return
 
     const taskId = active.id as string
-    const newStatus = over.id as string
+    const newStatus = over.id as 'aberta' | 'em_andamento' | 'concluida'
 
     // Find the task
     const allTasks = [...data.aberta, ...data.em_andamento, ...data.concluida]
@@ -246,43 +232,28 @@ export default function TasksPage() {
 
     if (!task || task.status === newStatus) return
 
-    try {
-      const res = await fetch(`/api/tasks/${taskId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      })
-
-      if (res.ok) {
-        await fetchTasks()
-      }
-    } catch (error) {
-      console.error('Error updating task:', error)
-    }
+    // Update task status via backend API with optimistic update
+    updateTaskMutation.mutate({
+      id: taskId,
+      data: { status: newStatus },
+    })
   }
 
   async function handleCreateTask() {
     if (!newTask.title) return
 
-    try {
-      const res = await fetch(`/api/events/${eventId}/tasks`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...newTask,
-          status: 'aberta',
-          dueAt: newTask.dueAt ? new Date(newTask.dueAt).toISOString() : null,
-        }),
-      })
-
-      if (res.ok) {
+    createTaskMutation.mutate({
+      title: newTask.title,
+      description: newTask.description || undefined,
+      dueAt: newTask.dueAt ? new Date(newTask.dueAt).toISOString() : undefined,
+      assignedTo: newTask.assignedTo || undefined,
+      status: 'aberta',
+    } as any, {
+      onSuccess: () => {
         setNewTask({ title: '', description: '', dueAt: '', assignedTo: '' })
         setShowNewTaskForm(false)
-        await fetchTasks()
-      }
-    } catch (error) {
-      console.error('Error creating task:', error)
-    }
+      },
+    })
   }
 
   if (loading) {

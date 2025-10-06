@@ -45,7 +45,9 @@
       "Bash(xargs:*)",
       "Bash(cat:*)",
       "Bash(npm run lint:*)",
-      "Bash(npm run lint:fix:*)"
+      "Bash(npm run lint:fix:*)",
+      "Bash(dotnet run:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
