@@ -9,7 +9,7 @@
  * - Request/Response logging (dev)
  */
 
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
+import axios, { type AxiosError, type AxiosInstance, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios'
 import { getSession } from 'next-auth/react'
 
 // Configuração de ambiente

@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { templatesService } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { templatesService } from '@/services'
 import type { MessageTemplate, CreateTemplateDto } from '@/types/api'
 
 /**

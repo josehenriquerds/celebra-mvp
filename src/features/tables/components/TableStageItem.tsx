@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { Rnd } from 'react-rnd';
 import { motion } from 'framer-motion';
 import { Edit2, Trash2, Lock, Unlock, Users } from 'lucide-react';
+import { useState, useCallback, useMemo, memo } from 'react';
+import { Rnd } from 'react-rnd';
 import type { Table } from '@/schemas';
 
 interface TableStageItemProps {
@@ -17,7 +17,7 @@ interface TableStageItemProps {
   zoom?: number;
 }
 
-export function TableStageItem({
+export const TableStageItem = memo(function TableStageItem({
   table,
   isSelected,
   onSelect,
@@ -37,13 +37,23 @@ export function TableStageItem({
     return value;
   };
 
-  // Calcula o tamanho baseado no radius (diâmetro)
-  const size = table.radius * 2;
-  // Posição é center-based, precisamos converter para top-left
-  const position = {
-    x: table.x - table.radius,
-    y: table.y - table.radius,
-  };
+  // Memoizar cálculos de geometria
+  const { size, position } = useMemo(
+    () => ({
+      size: table.radius * 2,
+      position: {
+        x: table.x - table.radius,
+        y: table.y - table.radius,
+      },
+    }),
+    [table.x, table.y, table.radius]
+  );
+
+  // Memoizar contagem de assentos ocupados
+  const occupiedSeats = useMemo(
+    () => table.seats?.filter((s) => s.assignment).length || 0,
+    [table.seats]
+  );
 
   const handleDragStop = useCallback(
     (e: any, d: { x: number; y: number }) => {
@@ -55,7 +65,7 @@ export function TableStageItem({
   );
 
   const handleResizeStop = useCallback(
-    (
+    async (
       e: any,
       direction: any,
       ref: HTMLElement,
@@ -67,11 +77,15 @@ export function TableStageItem({
       const centerX = snapToGrid(position.x + newRadius);
       const centerY = snapToGrid(position.y + newRadius);
 
-      onUpdate({
+      // Backend recalcula automaticamente os assentos (seats[].x, seats[].y)
+      // ao atualizar o radius da mesa
+      await onUpdate({
         radius: newRadius,
         x: centerX,
         y: centerY,
       });
+
+      // Hit areas atualizam via re-render após response do backend
     },
     [snapToGrid, onUpdate]
   );
@@ -81,12 +95,9 @@ export function TableStageItem({
     setIsLocked(!isLocked);
   };
 
-  // Cor de fundo
-  const backgroundColor = table.color || '#C7B7F3';
-  const isRound = table.shape === 'round';
-
-  // Conta assentos ocupados
-  const occupiedSeats = table.seats?.filter((s) => s.assignment).length || 0;
+  // Memoizar estilos
+  const backgroundColor = useMemo(() => table.color || '#C7B7F3', [table.color]);
+  const isRound = useMemo(() => table.shape === 'round', [table.shape]);
 
   return (
     <Rnd
@@ -130,11 +141,11 @@ export function TableStageItem({
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="relative w-full h-full"
+        className="relative size-full"
       >
         {/* Table Shape */}
         <div
-          className={`w-full h-full flex flex-col items-center justify-center shadow-lg transition-all ${
+          className={`flex size-full flex-col items-center justify-center shadow-lg transition-all ${
             isRound ? 'rounded-full' : 'rounded-2xl'
           } ${isLocked ? 'cursor-not-allowed' : 'cursor-move'}`}
           style={{
@@ -143,7 +154,7 @@ export function TableStageItem({
           }}
         >
           {/* Table Label */}
-          <div className="text-center pointer-events-none select-none">
+          <div className="pointer-events-none select-none text-center">
             <div
               className="font-bold text-white drop-shadow-md"
               style={{
@@ -153,19 +164,19 @@ export function TableStageItem({
               {table.label}
             </div>
             <div
-              className="text-white/90 mt-1 flex items-center justify-center gap-1"
+              className="mt-1 flex items-center justify-center gap-1 text-white/90"
               style={{
                 fontSize: `${Math.max(10, size / 12)}px`,
               }}
             >
-              <Users className="w-3 h-3" />
+              <Users className="size-3" />
               {occupiedSeats}/{table.capacity}
             </div>
           </div>
 
           {/* Seats Indicators (small circles around) */}
           {table.capacity > 0 && size > 100 && (
-            <div className="absolute inset-0 pointer-events-none">
+            <div className="pointer-events-none absolute inset-0">
               {Array.from({ length: table.capacity }).map((_, i) => {
                 const angle = (i / table.capacity) * 2 * Math.PI - Math.PI / 2;
                 const seatRadius = size / 2 - 8;
@@ -176,7 +187,7 @@ export function TableStageItem({
                 return (
                   <div
                     key={i}
-                    className={`absolute w-3 h-3 rounded-full border-2 border-white ${
+                    className={`absolute size-3 rounded-full border-2 border-white ${
                       isOccupied ? 'bg-green-500' : 'bg-white/50'
                     }`}
                     style={{
@@ -200,10 +211,10 @@ export function TableStageItem({
             {/* Corner Handles Visual */}
             {!isRound && (
               <>
-                <div className="absolute -top-1 -left-1 w-2 h-2 bg-purple-500 rounded-full" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full" />
-                <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-500 rounded-full" />
-                <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-purple-500 rounded-full" />
+                <div className="absolute -left-1 -top-1 size-2 rounded-full bg-purple-500" />
+                <div className="absolute -right-1 -top-1 size-2 rounded-full bg-purple-500" />
+                <div className="absolute -bottom-1 -left-1 size-2 rounded-full bg-purple-500" />
+                <div className="absolute -bottom-1 -right-1 size-2 rounded-full bg-purple-500" />
               </>
             )}
           </div>
@@ -214,24 +225,24 @@ export function TableStageItem({
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gray-900 text-white px-2 py-1 rounded-lg text-xs pointer-events-auto whitespace-nowrap"
+            className="pointer-events-auto absolute -top-10 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-lg bg-gray-900 px-2 py-1 text-xs text-white"
           >
             <button
               onClick={toggleLock}
-              className="hover:text-purple-300 transition-colors p-1"
+              className="p-1 transition-colors hover:text-purple-300"
               title={isLocked ? 'Desbloquear' : 'Bloquear'}
             >
-              {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+              {isLocked ? <Lock className="size-3" /> : <Unlock className="size-3" />}
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit();
               }}
-              className="hover:text-blue-300 transition-colors p-1"
+              className="p-1 transition-colors hover:text-blue-300"
               title="Editar"
             >
-              <Edit2 className="w-3 h-3" />
+              <Edit2 className="size-3" />
             </button>
             <button
               onClick={(e) => {
@@ -240,12 +251,12 @@ export function TableStageItem({
                   onDelete();
                 }
               }}
-              className="hover:text-red-300 transition-colors p-1"
+              className="p-1 transition-colors hover:text-red-300"
               title="Deletar"
             >
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="size-3" />
             </button>
-            <span className="text-[10px] text-gray-400 ml-1 border-l border-gray-700 pl-1">
+            <span className="ml-1 border-l border-gray-700 pl-1 text-[10px] text-gray-400">
               {Math.round(size)}px
             </span>
           </motion.div>
@@ -254,11 +265,11 @@ export function TableStageItem({
 
         {/* Lock indicator */}
         {isLocked && (
-          <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1">
-            <Lock className="w-3 h-3 text-white" />
+          <div className="absolute right-2 top-2 rounded-full bg-red-500 p-1">
+            <Lock className="size-3 text-white" />
           </div>
         )}
       </motion.div>
     </Rnd>
   );
-}
+});

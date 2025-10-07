@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { useGuests } from '@/hooks'
+import type { GuestGroup } from '@/lib/schemas'
 import type { GetGuestsParams } from '@/services'
 
 interface _Guest {
@@ -59,12 +60,6 @@ interface _Guest {
   }[]
 }
 
-interface GuestGroup {
-  id: string
-  name: string
-  guestCount: number
-}
-
 const FILTERS = [
   { value: undefined, label: 'Todos', icon: Users },
   { value: 'confirmed' as const, label: 'Confirmados', icon: Users },
@@ -96,13 +91,12 @@ export default function GuestsPage() {
   const [search, setSearch] = useState('')
   const [selectedGuests, setSelectedGuests] = useState<Set<string>>(new Set())
   const [page, setPage] = useState(1)
-  const [_groups, _setGroups] = useState<GuestGroup[]>([])
   const [showGroupModal, setShowGroupModal] = useState(false)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [newGroupName, setNewGroupName] = useState('')
 
   // Use backend API via TanStack Query
-  const { data: guestsData, isLoading: loading } = useGuests({
+  const { data: guestsData, isLoading: loading, refetch } = useGuests({
     eventId,
     filter,
     search: search || undefined,
@@ -113,6 +107,7 @@ export default function GuestsPage() {
   const guests = guestsData?.items || []
   const total = guestsData?.total || 0
   const totalPages = guestsData?.totalPages || 0
+  const groups = Array.isArray(guestsData?.groups) ? guestsData.groups : []
 
   async function createGroup() {
     if (!newGroupName.trim()) return
@@ -127,7 +122,7 @@ export default function GuestsPage() {
       if (res.ok) {
         setNewGroupName('')
         setShowGroupModal(false)
-        await fetchGroups()
+        await refetch()
       }
     } catch (error) {
       console.error('Error creating group:', error)
@@ -147,8 +142,7 @@ export default function GuestsPage() {
       if (res.ok) {
         setShowAssignModal(false)
         setSelectedGuests(new Set())
-        await fetchGuests()
-        await fetchGroups()
+        await refetch()
       }
     } catch (error) {
       console.error('Error assigning guests:', error)
@@ -164,8 +158,7 @@ export default function GuestsPage() {
       })
 
       if (res.ok) {
-        await fetchGroups()
-        await fetchGuests()
+        await refetch()
       }
     } catch (error) {
       console.error('Error deleting group:', error)
@@ -360,13 +353,13 @@ export default function GuestsPage() {
             <CardContent className="py-12 text-center">
               <Users className="mx-auto mb-4 size-12 text-celebre-muted opacity-50" />
               <p className="text-celebre-muted">Nenhum convidado encontrado</p>
-              {(filter !== 'all' || search) && (
+              {(filter || search) && (
                 <Button
                   variant="outline"
                   size="sm"
                   className="mt-4"
                   onClick={() => {
-                    setFilter('all')
+                    setFilter(undefined)
                     setSearch('')
                   }}
                 >

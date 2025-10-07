@@ -3,6 +3,7 @@
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
 import { Edit2, Trash2 } from 'lucide-react'
+import { memo, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 import { DroppableSeat } from './DroppableSeat'
@@ -17,48 +18,67 @@ interface TableItemProps {
 const actionButtonClasses =
   'rounded-full p-1 text-white transition duration-200 ease-smooth hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.97]'
 
-export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
+export const TableItem = memo(function TableItem({
+  table,
+  zoom,
+  onEdit,
+  onDelete,
+}: TableItemProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: `table-${table.id}`,
     data: { type: 'table', table },
   })
 
-  const renderLeft = table.x * zoom
-  const renderTop = table.y * zoom
-  const renderDiameter = table.radius * 2 * zoom
-  const renderRadius = table.radius * zoom
+  // Memoizar cálculos de renderização
+  const renderMetrics = useMemo(
+    () => ({
+      left: table.x * zoom,
+      top: table.y * zoom,
+      diameter: table.radius * 2 * zoom,
+      radius: table.radius * zoom,
+    }),
+    [table.x, table.y, table.radius, zoom]
+  )
+
+  // Memoizar contagem de assentos ocupados
+  const occupiedSeats = useMemo(
+    () => table.seats.filter((s) => s.assignment).length,
+    [table.seats]
+  )
 
   // Determine shape class
-  const shapeClass = table.shape === 'square' || table.shape === 'rect'
-    ? 'rounded-2xl'
-    : 'rounded-full'
+  const shapeClass =
+    table.shape === 'square' || table.shape === 'rect' ? 'rounded-2xl' : 'rounded-full'
 
   return (
     <div
       ref={setNodeRef}
       style={{
-        left: renderLeft - renderRadius,
-        top: renderTop - renderRadius,
-        width: renderDiameter,
-        height: renderDiameter,
+        left: renderMetrics.left - renderMetrics.radius,
+        top: renderMetrics.top - renderMetrics.radius,
+        width: renderMetrics.diameter,
+        height: renderMetrics.diameter,
         transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.5 : 1,
         borderColor: table.color || 'var(--celebre-brand)',
         cursor: isDragging ? 'grabbing' : 'grab',
       }}
       className={cn(
-        "group absolute flex items-center justify-center border-4 bg-white shadow-lg transition-shadow duration-200 ease-smooth",
+        'group absolute flex items-center justify-center border-4 bg-white shadow-lg transition-shadow duration-200 ease-smooth',
         shapeClass
       )}
       {...listeners}
       {...attributes}
     >
       <div className="pointer-events-none text-center">
-        <div className="text-lg font-bold" style={{ color: table.color || 'var(--celebre-brand)' }}>
+        <div
+          className="text-lg font-bold"
+          style={{ color: table.color || 'var(--celebre-brand)' }}
+        >
           {table.label}
         </div>
         <div className="text-xs text-celebre-muted">
-          {table.seats.filter((s) => s.assignment).length}/{table.capacity}
+          {occupiedSeats}/{table.capacity}
         </div>
       </div>
 
@@ -98,10 +118,10 @@ export function TableItem({ table, zoom, onEdit, onDelete }: TableItemProps) {
           seat={seat}
           tableId={table.id}
           tableColor={table.color}
-          tableRadius={renderRadius}
+          tableRadius={renderMetrics.radius}
           zoom={zoom}
         />
       ))}
     </div>
   )
-}
+})

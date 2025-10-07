@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { logisticsService } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { logisticsService } from '@/services'
 import type { EventLocation, LogisticsInfo } from '@/types/api'
 
 /**

@@ -13,13 +13,12 @@ import {
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useRef, useMemo } from 'react'
-
+import { DonutProgress } from '@/components/dashboard/donut-progress'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { useToast } from '@/components/ui/use-toast'
-import { DonutProgress } from '@/components/dashboard/donut-progress'
 import { useCheckins, useCreateCheckin, useCheckinStats } from '@/hooks'
 
 interface Guest {

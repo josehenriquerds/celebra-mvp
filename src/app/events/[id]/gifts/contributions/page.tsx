@@ -4,7 +4,6 @@ import { ArrowLeft, Download, CheckCircle, Clock, XCircle, Eye } from 'lucide-re
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useMemo } from 'react'
-
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -259,7 +258,7 @@ export default function GiftContributionsPage() {
         ) : (
           <div className="space-y-4">
             {filteredContributions.map((contribution) => (
-              <Card key={contribution.id} className="hover:shadow-md transition-shadow">
+              <Card key={contribution.id} className="transition-shadow hover:shadow-md">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">

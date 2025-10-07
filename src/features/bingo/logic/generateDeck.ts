@@ -1,7 +1,7 @@
 import seedrandom from 'seedrandom';
-import type { BingoConfig, CardMatrix } from '../types';
 import { generateCard } from './generateCard';
 import { cardToHash, validateCardUniqueness } from './validators';
+import type { BingoConfig, CardMatrix } from '../types';
 
 export interface GenerateDeckOptions {
   count: number;

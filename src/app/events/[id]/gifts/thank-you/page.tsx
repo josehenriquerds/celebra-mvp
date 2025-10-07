@@ -4,7 +4,6 @@ import { ArrowLeft, Send, MessageCircle, Mail, Calendar, Gift } from 'lucide-rea
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useMemo } from 'react'
-
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -254,7 +253,7 @@ export default function GiftThankYouPage() {
             ) : (
               <div className="space-y-4">
                 {pendingContributions.map((contribution) => (
-                  <Card key={contribution.id} className="hover:shadow-md transition-shadow">
+                  <Card key={contribution.id} className="transition-shadow hover:shadow-md">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex items-start gap-4">
@@ -302,7 +301,7 @@ export default function GiftThankYouPage() {
             ) : (
               <div className="space-y-4">
                 {filteredNotes.map((note) => (
-                  <Card key={note.id} className="hover:shadow-md transition-shadow">
+                  <Card key={note.id} className="transition-shadow hover:shadow-md">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -328,7 +327,7 @@ export default function GiftThankYouPage() {
                           <p className="mt-1 text-sm text-gray-600">
                             Presente: <span className="font-medium">{note.giftTitle}</span>
                           </p>
-                          <p className="mt-3 text-sm text-gray-700 whitespace-pre-wrap">
+                          <p className="mt-3 whitespace-pre-wrap text-sm text-gray-700">
                             {note.message}
                           </p>
                           {note.imageUrl && (

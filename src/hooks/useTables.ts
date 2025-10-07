@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { tablesService, type BrideGroomTemplateDto } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { tablesService, type BrideGroomTemplateDto } from '@/services'
 import type { Table, TableLayout, CreateTableDto, AssignSeatDto } from '@/types/api'
 
 /**

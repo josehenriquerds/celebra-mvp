@@ -1,4 +1,7 @@
 import { create } from 'zustand';
+import { DrawEngine } from '../logic/drawEngine';
+import { generateCard } from '../logic/generateCard';
+import { generateDeck } from '../logic/generateDeck';
 import type {
   BingoConfig,
   CardMatrix,
@@ -7,9 +10,6 @@ import type {
   ViewMode,
   FreeLayer,
 } from '../types';
-import { generateCard } from '../logic/generateCard';
-import { generateDeck } from '../logic/generateDeck';
-import { DrawEngine } from '../logic/drawEngine';
 
 interface BingoStore {
   // Configuração

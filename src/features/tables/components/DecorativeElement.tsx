@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { Rnd } from 'react-rnd';
 import { motion } from 'framer-motion';
 import { Trash2, Lock, Unlock, Cake, Music, DoorClosed, DoorOpen, UtensilsCrossed, Music2, WineIcon, Camera } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { Rnd } from 'react-rnd';
 import type { ElementType } from '@/schemas';
 
 interface DecorativeElementProps {
@@ -141,11 +141,11 @@ export function DecorativeElement({
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="relative w-full h-full"
+        className="relative size-full"
       >
         {/* Element Box */}
         <div
-          className={`w-full h-full flex flex-col items-center justify-center rounded-lg shadow-lg border-2 transition-all ${
+          className={`flex size-full flex-col items-center justify-center rounded-lg border-2 shadow-lg transition-all ${
             isLocked ? 'cursor-not-allowed' : 'cursor-move'
           }`}
           style={{
@@ -154,11 +154,11 @@ export function DecorativeElement({
           }}
         >
           <Icon
-            className="w-8 h-8 mb-1"
+            className="mb-1 size-8"
             color={color}
           />
           <span
-            className="text-xs font-semibold text-center px-2"
+            className="px-2 text-center text-xs font-semibold"
             style={{ color }}
           >
             {label}
@@ -167,11 +167,11 @@ export function DecorativeElement({
 
         {/* Selection Overlay */}
         {(isSelected || isHovered) && (
-          <div className="absolute inset-0 border-2 border-dashed border-blue-400 pointer-events-none rounded-lg">
-            <div className="absolute -top-1 -left-1 w-2 h-2 bg-blue-500 rounded-full" />
-            <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full" />
-            <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-blue-500 rounded-full" />
-            <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-blue-500 rounded-full" />
+          <div className="pointer-events-none absolute inset-0 rounded-lg border-2 border-dashed border-blue-400">
+            <div className="absolute -left-1 -top-1 size-2 rounded-full bg-blue-500" />
+            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-blue-500" />
+            <div className="absolute -bottom-1 -left-1 size-2 rounded-full bg-blue-500" />
+            <div className="absolute -bottom-1 -right-1 size-2 rounded-full bg-blue-500" />
           </div>
         )}
 
@@ -180,17 +180,17 @@ export function DecorativeElement({
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-gray-900 text-white px-2 py-1 rounded-lg text-xs pointer-events-auto whitespace-nowrap"
+            className="pointer-events-auto absolute -top-8 left-1/2 flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-lg bg-gray-900 px-2 py-1 text-xs text-white"
           >
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsLocked(!isLocked);
               }}
-              className="hover:text-blue-300 transition-colors p-1"
+              className="p-1 transition-colors hover:text-blue-300"
               title={isLocked ? 'Desbloquear' : 'Bloquear'}
             >
-              {isLocked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+              {isLocked ? <Lock className="size-3" /> : <Unlock className="size-3" />}
             </button>
             <button
               onClick={(e) => {
@@ -199,12 +199,12 @@ export function DecorativeElement({
                   onDelete();
                 }
               }}
-              className="hover:text-red-300 transition-colors p-1"
+              className="p-1 transition-colors hover:text-red-300"
               title="Remover"
             >
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="size-3" />
             </button>
-            <span className="text-[10px] text-gray-400 ml-1 border-l border-gray-700 pl-1">
+            <span className="ml-1 border-l border-gray-700 pl-1 text-[10px] text-gray-400">
               {width}×{height}
             </span>
           </motion.div>
@@ -212,8 +212,8 @@ export function DecorativeElement({
 
         {/* Lock Indicator */}
         {isLocked && (
-          <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1">
-            <Lock className="w-3 h-3 text-white" />
+          <div className="absolute right-2 top-2 rounded-full bg-red-500 p-1">
+            <Lock className="size-3 text-white" />
           </div>
         )}
       </motion.div>

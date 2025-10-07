@@ -3,8 +3,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Edit2, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface BingoHeaderProps {
@@ -60,7 +60,7 @@ export function BingoHeader({
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full mb-6"
+      className="mb-6 w-full"
     >
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1">
@@ -79,7 +79,7 @@ export function BingoHeader({
                   onKeyDown={handleKeyDown}
                   onBlur={handleSave}
                   autoFocus
-                  className="text-3xl md:text-4xl font-bold h-auto py-2"
+                  className="h-auto py-2 text-3xl font-bold md:text-4xl"
                   placeholder="Nome do Bingo"
                 />
               </motion.div>
@@ -89,7 +89,7 @@ export function BingoHeader({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="relative group"
+                className="group relative"
               >
                 <h1
                   className={cn(
@@ -112,9 +112,9 @@ export function BingoHeader({
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsEditing(true)}
-                    className="absolute -right-12 top-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute -right-12 top-0 opacity-0 transition-opacity group-hover:opacity-100"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="size-4" />
                   </Button>
                 )}
               </motion.div>
@@ -129,7 +129,7 @@ export function BingoHeader({
             onClick={onToggleShow}
             className="shrink-0"
           >
-            {showTitle ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+            {showTitle ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
           </Button>
         )}
       </div>

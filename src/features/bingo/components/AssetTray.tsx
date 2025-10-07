@@ -1,11 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { Image as ImageIcon, Upload, Type } from 'lucide-react';
 import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { motion } from 'framer-motion';
-
+import { Image as ImageIcon, Upload, Type } from 'lucide-react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -43,10 +42,10 @@ function DraggableAsset({ id, type, url, content, preview }: DraggableAssetProps
       )}
     >
       {type === 'image' && url && (
-        <img src={url} alt={id} className="w-16 h-16 object-cover rounded" />
+        <img src={url} alt={id} className="size-16 rounded object-cover" />
       )}
       {type === 'text' && content && (
-        <div className="w-16 h-16 flex items-center justify-center text-sm font-medium text-center">
+        <div className="flex size-16 items-center justify-center text-center text-sm font-medium">
           {content}
         </div>
       )}
@@ -89,9 +88,9 @@ export function AssetTray() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4">
-      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-        <ImageIcon className="w-5 h-5" />
+    <div className="rounded-xl bg-white p-4 shadow-lg">
+      <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+        <ImageIcon className="size-5" />
         Biblioteca de Recursos
       </h3>
 
@@ -105,8 +104,8 @@ export function AssetTray() {
           {/* Upload */}
           <div>
             <label htmlFor="file-upload" className="cursor-pointer">
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-purple-400 transition-colors text-center">
-                <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+              <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center transition-colors hover:border-purple-400">
+                <Upload className="mx-auto mb-2 size-8 text-gray-400" />
                 <p className="text-sm text-gray-600">Clique para fazer upload</p>
               </div>
               <input
@@ -121,7 +120,7 @@ export function AssetTray() {
           </div>
 
           {/* Grid de imagens */}
-          <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+          <div className="grid max-h-64 grid-cols-3 gap-2 overflow-y-auto">
             {[...defaultImages, ...customImages].map((url, index) => (
               <DraggableAsset
                 key={`image-${index}`}
@@ -143,7 +142,7 @@ export function AssetTray() {
               onKeyDown={(e) => e.key === 'Enter' && handleAddText()}
             />
             <Button onClick={handleAddText} size="icon">
-              <Type className="w-4 h-4" />
+              <Type className="size-4" />
             </Button>
           </div>
 

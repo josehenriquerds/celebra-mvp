@@ -2,10 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Settings, Grid3x3, Hash, Palette } from 'lucide-react';
-import { useBingoStore } from '../state/useBingoStore';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -13,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { useBingoStore } from '../state/useBingoStore';
 
 export function SidebarConfigurator() {
   const { config, setConfig, generateNewCard } = useBingoStore();
@@ -27,10 +27,10 @@ export function SidebarConfigurator() {
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="w-full md:w-80 bg-white rounded-xl shadow-lg p-6 space-y-6"
+      className="w-full space-y-6 rounded-xl bg-white p-6 shadow-lg md:w-80"
     >
       <div className="flex items-center gap-2">
-        <Settings className="w-5 h-5 text-purple-600" />
+        <Settings className="size-5 text-purple-600" />
         <h2 className="text-xl font-bold">Configuração</h2>
       </div>
 
@@ -39,7 +39,7 @@ export function SidebarConfigurator() {
       {/* Grid Size */}
       <div className="space-y-2">
         <Label className="flex items-center gap-2">
-          <Grid3x3 className="w-4 h-4" />
+          <Grid3x3 className="size-4" />
           Tamanho do Grid
         </Label>
         <Select
@@ -60,7 +60,7 @@ export function SidebarConfigurator() {
       {/* Range de Números */}
       <div className="space-y-2">
         <Label className="flex items-center gap-2">
-          <Hash className="w-4 h-4" />
+          <Hash className="size-4" />
           Intervalo de Números
         </Label>
         <div className="grid grid-cols-2 gap-2">
@@ -115,7 +115,7 @@ export function SidebarConfigurator() {
       {/* Paleta de Cores */}
       <div className="space-y-2">
         <Label className="flex items-center gap-2">
-          <Palette className="w-4 h-4" />
+          <Palette className="size-4" />
           Tema
         </Label>
         <Select
@@ -183,7 +183,7 @@ export function SidebarConfigurator() {
         </Select>
 
         {config.cellTheme?.pattern !== 'none' && (
-          <div className="grid grid-cols-2 gap-2 mt-2">
+          <div className="mt-2 grid grid-cols-2 gap-2">
             <div>
               <Label className="text-xs">Cor A</Label>
               <Input
@@ -195,7 +195,7 @@ export function SidebarConfigurator() {
                   })
                 }
                 placeholder="bg-purple-50"
-                className="text-xs mt-1"
+                className="mt-1 text-xs"
               />
             </div>
             <div>
@@ -209,7 +209,7 @@ export function SidebarConfigurator() {
                   })
                 }
                 placeholder="bg-pink-50"
-                className="text-xs mt-1"
+                className="mt-1 text-xs"
               />
             </div>
           </div>

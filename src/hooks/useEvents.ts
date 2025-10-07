@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { eventsService } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { eventsService } from '@/services'
 import type { Event, CreateEventDto } from '@/types/api'
 
 /**

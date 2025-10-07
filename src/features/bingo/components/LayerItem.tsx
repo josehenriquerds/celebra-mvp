@@ -1,10 +1,10 @@
 'use client';
 
+import { motion } from 'framer-motion';
+import { Lock, Unlock, Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { Rnd } from 'react-rnd';
-import { motion } from 'framer-motion';
 import type { FreeLayer } from '../types';
-import { Lock, Unlock, Eye, EyeOff } from 'lucide-react';
 
 interface LayerItemProps {
   layer: FreeLayer;
@@ -84,7 +84,7 @@ export function LayerItem({
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
-        className="relative w-full h-full"
+        className="relative size-full"
         style={{
           transform: `rotate(${layer.rotation}deg)`,
         }}
@@ -94,14 +94,14 @@ export function LayerItem({
           <img
             src={layer.url}
             alt="Layer"
-            className="w-full h-full object-contain pointer-events-none select-none"
+            className="pointer-events-none size-full select-none object-contain"
             draggable={false}
           />
         )}
 
         {layer.type === 'text' && layer.content && (
           <div
-            className="w-full h-full flex items-center justify-center p-2 font-bold text-center break-words"
+            className="flex size-full items-center justify-center break-words p-2 text-center font-bold"
             style={{
               fontSize: layer.fontSize || 16,
               color: layer.color || '#000000',
@@ -114,7 +114,7 @@ export function LayerItem({
 
         {layer.type === 'shape' && (
           <div
-            className="w-full h-full"
+            className="size-full"
             style={{
               backgroundColor: layer.color || '#9333ea',
               borderRadius: layer.shape === 'circle' ? '50%' : '8px',
@@ -125,12 +125,12 @@ export function LayerItem({
 
         {/* Selection Overlay */}
         {(isSelected || isHovered) && (
-          <div className="absolute inset-0 border-2 border-dashed border-purple-400 pointer-events-none">
+          <div className="pointer-events-none absolute inset-0 border-2 border-dashed border-purple-400">
             {/* Corner Handles Visual Hint */}
-            <div className="absolute -top-1 -left-1 w-2 h-2 bg-purple-500 rounded-full" />
-            <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full" />
-            <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-purple-500 rounded-full" />
-            <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-purple-500 rounded-full" />
+            <div className="absolute -left-1 -top-1 size-2 rounded-full bg-purple-500" />
+            <div className="absolute -right-1 -top-1 size-2 rounded-full bg-purple-500" />
+            <div className="absolute -bottom-1 -left-1 size-2 rounded-full bg-purple-500" />
+            <div className="absolute -bottom-1 -right-1 size-2 rounded-full bg-purple-500" />
           </div>
         )}
 
@@ -139,29 +139,29 @@ export function LayerItem({
           <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="absolute -top-8 left-0 flex items-center gap-1 bg-gray-900 text-white px-2 py-1 rounded text-xs pointer-events-auto"
+            className="pointer-events-auto absolute -top-8 left-0 flex items-center gap-1 rounded bg-gray-900 px-2 py-1 text-xs text-white"
           >
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onUpdate({ locked: !layer.locked });
               }}
-              className="hover:text-purple-300 transition-colors"
+              className="transition-colors hover:text-purple-300"
               title={layer.locked ? 'Desbloquear' : 'Bloquear'}
             >
-              {layer.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+              {layer.locked ? <Lock className="size-3" /> : <Unlock className="size-3" />}
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onUpdate({ visible: !layer.visible });
               }}
-              className="hover:text-purple-300 transition-colors"
+              className="transition-colors hover:text-purple-300"
               title="Ocultar"
             >
-              <Eye className="w-3 h-3" />
+              <Eye className="size-3" />
             </button>
-            <span className="text-[10px] text-gray-400 ml-1">
+            <span className="ml-1 text-[10px] text-gray-400">
               {layer.size.width}×{layer.size.height}
             </span>
           </motion.div>
@@ -170,7 +170,7 @@ export function LayerItem({
         {/* Rotation Handle */}
         {isSelected && !layer.locked && (
           <div
-            className="absolute -top-6 left-1/2 -translate-x-1/2 w-4 h-4 bg-purple-500 rounded-full cursor-pointer hover:bg-purple-600 transition-colors"
+            className="absolute -top-6 left-1/2 size-4 -translate-x-1/2 cursor-pointer rounded-full bg-purple-500 transition-colors hover:bg-purple-600"
             onMouseDown={(e) => {
               e.stopPropagation();
               // Rotation logic would go here (simplified for now)
@@ -198,7 +198,7 @@ export function LayerItem({
             }}
             title="Rotacionar"
           >
-            <div className="absolute inset-0 flex items-center justify-center text-white text-[8px]">
+            <div className="absolute inset-0 flex items-center justify-center text-[8px] text-white">
               ↻
             </div>
           </div>

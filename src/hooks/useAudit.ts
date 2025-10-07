@@ -4,8 +4,8 @@
  */
 
 import { useQuery } from '@tanstack/react-query'
-import { auditService, type GetAuditLogsParams } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { auditService, type GetAuditLogsParams } from '@/services'
 
 /**
  * Get audit logs for an event

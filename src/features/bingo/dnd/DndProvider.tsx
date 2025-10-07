@@ -1,6 +1,6 @@
 'use client';
 
-import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { useBingoStore } from '../state/useBingoStore';
 
 interface DndProviderProps {

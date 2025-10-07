@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { checklistService, type UpdateChecklistItemDto } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { checklistService, type UpdateChecklistItemDto } from '@/services'
 import type { EventChecklist, CreateChecklistItemDto } from '@/types/api'
 
 /**

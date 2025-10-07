@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { vendorsService } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { vendorsService } from '@/services'
 import type { Vendor, CreateVendorDto } from '@/types/api'
 
 /**

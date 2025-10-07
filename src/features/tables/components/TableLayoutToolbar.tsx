@@ -1,10 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+import { motion } from 'framer-motion';
 import {
   Circle,
   Square,
@@ -13,7 +9,11 @@ import {
   Maximize2,
   Users,
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import type { Table } from '@/schemas';
 
 interface TableLayoutToolbarProps {
@@ -38,25 +38,25 @@ export function TableLayoutToolbar({
   );
 
   return (
-    <div className="w-80 bg-white border-l border-gray-200 flex flex-col shadow-lg">
+    <div className="flex w-80 flex-col border-l border-gray-200 bg-white shadow-lg">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="font-bold text-lg">Controles do Layout</h3>
-        <p className="text-xs text-gray-500 mt-1">
+      <div className="border-b border-gray-200 p-4">
+        <h3 className="text-lg font-bold">Controles do Layout</h3>
+        <p className="mt-1 text-xs text-gray-500">
           Gerencie as mesas visualmente
         </p>
       </div>
 
       {/* Stats */}
-      <div className="p-4 border-b border-gray-200 bg-gray-50">
+      <div className="border-b border-gray-200 bg-gray-50 p-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white rounded-lg p-3 border border-gray-200">
+          <div className="rounded-lg border border-gray-200 bg-white p-3">
             <div className="text-xs text-gray-500">Total de Mesas</div>
             <div className="text-2xl font-bold text-gray-900">{tables.length}</div>
           </div>
-          <div className="bg-white rounded-lg p-3 border border-gray-200">
-            <div className="text-xs text-gray-500 flex items-center gap-1">
-              <Users className="w-3 h-3" />
+          <div className="rounded-lg border border-gray-200 bg-white p-3">
+            <div className="flex items-center gap-1 text-xs text-gray-500">
+              <Users className="size-3" />
               Assentos
             </div>
             <div className="text-2xl font-bold text-gray-900">
@@ -67,18 +67,18 @@ export function TableLayoutToolbar({
       </div>
 
       {/* Snap to Grid */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="border-b border-gray-200 p-4">
         <Button
           variant={snapToGrid ? 'default' : 'outline'}
           size="sm"
           onClick={onToggleSnapToGrid}
           className="w-full gap-2"
         >
-          <Grid3x3 className="w-4 h-4" />
+          <Grid3x3 className="size-4" />
           {snapToGrid ? 'Grade Ativa' : 'Ativar Grade'}
         </Button>
         {snapToGrid && (
-          <p className="text-xs text-gray-500 mt-2 text-center">
+          <p className="mt-2 text-center text-xs text-gray-500">
             Elementos alinhados em grade de 16px
           </p>
         )}
@@ -86,19 +86,19 @@ export function TableLayoutToolbar({
 
       {/* Selected Table Properties */}
       {selectedTable ? (
-        <div className="flex-1 overflow-hidden flex flex-col">
-          <div className="p-4 pb-2 bg-purple-50 border-b border-purple-100">
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <div className="border-b border-purple-100 bg-purple-50 p-4 pb-2">
             <Label className="text-sm font-semibold text-purple-900">
               Mesa Selecionada
             </Label>
-            <p className="text-xs text-purple-600 mt-1">{selectedTable.label}</p>
+            <p className="mt-1 text-xs text-purple-600">{selectedTable.label}</p>
           </div>
 
-          <ScrollArea className="flex-1 px-4 py-4">
+          <ScrollArea className="flex-1 p-4">
             <div className="space-y-4">
               {/* Position */}
               <div>
-                <Label className="text-xs font-semibold mb-2 block">Posição</Label>
+                <Label className="mb-2 block text-xs font-semibold">Posição</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Label className="text-xs text-gray-600">X</Label>
@@ -133,8 +133,8 @@ export function TableLayoutToolbar({
 
               {/* Size */}
               <div>
-                <Label className="text-xs font-semibold mb-2 flex items-center gap-2">
-                  <Maximize2 className="w-3 h-3" />
+                <Label className="mb-2 flex items-center gap-2 text-xs font-semibold">
+                  <Maximize2 className="size-3" />
                   Tamanho (Raio)
                 </Label>
                 <Input
@@ -149,7 +149,7 @@ export function TableLayoutToolbar({
                   max={200}
                   className="h-8 text-xs"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="mt-1 text-xs text-gray-500">
                   Diâmetro: {Math.round(selectedTable.radius * 2)}px
                 </p>
               </div>
@@ -158,7 +158,7 @@ export function TableLayoutToolbar({
 
               {/* Shape */}
               <div>
-                <Label className="text-xs font-semibold mb-2 block">Formato</Label>
+                <Label className="mb-2 block text-xs font-semibold">Formato</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() =>
@@ -170,7 +170,7 @@ export function TableLayoutToolbar({
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <Circle className="w-6 h-6" />
+                    <Circle className="size-6" />
                     <span className="text-xs font-medium">Redonda</span>
                   </button>
                   <button
@@ -183,7 +183,7 @@ export function TableLayoutToolbar({
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <Square className="w-6 h-6" />
+                    <Square className="size-6" />
                     <span className="text-xs font-medium">Quadrada</span>
                   </button>
                 </div>
@@ -193,8 +193,8 @@ export function TableLayoutToolbar({
 
               {/* Color */}
               <div>
-                <Label className="text-xs font-semibold mb-2 flex items-center gap-2">
-                  <Palette className="w-3 h-3" />
+                <Label className="mb-2 flex items-center gap-2 text-xs font-semibold">
+                  <Palette className="size-3" />
                   Cor
                 </Label>
                 <div className="flex gap-2">
@@ -216,7 +216,7 @@ export function TableLayoutToolbar({
                         color: e.target.value,
                       })
                     }
-                    className="h-10 flex-1 text-xs font-mono"
+                    className="h-10 flex-1 font-mono text-xs"
                     placeholder="#RRGGBB"
                   />
                 </div>
@@ -226,8 +226,8 @@ export function TableLayoutToolbar({
 
               {/* Capacity */}
               <div>
-                <Label className="text-xs font-semibold mb-2 flex items-center gap-2">
-                  <Users className="w-3 h-3" />
+                <Label className="mb-2 flex items-center gap-2 text-xs font-semibold">
+                  <Users className="size-3" />
                   Capacidade
                 </Label>
                 <Input
@@ -242,7 +242,7 @@ export function TableLayoutToolbar({
                   max={20}
                   className="h-8 text-xs"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="mt-1 text-xs text-gray-500">
                   {selectedTable.seats?.filter((s) => s.assignment).length || 0} /
                   {selectedTable.capacity} ocupados
                 </p>
@@ -251,18 +251,18 @@ export function TableLayoutToolbar({
           </ScrollArea>
         </div>
       ) : (
-        <div className="flex-1 flex items-center justify-center p-8 text-center">
+        <div className="flex flex-1 items-center justify-center p-8 text-center">
           <div className="text-gray-400">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full border-4 border-dashed border-gray-300" />
+            <div className="mx-auto mb-4 size-16 rounded-full border-4 border-dashed border-gray-300" />
             <p className="text-sm font-medium">Nenhuma mesa selecionada</p>
-            <p className="text-xs mt-1">Clique em uma mesa para editá-la</p>
+            <p className="mt-1 text-xs">Clique em uma mesa para editá-la</p>
           </div>
         </div>
       )}
 
       {/* Quick Actions */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
-        <Label className="text-xs font-semibold mb-2 block">Atalhos</Label>
+      <div className="border-t border-gray-200 bg-gray-50 p-4">
+        <Label className="mb-2 block text-xs font-semibold">Atalhos</Label>
         <div className="space-y-1 text-xs text-gray-600">
           <div>• Arraste para mover</div>
           <div>• Cantos para redimensionar</div>

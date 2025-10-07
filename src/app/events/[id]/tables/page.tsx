@@ -515,7 +515,7 @@ export default function TablePlannerPage() {
               onClick={() => setUseStageMode(!useStageMode)}
               className={cn('rounded-full', interactiveButtonClasses)}
             >
-              <LayoutGrid className="size-4 mr-1" />
+              <LayoutGrid className="mr-1 size-4" />
               {useStageMode ? 'Editar Mapa dos Convidados' : 'Implementar Convidados'}
             </Button>
             {!useStageMode && (
@@ -724,7 +724,7 @@ export default function TablePlannerPage() {
             <div className="flex min-w-0 flex-col gap-4">
               {useStageMode ? (
                 /* ===== STAGE MODE ===== */
-                <div className="flex gap-4 h-[calc(100vh-200px)]">
+                <div className="flex h-[calc(100vh-200px)] gap-4">
                   <AnimatePresence initial={false}>
                     {showElementsPalette && (
                       <motion.aside
@@ -763,8 +763,8 @@ export default function TablePlannerPage() {
                       </motion.aside>
                     )}
                   </AnimatePresence>
-                  <Card className="flex-1 border border-border bg-card shadow-elevation-2 flex flex-col">
-                    <CardHeader className="flex flex-col gap-3 pb-3 border-b">
+                  <Card className="flex flex-1 flex-col border border-border bg-card shadow-elevation-2">
+                    <CardHeader className="flex flex-col gap-3 border-b pb-3">
                       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                         <CardTitle className="font-heading text-lg">Layout Visual das Mesas</CardTitle>
                         <Button

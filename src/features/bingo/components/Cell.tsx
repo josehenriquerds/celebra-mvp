@@ -1,9 +1,9 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import { useDroppable } from '@dnd-kit/core';
-import type { CardCell } from '../types';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import type { CardCell } from '../types';
 
 interface CellProps {
   cell: CardCell;
@@ -61,13 +61,13 @@ export function Cell({ cell, onMark, onUpdate, isEditable, palette = 'lavender',
         <img
           src={cell.imageUrl}
           alt={`Cell ${cell.row},${cell.col}`}
-          className="w-full h-full object-cover rounded-md"
+          className="size-full rounded-md object-cover"
         />
       )}
 
       {/* Texto */}
       {cell.text && (
-        <span className="text-sm md:text-base font-medium text-center px-1">
+        <span className="px-1 text-center text-sm font-medium md:text-base">
           {cell.text}
         </span>
       )}
@@ -82,9 +82,9 @@ export function Cell({ cell, onMark, onUpdate, isEditable, palette = 'lavender',
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center"
         >
-          <div className="w-16 h-16 rounded-full bg-purple-500/20 border-4 border-purple-500" />
+          <div className="size-16 rounded-full border-4 border-purple-500 bg-purple-500/20" />
         </motion.div>
       )}
     </motion.div>

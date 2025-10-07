@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { toPng } from 'html-to-image';
+import { jsPDF } from 'jspdf';
+import JSZip from 'jszip';
 import { Download, FileImage, FileText, Share2, QrCode } from 'lucide-react';
-import { useBingoStore } from '../state/useBingoStore';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Dialog,
   DialogContent,
@@ -15,11 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { toPng } from 'html-to-image';
-import { jsPDF } from 'jspdf';
-import JSZip from 'jszip';
+import { Slider } from '@/components/ui/slider';
+import { useBingoStore } from '../state/useBingoStore';
 
 export function ExportBar() {
   const { config, deckCards, generateMultipleCards, currentCard } = useBingoStore();
@@ -179,8 +179,8 @@ export function ExportBar() {
   return (
     <div className="space-y-6">
       {/* Geração em Lote */}
-      <div className="bg-white rounded-xl p-6 shadow-lg">
-        <h3 className="text-xl font-bold mb-4">Gerar Múltiplas Cartelas</h3>
+      <div className="rounded-xl bg-white p-6 shadow-lg">
+        <h3 className="mb-4 text-xl font-bold">Gerar Múltiplas Cartelas</h3>
 
         <div className="space-y-4">
           <div>
@@ -205,7 +205,7 @@ export function ExportBar() {
           </Button>
 
           {deckCards.length > 0 && (
-            <p className="text-sm text-green-600 font-medium">
+            <p className="text-sm font-medium text-green-600">
               ✓ {deckCards.length} cartelas geradas com sucesso
             </p>
           )}
@@ -213,11 +213,11 @@ export function ExportBar() {
       </div>
 
       {/* Opções de Exportação */}
-      <div className="bg-white rounded-xl p-6 shadow-lg">
-        <h3 className="text-xl font-bold mb-4">Exportar & Compartilhar</h3>
+      <div className="rounded-xl bg-white p-6 shadow-lg">
+        <h3 className="mb-4 text-xl font-bold">Exportar & Compartilhar</h3>
 
         {/* Configurações de Exportação */}
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="mb-4 grid grid-cols-2 gap-4">
           <div>
             <Label className="text-sm">Cartelas por página (PDF)</Label>
             <Select value={cardsPerPage} onValueChange={(val) => setCardsPerPage(val as any)}>
@@ -257,7 +257,7 @@ export function ExportBar() {
               <>Exportando...</>
             ) : (
               <>
-                <FileImage className="w-4 h-4" />
+                <FileImage className="size-4" />
                 PNG
               </>
             )}
@@ -273,7 +273,7 @@ export function ExportBar() {
               <>Exportando...</>
             ) : (
               <>
-                <FileText className="w-4 h-4" />
+                <FileText className="size-4" />
                 PDF
               </>
             )}
@@ -286,7 +286,7 @@ export function ExportBar() {
                 disabled={deckCards.length === 0}
                 className="gap-2"
               >
-                <QrCode className="w-4 h-4" />
+                <QrCode className="size-4" />
                 QR Code
               </Button>
             </DialogTrigger>
@@ -298,7 +298,7 @@ export function ExportBar() {
                 </DialogDescription>
               </DialogHeader>
               <div className="py-8 text-center text-gray-500">
-                <QrCode className="w-16 h-16 mx-auto mb-4" />
+                <QrCode className="mx-auto mb-4 size-16" />
                 <p>Funcionalidade em desenvolvimento</p>
               </div>
             </DialogContent>
@@ -310,7 +310,7 @@ export function ExportBar() {
             disabled={deckCards.length === 0}
             className="gap-2"
           >
-            <Share2 className="w-4 h-4" />
+            <Share2 className="size-4" />
             WhatsApp
           </Button>
         </div>
@@ -318,18 +318,18 @@ export function ExportBar() {
 
       {/* Preview das Cartelas */}
       {deckCards.length > 0 && (
-        <div className="bg-white rounded-xl p-6 shadow-lg">
-          <h3 className="text-xl font-bold mb-4">Preview das Cartelas</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+        <div className="rounded-xl bg-white p-6 shadow-lg">
+          <h3 className="mb-4 text-xl font-bold">Preview das Cartelas</h3>
+          <div className="grid max-h-96 grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3 lg:grid-cols-4">
             {deckCards.slice(0, 12).map((card, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
-                className="border-2 border-gray-200 rounded-lg p-2 hover:border-purple-400 transition-colors"
+                className="rounded-lg border-2 border-gray-200 p-2 transition-colors hover:border-purple-400"
               >
-                <div className="aspect-square bg-gradient-to-br from-purple-50 to-pink-50 rounded flex items-center justify-center">
+                <div className="flex aspect-square items-center justify-center rounded bg-gradient-to-br from-purple-50 to-pink-50">
                   <span className="text-sm font-semibold text-gray-600">
                     Cartela #{index + 1}
                   </span>
@@ -338,7 +338,7 @@ export function ExportBar() {
             ))}
           </div>
           {deckCards.length > 12 && (
-            <p className="text-sm text-gray-500 mt-4">
+            <p className="mt-4 text-sm text-gray-500">
               + {deckCards.length - 12} cartelas adicionais
             </p>
           )}

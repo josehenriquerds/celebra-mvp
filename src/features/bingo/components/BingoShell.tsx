@@ -1,20 +1,20 @@
 'use client';
 
-import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useBingoStore } from '../state/useBingoStore';
-import { SidebarConfigurator } from './SidebarConfigurator';
-import { CardGrid } from './CardGrid';
-import { TemplatesDrawer } from './TemplatesDrawer';
-import { HostPanel } from './HostPanel';
+import { LayoutGrid, Play, Users, Download, Layers } from 'lucide-react';
+import { useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AssetTray } from './AssetTray';
-import { ExportBar } from './ExportBar';
 import { BingoHeader } from './BingoHeader';
+import { CardGrid } from './CardGrid';
+import { HostPanel } from './HostPanel';
+import { ExportBar } from './ExportBar';
 import { Stage } from './Stage';
 import { LayerToolbar } from './LayerToolbar';
+import { SidebarConfigurator } from './SidebarConfigurator';
+import { TemplatesDrawer } from './TemplatesDrawer';
 import { DndProvider } from '../dnd/DndProvider';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { LayoutGrid, Play, Users, Download, Layers } from 'lucide-react';
+import { useBingoStore } from '../state/useBingoStore';
 
 export function BingoShell() {
   const {
@@ -39,11 +39,11 @@ export function BingoShell() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto"
+          className="mx-auto max-w-7xl"
         >
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+            <h1 className="mb-2 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-5xl">
               Gerar Cartelas de Bingo
             </h1>
             <p className="text-gray-600">
@@ -58,30 +58,30 @@ export function BingoShell() {
 
           {/* Tabs para diferentes modos */}
           <Tabs value={viewMode} onValueChange={(val) => setViewMode(val as any)} className="w-full">
-            <TabsList className="grid w-full max-w-3xl grid-cols-5 mb-6">
+            <TabsList className="mb-6 grid w-full max-w-3xl grid-cols-5">
               <TabsTrigger value="editor" className="gap-2">
-                <LayoutGrid className="w-4 h-4" />
+                <LayoutGrid className="size-4" />
                 Editor
               </TabsTrigger>
               <TabsTrigger value="stage" className="gap-2">
-                <Layers className="w-4 h-4" />
+                <Layers className="size-4" />
                 Stage
               </TabsTrigger>
               <TabsTrigger value="host" className="gap-2">
-                <Play className="w-4 h-4" />
+                <Play className="size-4" />
                 Sortear
               </TabsTrigger>
               <TabsTrigger value="player" className="gap-2">
-                <Users className="w-4 h-4" />
+                <Users className="size-4" />
                 Jogar
               </TabsTrigger>
               <TabsTrigger value="preview" className="gap-2">
-                <Download className="w-4 h-4" />
+                <Download className="size-4" />
                 Exportar
               </TabsTrigger>
             </TabsList>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
               {/* Sidebar */}
               <div className="space-y-4">
                 <SidebarConfigurator />
@@ -121,7 +121,7 @@ export function BingoShell() {
 
                 <TabsContent value="stage" className="mt-0">
                   <div className="flex gap-4">
-                    <div className="flex-1 flex flex-col items-center">
+                    <div className="flex flex-1 flex-col items-center">
                       <Stage width={800} height={800} showGrid={true} />
                     </div>
                     <LayerToolbar />

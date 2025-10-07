@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { Sparkles, Check } from 'lucide-react';
-import { useBingoStore } from '../state/useBingoStore';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -13,6 +12,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { useBingoStore } from '../state/useBingoStore';
 
 export function TemplatesDrawer() {
   const { templates, applyTemplate, config } = useBingoStore();
@@ -21,7 +21,7 @@ export function TemplatesDrawer() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" size="lg" className="gap-2">
-          <Sparkles className="w-4 h-4" />
+          <Sparkles className="size-4" />
           Templates
         </Button>
       </SheetTrigger>
@@ -50,11 +50,11 @@ export function TemplatesDrawer() {
                 onClick={() => applyTemplate(template.id)}
               >
                 <div className="flex-1">
-                  <h3 className="font-semibold text-base">{template.name}</h3>
+                  <h3 className="text-base font-semibold">{template.name}</h3>
                   {template.description && (
-                    <p className="text-sm text-gray-500 mt-1">{template.description}</p>
+                    <p className="mt-1 text-sm text-gray-500">{template.description}</p>
                   )}
-                  <div className="flex gap-2 mt-2 text-xs text-gray-400">
+                  <div className="mt-2 flex gap-2 text-xs text-gray-400">
                     {template.config.gridSize && (
                       <span>{template.config.gridSize}x{template.config.gridSize}</span>
                     )}

@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { notificationsService, type GetNotificationsParams } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { notificationsService, type GetNotificationsParams } from '@/services'
 
 /**
  * Get all notifications for current user

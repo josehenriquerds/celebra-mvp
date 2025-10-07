@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { checkinsService } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { checkinsService } from '@/services'
 import type { CreateCheckinDto } from '@/types/api'
 
 /**

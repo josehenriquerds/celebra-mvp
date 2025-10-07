@@ -2,9 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Cell } from './Cell';
-import type { CardMatrix, CellTheme } from '../types';
-import { useBingoStore } from '../state/useBingoStore';
 import { getCellColorClass } from '../logic/cellColors';
+import { useBingoStore } from '../state/useBingoStore';
+import type { CardMatrix, CellTheme } from '../types';
 
 interface CardGridProps {
   card: CardMatrix;
@@ -34,11 +34,11 @@ export function CardGrid({ card, gridSize, labels, isEditable, palette, cellThem
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="mx-auto w-full max-w-2xl">
       {/* Labels superiores (ex: B I N G O) */}
       {labels && (
         <div
-          className="grid gap-2 mb-2"
+          className="mb-2 grid gap-2"
           style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
         >
           {labels.map((label, i) => (
@@ -47,7 +47,7 @@ export function CardGrid({ card, gridSize, labels, isEditable, palette, cellThem
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="text-center text-2xl md:text-3xl font-bold text-purple-600"
+              className="text-center text-2xl font-bold text-purple-600 md:text-3xl"
             >
               {label}
             </motion.div>
@@ -57,7 +57,7 @@ export function CardGrid({ card, gridSize, labels, isEditable, palette, cellThem
 
       {/* Grid de células */}
       <div
-        className="grid gap-2 p-4 bg-white/50 rounded-xl shadow-lg backdrop-blur-sm"
+        className="grid gap-2 rounded-xl bg-white/50 p-4 shadow-lg backdrop-blur-sm"
         style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
       >
         {card.cells.map((cell) => {

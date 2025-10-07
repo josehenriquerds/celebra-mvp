@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Grid3x3, Maximize2 } from 'lucide-react';
-import { TableStageItem } from './TableStageItem';
+import { useState, useRef, useCallback } from 'react';
+import type { Table , ElementType } from '@/schemas';
 import { DecorativeElement } from './DecorativeElement';
-import type { Table } from '@/schemas';
-import type { ElementType } from '@/schemas';
+import { TableStageItem } from './TableStageItem';
 
 interface DecorativeElementData {
   id: string;
@@ -101,22 +100,22 @@ export function TableStage({
   };
 
   return (
-    <div className="relative w-full h-full bg-gray-50 rounded-lg overflow-hidden">
+    <div className="relative size-full overflow-hidden rounded-lg bg-gray-50">
       {/* Controls */}
-      <div className="absolute top-4 right-4 z-10 flex gap-2 bg-white rounded-lg shadow-lg p-2">
+      <div className="absolute right-4 top-4 z-10 flex gap-2 rounded-lg bg-white p-2 shadow-lg">
         <button
           onClick={() => setZoom((z) => Math.min(3, z + 0.1))}
-          className="px-3 py-1 text-sm hover:bg-gray-100 rounded"
+          className="rounded px-3 py-1 text-sm hover:bg-gray-100"
           title="Zoom In (Ctrl+Scroll)"
         >
           +
         </button>
-        <span className="px-2 py-1 text-sm text-gray-600 min-w-[60px] text-center">
+        <span className="min-w-[60px] px-2 py-1 text-center text-sm text-gray-600">
           {Math.round(zoom * 100)}%
         </span>
         <button
           onClick={() => setZoom((z) => Math.max(0.1, z - 0.1))}
-          className="px-3 py-1 text-sm hover:bg-gray-100 rounded"
+          className="rounded px-3 py-1 text-sm hover:bg-gray-100"
           title="Zoom Out (Ctrl+Scroll)"
         >
           −
@@ -126,20 +125,20 @@ export function TableStage({
             setZoom(1);
             setViewOffset({ x: 0, y: 0 });
           }}
-          className="px-3 py-1 text-sm hover:bg-gray-100 rounded ml-2"
+          className="ml-2 rounded px-3 py-1 text-sm hover:bg-gray-100"
           title="Reset View"
         >
-          <Maximize2 className="w-4 h-4" />
+          <Maximize2 className="size-4" />
         </button>
       </div>
 
       {/* Info */}
-      <div className="absolute bottom-4 left-4 z-10 bg-white rounded-lg shadow-lg px-3 py-2 text-xs text-gray-600 space-y-1">
+      <div className="absolute bottom-4 left-4 z-10 space-y-1 rounded-lg bg-white px-3 py-2 text-xs text-gray-600 shadow-lg">
         <div>{tables.length} mesa{tables.length !== 1 ? 's' : ''}</div>
         <div>{decorativeElements.length} elemento{decorativeElements.length !== 1 ? 's' : ''}</div>
         {snapToGrid && (
           <div className="flex items-center gap-1">
-            <Grid3x3 className="w-3 h-3" />
+            <Grid3x3 className="size-3" />
             Grade {gridSize}px
           </div>
         )}
@@ -151,7 +150,7 @@ export function TableStage({
       {/* Stage Container */}
       <div
         ref={stageRef}
-        className={`relative w-full h-full overflow-auto ${
+        className={`relative size-full overflow-auto ${
           isPanning ? 'cursor-grabbing' : 'cursor-default'
         }`}
         onClick={handleStageClick}
@@ -172,7 +171,7 @@ export function TableStage({
           {/* Grid Background */}
           {showGrid && snapToGrid && (
             <div
-              className="absolute inset-0 pointer-events-none"
+              className="pointer-events-none absolute inset-0"
               style={{
                 backgroundImage: `
                   linear-gradient(to right, rgba(156, 163, 175, 0.1) 1px, transparent 1px),
@@ -184,7 +183,7 @@ export function TableStage({
           )}
 
           {/* Canvas Border */}
-          <div className="absolute inset-0 border-2 border-dashed border-gray-300 pointer-events-none" />
+          <div className="pointer-events-none absolute inset-0 border-2 border-dashed border-gray-300" />
 
           {/* Empty State */}
           {tables.length === 0 && (
@@ -193,7 +192,7 @@ export function TableStage({
               animate={{ opacity: 1 }}
               className="absolute inset-0 flex flex-col items-center justify-center text-gray-400"
             >
-              <div className="w-32 h-32 mb-4 rounded-full border-4 border-dashed border-gray-300" />
+              <div className="mb-4 size-32 rounded-full border-4 border-dashed border-gray-300" />
               <p className="text-lg font-medium">Nenhuma mesa ainda</p>
               <p className="text-sm">Clique em "Nova Mesa" para começar</p>
             </motion.div>

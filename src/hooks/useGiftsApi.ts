@@ -5,8 +5,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { giftsService, type GetGiftsParams, type GetContributionsParams, type SendThankYouDto } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { giftsService, type GetGiftsParams, type GetContributionsParams, type SendThankYouDto } from '@/services'
 import type { Gift, GiftCategory, GiftContribution, CreateGiftDto, ReserveGiftDto, ConfirmGiftDto } from '@/types/api'
 
 // ============================================================================

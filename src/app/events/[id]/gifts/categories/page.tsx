@@ -165,7 +165,7 @@ export default function GiftCategoriesPage() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {categories.map((category) => (
-              <Card key={category.id} className="hover:shadow-md transition-shadow">
+              <Card key={category.id} className="transition-shadow hover:shadow-md">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">

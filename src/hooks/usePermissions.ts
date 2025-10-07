@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { permissionsService, type UpdateEventUserDto } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { permissionsService, type UpdateEventUserDto } from '@/services'
 import type { InviteUserDto } from '@/types/api'
 
 /**

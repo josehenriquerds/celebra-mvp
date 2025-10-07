@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
-import { useBingoStore } from '../state/useBingoStore';
-import { LayerItem } from './LayerItem';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Layers, Grid3x3 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { LayerItem } from './LayerItem';
+import { useBingoStore } from '../state/useBingoStore';
 import type { LayerType } from '../types';
 
 interface StageProps {
@@ -80,7 +80,7 @@ export function Stage({ width = 800, height = 800, showGrid = true }: StageProps
       {/* Stage Container */}
       <div
         ref={stageRef}
-        className={`relative bg-white rounded-lg shadow-lg overflow-hidden transition-all ${
+        className={`relative overflow-hidden rounded-lg bg-white shadow-lg transition-all ${
           isDraggingOver ? 'ring-4 ring-purple-400 ring-opacity-50' : ''
         }`}
         style={{ width, height }}
@@ -92,7 +92,7 @@ export function Stage({ width = 800, height = 800, showGrid = true }: StageProps
         {/* Grid Background */}
         {showGrid && snapToGrid && (
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="pointer-events-none absolute inset-0"
             style={{
               backgroundImage: `
                 linear-gradient(to right, rgba(156, 163, 175, 0.1) 1px, transparent 1px),
@@ -110,7 +110,7 @@ export function Stage({ width = 800, height = 800, showGrid = true }: StageProps
             animate={{ opacity: 1 }}
             className="absolute inset-0 flex flex-col items-center justify-center text-gray-400"
           >
-            <Layers className="w-16 h-16 mb-4" />
+            <Layers className="mb-4 size-16" />
             <p className="text-lg font-medium">Arraste elementos para o Stage</p>
             <p className="text-sm">Imagens, textos e formas</p>
           </motion.div>
@@ -139,9 +139,9 @@ export function Stage({ width = 800, height = 800, showGrid = true }: StageProps
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-purple-500 bg-opacity-10 pointer-events-none flex items-center justify-center"
+            className="pointer-events-none absolute inset-0 flex items-center justify-center bg-purple-500 bg-opacity-10"
           >
-            <div className="text-purple-600 font-bold text-xl">
+            <div className="text-xl font-bold text-purple-600">
               Solte aqui para adicionar
             </div>
           </motion.div>
@@ -153,7 +153,7 @@ export function Stage({ width = 800, height = 800, showGrid = true }: StageProps
         <span>{freeLayers.length} camadas</span>
         {snapToGrid && (
           <span className="flex items-center gap-1">
-            <Grid3x3 className="w-3 h-3" />
+            <Grid3x3 className="size-3" />
             Grade ativa ({gridSize}px)
           </span>
         )}

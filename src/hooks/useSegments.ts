@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { segmentsService, type CreateSegmentDto } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { segmentsService, type CreateSegmentDto } from '@/services'
 import type { SegmentTag, SegmentCriteria, SendToSegmentDto } from '@/types/api'
 
 /**

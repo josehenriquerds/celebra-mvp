@@ -5,8 +5,8 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { tasksService, type GetTasksParams } from '@/services'
 import { queryKeys } from '@/lib/query-client'
+import { tasksService, type GetTasksParams } from '@/services'
 import type { Task, CreateTaskDto, UpdateTaskDto } from '@/types/api'
 
 /**

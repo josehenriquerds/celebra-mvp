@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, RotateCcw, Volume2 } from 'lucide-react';
-import { useBingoStore } from '../state/useBingoStore';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useBingoStore } from '../state/useBingoStore';
 
 export function HostPanel() {
   const { config, drawEngine, initDrawEngine, drawNumber, resetDraw } = useBingoStore();
@@ -62,9 +62,9 @@ export function HostPanel() {
   return (
     <div className="space-y-6">
       {/* Número Atual */}
-      <div className="bg-white rounded-2xl p-8 shadow-xl">
+      <div className="rounded-2xl bg-white p-8 shadow-xl">
         <div className="text-center">
-          <p className="text-sm text-gray-500 mb-4">Último Número Sorteado</p>
+          <p className="mb-4 text-sm text-gray-500">Último Número Sorteado</p>
           <AnimatePresence mode="wait">
             {lastNumber !== null ? (
               <motion.div
@@ -73,27 +73,27 @@ export function HostPanel() {
                 animate={{ scale: 1, rotate: 0 }}
                 exit={{ scale: 0, rotate: 180 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                className="w-40 h-40 mx-auto rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-2xl"
+                className="mx-auto flex size-40 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 shadow-2xl"
               >
                 <span className="text-7xl font-bold text-white">{lastNumber}</span>
               </motion.div>
             ) : (
-              <div className="w-40 h-40 mx-auto rounded-full bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-400 text-xl">-</span>
+              <div className="mx-auto flex size-40 items-center justify-center rounded-full bg-gray-200">
+                <span className="text-xl text-gray-400">-</span>
               </div>
             )}
           </AnimatePresence>
         </div>
 
         {/* Controles */}
-        <div className="flex gap-3 mt-8 justify-center">
+        <div className="mt-8 flex justify-center gap-3">
           <Button
             size="lg"
             onClick={handleDraw}
             disabled={!drawEngine?.hasMore() || isAnimating}
             className="gap-2 px-8"
           >
-            <Play className="w-5 h-5" />
+            <Play className="size-5" />
             Sortear (Espaço)
           </Button>
           <Button
@@ -102,7 +102,7 @@ export function HostPanel() {
             onClick={handleReset}
             className="gap-2"
           >
-            <RotateCcw className="w-5 h-5" />
+            <RotateCcw className="size-5" />
             Reset (R)
           </Button>
         </div>
@@ -123,14 +123,14 @@ export function HostPanel() {
       </div>
 
       {/* Histórico */}
-      <div className="bg-white rounded-2xl p-6 shadow-xl">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Volume2 className="w-5 h-5" />
+      <div className="rounded-2xl bg-white p-6 shadow-xl">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+          <Volume2 className="size-5" />
           Histórico
         </h3>
-        <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto">
+        <div className="flex max-h-64 flex-wrap gap-2 overflow-y-auto">
           {drawnNumbers.length === 0 ? (
-            <p className="text-gray-400 text-sm">Nenhum número sorteado ainda</p>
+            <p className="text-sm text-gray-400">Nenhum número sorteado ainda</p>
           ) : (
             drawnNumbers.map((num, index) => (
               <motion.div

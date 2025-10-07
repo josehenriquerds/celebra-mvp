@@ -192,9 +192,20 @@ export default function TasksPage() {
   )
 
   // Use backend API via TanStack Query
-  const { data: tasks = [], isLoading: loading } = useTasks(eventId)
+  const { data: tasksRaw, isLoading: loading } = useTasks(eventId)
   const updateTaskMutation = useUpdateTask(eventId)
   const createTaskMutation = useCreateTask(eventId)
+
+  // Ensure tasks is always an array
+  const tasks = useMemo(() => {
+    if (!tasksRaw) return []
+    if (Array.isArray(tasksRaw)) return tasksRaw
+    // Handle { data: Task[] } format
+    if (typeof tasksRaw === 'object' && 'data' in tasksRaw && Array.isArray(tasksRaw.data)) {
+      return tasksRaw.data
+    }
+    return []
+  }, [tasksRaw])
 
   // Group tasks by status
   const data = useMemo<TasksData>(() => {
