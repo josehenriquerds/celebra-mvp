@@ -183,7 +183,30 @@ export const createPlannerStore = (eventId: string) =>
   )
 
 // Default store (para compatibilidade com código existente)
-export const usePlannerStore = createPlannerStore('default')
+const defaultPlannerStore = createPlannerStore('default')
+
+const storeRegistry = new Map<string, typeof defaultPlannerStore>()
+
+export type PlannerStoreHook = typeof defaultPlannerStore
+
+export const getPlannerStore = (eventId: string | undefined | null): PlannerStoreHook => {
+  const key = eventId && eventId.trim().length > 0 ? eventId : 'default'
+
+  if (!storeRegistry.has(key)) {
+    storeRegistry.set(key, createPlannerStore(key))
+  }
+
+  return storeRegistry.get(key) ?? defaultPlannerStore
+}
+
+// Default store (para compatibilidade com código existente)
+export const usePlannerStore = defaultPlannerStore
+
+// Helper para acessar seletores com store customizado
+export const createPlannerSelector = <T,>(
+  store: PlannerStoreHook,
+  selector: (state: PlannerStore) => T
+) => store(selector)
 
 // Selectors (for performance optimization)
 export const useZoom = () => usePlannerStore((state) => state.zoom)

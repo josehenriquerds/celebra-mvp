@@ -37,11 +37,11 @@ import {
   useAssignGuestToSeat,
   useCreateTable,
   useDeleteTable,
-  useTablePlannerData,
   useUnassignGuestFromSeat,
   useUpdateTable,
 } from '@/features/tables/hooks/useTables'
-import { usePlannerStore } from '@/features/tables/stores/usePlannerStore'
+import { useTablePlannerWithCache } from '@/features/tables/hooks'
+import { createPlannerSelector, getPlannerStore } from '@/features/tables/stores/usePlannerStore'
 import { cn } from '@/lib/utils'
 import type { Table } from '@/schemas'
 
@@ -159,7 +159,7 @@ export default function TablePlannerPage() {
   const { toast } = useToast()
 
   // React Query hooks
-  const { data, isLoading } = useTablePlannerData(eventId)
+  const { data, isLoading } = useTablePlannerWithCache(eventId)
   const createTableMutation = useCreateTable()
   const updateTableMutation = useUpdateTable()
   const deleteTableMutation = useDeleteTable()
@@ -167,7 +167,15 @@ export default function TablePlannerPage() {
   const unassignMutation = useUnassignGuestFromSeat()
 
   // Zustand store
-  const { zoom, activeId, setActiveId, addToHistory, showElementsPalette } = usePlannerStore()
+  const plannerStore = getPlannerStore(eventId)
+  const zoom = createPlannerSelector(plannerStore, (state) => state.zoom)
+  const activeId = createPlannerSelector(plannerStore, (state) => state.activeId)
+  const setActiveId = createPlannerSelector(plannerStore, (state) => state.setActiveId)
+  const addToHistory = createPlannerSelector(plannerStore, (state) => state.addToHistory)
+  const showElementsPalette = createPlannerSelector(
+    plannerStore,
+    (state) => state.showElementsPalette
+  )
 
   // Local state
   const [creatingTable, setCreatingTable] = useState(false)
@@ -538,6 +546,8 @@ export default function TablePlannerPage() {
               onAutoArrange={handleAutoArrange}
               onAutoAllocate={handleAutoAllocate}
               exporting={exporting}
+              eventId={eventId}
+              plannerStore={plannerStore}
             />
           </div>
         </div>
@@ -791,7 +801,7 @@ export default function TablePlannerPage() {
                           } catch (error) {
                             toast({
                               title: 'Erro',
-                              description: 'Não foi possível atualizar a mesa',
+                              description: `Não foi possível atualizar a mesa - erro ao salvar ${error}`,
                               variant: 'destructive',
                             })
                           }
@@ -822,7 +832,7 @@ export default function TablePlannerPage() {
                       } catch (error) {
                         toast({
                           title: 'Erro',
-                          description: 'Não foi possível atualizar a mesa',
+                          description: `Não foi possível atualizar a mesa, erro ao salvar: ${error}`,
                           variant: 'destructive',
                         })
                       }

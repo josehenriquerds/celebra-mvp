@@ -45,7 +45,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Fetch guests with pagination
-    const [guests, total] = await Promise.all([
+    const [guests, total, groups] = await Promise.all([
       prisma.guest.findMany({
         where,
         include: {
@@ -81,6 +81,18 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         take: limit,
       }),
       prisma.guest.count({ where }),
+      prisma.segmentTag.findMany({
+        where: {
+          eventId,
+          isDynamic: false,
+        },
+        include: {
+          _count: {
+            select: { guests: true },
+          },
+        },
+        orderBy: { name: 'asc' },
+      }),
     ])
 
     // Format response
@@ -127,13 +139,27 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       })),
     }))
 
+    const formattedGroups = groups.map((group) => ({
+      id: group.id,
+      name: group.name,
+      guestCount: group._count.guests,
+    }))
+
+    const totalPages = limit > 0 ? Math.ceil(total / limit) : 1
+
     return NextResponse.json({
+      items: formattedGuests,
+      total,
+      totalPages,
+      page,
+      limit,
+      groups: formattedGroups,
       guests: formattedGuests,
       pagination: {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages,
       },
     })
   } catch (error) {

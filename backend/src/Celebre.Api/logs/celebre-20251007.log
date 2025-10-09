@@ -1,0 +1,66 @@
+2025-10-07 16:12:25.753 -03:00 [WRN] The WebRootPath was not found: C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Api\wwwroot. Static files may be unavailable.
+2025-10-07 16:12:25.882 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger - null null
+2025-10-07 16:12:25.910 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-07 16:12:25.911 -03:00 [INF] Hosting environment: Development
+2025-10-07 16:12:25.911 -03:00 [INF] Content root path: C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Api
+2025-10-07 16:12:26.563 -03:00 [INF] HTTP GET /swagger responded 302 in 3.9481 ms
+2025-10-07 16:12:26.601 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/index.html - null null
+2025-10-07 16:12:26.640 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger - 302 null null 761.9439ms
+2025-10-07 16:12:26.767 -03:00 [INF] HTTP GET /swagger/index.html responded 200 in 160.7740 ms
+2025-10-07 16:12:26.768 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/index.html - 200 null text/html; charset=utf-8 167.4547ms
+2025-10-07 16:12:26.816 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/swagger-ui-bundle.js - null null
+2025-10-07 16:12:26.819 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/index.css - null null
+2025-10-07 16:12:26.820 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/swagger-ui.css - null null
+2025-10-07 16:12:26.836 -03:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2025-10-07 16:12:26.841 -03:00 [INF] HTTP GET /swagger/index.css responded 200 in 20.2931 ms
+2025-10-07 16:12:26.843 -03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-10-07 16:12:26.843 -03:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 22.8920 ms
+2025-10-07 16:12:26.844 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/index.css - 200 218 text/css 29.4575ms
+2025-10-07 16:12:26.858 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/swagger-ui.css - 200 152073 text/css 36.8888ms
+2025-10-07 16:12:26.862 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/swagger-ui-standalone-preset.js - null null
+2025-10-07 16:12:26.867 -03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-10-07 16:12:26.867 -03:00 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 4.5972 ms
+2025-10-07 16:12:26.869 -03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-10-07 16:12:26.870 -03:00 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 49.3453 ms
+2025-10-07 16:12:26.872 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/swagger-ui-standalone-preset.js - 200 230294 text/javascript 8.0493ms
+2025-10-07 16:12:26.891 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/swagger-ui-bundle.js - 200 1452754 text/javascript 76.4567ms
+2025-10-07 16:12:27.004 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/_framework/aspnetcore-browser-refresh.js - null null
+2025-10-07 16:12:27.007 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 2.7954ms
+2025-10-07 16:12:27.474 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/_vs/browserLink - null null
+2025-10-07 16:12:27.517 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/_vs/browserLink - 200 null text/javascript; charset=UTF-8 42.8086ms
+2025-10-07 16:12:27.578 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/v1/swagger.json - null null
+2025-10-07 16:12:28.065 -03:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 486.6032 ms
+2025-10-07 16:12:28.066 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 488.1194ms
+2025-10-07 21:22:56.870 -03:00 [WRN] The WebRootPath was not found: C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Api\wwwroot. Static files may be unavailable.
+2025-10-07 21:22:57.079 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger - null null
+2025-10-07 21:22:57.100 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-10-07 21:22:57.101 -03:00 [INF] Hosting environment: Development
+2025-10-07 21:22:57.101 -03:00 [INF] Content root path: C:\Users\NPC TECH\Downloads\Celebre\celebra-mvp\backend\src\Celebre.Api
+2025-10-07 21:22:57.757 -03:00 [INF] HTTP GET /swagger responded 302 in 3.1450 ms
+2025-10-07 21:22:57.775 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/index.html - null null
+2025-10-07 21:22:57.829 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger - 302 null null 753.0072ms
+2025-10-07 21:22:57.981 -03:00 [INF] HTTP GET /swagger/index.html responded 200 in 163.5595 ms
+2025-10-07 21:22:57.982 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/index.html - 200 null text/html; charset=utf-8 207.2055ms
+2025-10-07 21:22:58.029 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/swagger-ui.css - null null
+2025-10-07 21:22:58.032 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/index.css - null null
+2025-10-07 21:22:58.032 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/swagger-ui-bundle.js - null null
+2025-10-07 21:22:58.043 -03:00 [INF] Sending file. Request path: '/index.css'. Physical path: 'N/A'
+2025-10-07 21:22:58.046 -03:00 [INF] HTTP GET /swagger/index.css responded 200 in 12.8566 ms
+2025-10-07 21:22:58.047 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/index.css - 200 218 text/css 16.6994ms
+2025-10-07 21:22:58.054 -03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-10-07 21:22:58.054 -03:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 20.8174 ms
+2025-10-07 21:22:58.061 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/swagger-ui.css - 200 152073 text/css 31.6531ms
+2025-10-07 21:22:58.064 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/swagger-ui-standalone-preset.js - null null
+2025-10-07 21:22:58.069 -03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-10-07 21:22:58.069 -03:00 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 4.4640 ms
+2025-10-07 21:22:58.070 -03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-10-07 21:22:58.070 -03:00 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 37.1038 ms
+2025-10-07 21:22:58.072 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/swagger-ui-standalone-preset.js - 200 230294 text/javascript 7.5802ms
+2025-10-07 21:22:58.090 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/swagger-ui-bundle.js - 200 1452754 text/javascript 58.1892ms
+2025-10-07 21:22:58.220 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/_framework/aspnetcore-browser-refresh.js - null null
+2025-10-07 21:22:58.224 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 3.1966ms
+2025-10-07 21:22:58.261 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/_vs/browserLink - null null
+2025-10-07 21:22:58.302 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/_vs/browserLink - 200 null text/javascript; charset=UTF-8 41.0758ms
+2025-10-07 21:22:58.587 -03:00 [INF] Request starting HTTP/2 GET https://localhost:44387/swagger/v1/swagger.json - null null
+2025-10-07 21:22:59.035 -03:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 446.9345 ms
+2025-10-07 21:22:59.036 -03:00 [INF] Request finished HTTP/2 GET https://localhost:44387/swagger/v1/swagger.json - 200 null application/json; charset=utf-8 448.4944ms

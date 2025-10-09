@@ -152,7 +152,7 @@ export default function SegmentsPage() {
             description: `${data.count} convidados correspondem aos critérios.`,
           })
         },
-        onError: (error: any) => {
+        onError: (error) => {
           toast({
             title: 'Erro no preview',
             description: error.message || 'Não foi possível gerar o preview.',

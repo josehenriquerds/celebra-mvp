@@ -191,3 +191,15 @@
     background: rgba(134, 63, 68, 0.4);
   }
 }
+
+.PhoneInputInput {
+  @apply h-12 w-full rounded-xl border border-gray-300 bg-white px-4 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.PhoneInputCountry {
+  @apply mr-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm;
+}
+
+.PhoneInputCountrySelect {
+  @apply rounded-lg border border-gray-200 bg-white text-sm;
+}

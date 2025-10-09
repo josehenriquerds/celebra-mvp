@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import type { DecorElement } from '@/schemas'
-import { usePlannerStore } from '../stores/usePlannerStore'
+import { createPlannerSelector, getPlannerStore } from '../stores/usePlannerStore'
 
 type SyncMessage =
   | { type: 'UPDATE_ELEMENT'; payload: { id: string; updates: Partial<DecorElement> } }
@@ -20,8 +20,13 @@ export function usePlannerSync(eventId: string) {
   const channelRef = useRef<BroadcastChannel | null>(null)
   const isInitializedRef = useRef(false)
 
-  const { addElement, updateElement, deleteElement, setElements, setPan, setZoom } =
-    usePlannerStore()
+  const store = getPlannerStore(eventId)
+  const addElement = createPlannerSelector(store, (state) => state.addElement)
+  const updateElement = createPlannerSelector(store, (state) => state.updateElement)
+  const deleteElement = createPlannerSelector(store, (state) => state.deleteElement)
+  const setElements = createPlannerSelector(store, (state) => state.setElements)
+  const setPan = createPlannerSelector(store, (state) => state.setPan)
+  const setZoom = createPlannerSelector(store, (state) => state.setZoom)
 
   useEffect(() => {
     // Verificar se BroadcastChannel é suportado

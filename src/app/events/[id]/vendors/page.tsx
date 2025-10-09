@@ -28,14 +28,14 @@ interface Vendor {
   id: string
   name: string
   category: string
-  contact: string
-  email: string | null
-  phone: string | null
-  contractValue: number
-  amountPaid: number
-  paymentStatus: string
-  contractUrl: string | null
-  notes: string | null
+  contact?: string | null
+  email?: string | null
+  phone?: string | null
+  contractValue?: number | null
+  amountPaid?: number | null
+  paymentStatus?: string | null
+  contractUrl?: string | null
+  notes?: string | null
   _count: {
     tasks: number
   }
@@ -91,11 +91,14 @@ export default function VendorsPage() {
     let filtered = vendors
 
     if (search) {
-      filtered = filtered.filter(
-        (v) =>
-          v.name.toLowerCase().includes(search.toLowerCase()) ||
-          v.contact.toLowerCase().includes(search.toLowerCase())
-      )
+      const normalizedSearch = search.toLowerCase()
+      filtered = filtered.filter((v) => {
+        const contact = (v.contact ?? '').toLowerCase()
+        return (
+          v.name.toLowerCase().includes(normalizedSearch) ||
+          contact.includes(normalizedSearch)
+        )
+      })
     }
 
     if (filterCategory !== 'all') {
@@ -130,13 +133,13 @@ export default function VendorsPage() {
     setFormData({
       name: vendor.name,
       category: vendor.category,
-      contact: vendor.contact,
-      email: vendor.email || '',
-      phone: vendor.phone || '',
-      contractValue: vendor.contractValue,
-      amountPaid: vendor.amountPaid,
-      paymentStatus: vendor.paymentStatus,
-      notes: vendor.notes || '',
+      contact: vendor.contact ?? '',
+      email: vendor.email ?? '',
+      phone: vendor.phone ?? '',
+      contractValue: vendor.contractValue ?? 0,
+      amountPaid: vendor.amountPaid ?? 0,
+      paymentStatus: vendor.paymentStatus ?? 'pendente',
+      notes: vendor.notes ?? '',
     })
     setShowModal(true)
   }
@@ -178,8 +181,8 @@ export default function VendorsPage() {
     return labels[status] || status
   }
 
-  const totalContractValue = vendors.reduce((sum, v) => sum + v.contractValue, 0)
-  const totalPaid = vendors.reduce((sum, v) => sum + v.amountPaid, 0)
+  const totalContractValue = vendors.reduce((sum, v) => sum + (v.contractValue ?? 0), 0)
+  const totalPaid = vendors.reduce((sum, v) => sum + (v.amountPaid ?? 0), 0)
   const totalPending = totalContractValue - totalPaid
 
   if (loading) {
@@ -462,86 +465,93 @@ export default function VendorsPage() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredVendors.map((vendor) => (
-              <Card key={vendor.id} className="hover:shadow-celebre-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="mb-4 flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="mb-1 text-lg font-semibold text-celebre-ink">{vendor.name}</h3>
-                      <Badge variant="outline" className="text-xs">
-                        {vendor.category}
-                      </Badge>
-                    </div>
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => openEditModal(vendor)}
-                        className="hover:bg-celebre-accent rounded-lg p-2 transition-colors"
-                      >
-                        <Edit2 className="size-4 text-celebre-muted" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(vendor.id)}
-                        className="rounded-lg p-2 transition-colors hover:bg-red-100"
-                      >
-                        <Trash2 className="size-4 text-red-500" />
-                      </button>
-                    </div>
-                  </div>
+            {filteredVendors.map((vendor) => {
+              const contractValue = vendor.contractValue ?? 0
+              const amountPaid = vendor.amountPaid ?? 0
+              const paymentStatus = vendor.paymentStatus ?? 'pendente'
+              const paymentStatusKey = paymentStatus as keyof typeof PAYMENT_STATUS_COLORS
+              const paymentStatusClass =
+                PAYMENT_STATUS_COLORS[paymentStatusKey] ?? PAYMENT_STATUS_COLORS.pendente
 
-                  <div className="mb-4 space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-celebre-muted">
-                      <Phone className="size-4" />
-                      <span>{vendor.phone || 'Sem telefone'}</span>
-                    </div>
-                    {vendor.email && (
-                      <div className="flex items-center gap-2 text-sm text-celebre-muted">
-                        <Mail className="size-4" />
-                        <span className="truncate">{vendor.email}</span>
+              return (
+                <Card key={vendor.id} className="hover:shadow-celebre-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex items-start justify-between">
+                      <div className="flex-1">
+                        <h3 className="mb-1 text-lg font-semibold text-celebre-ink">{vendor.name}</h3>
+                        <Badge variant="outline" className="text-xs">
+                          {vendor.category}
+                        </Badge>
                       </div>
-                    )}
-                    <div className="flex items-center gap-2 text-sm text-celebre-muted">
-                      <FileText className="size-4" />
-                      <span>{vendor._count.tasks} tarefas vinculadas</span>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => openEditModal(vendor)}
+                          className="hover:bg-celebre-accent rounded-lg p-2 transition-colors"
+                        >
+                          <Edit2 className="size-4 text-celebre-muted" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(vendor.id)}
+                          className="rounded-lg p-2 transition-colors hover:bg-red-100"
+                        >
+                          <Trash2 className="size-4 text-red-500" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2 border-t pt-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-celebre-muted">Valor do Contrato</span>
-                      <span className="font-semibold text-celebre-ink">
-                        {formatCurrency(vendor.contractValue)}
-                      </span>
+                    <div className="mb-4 space-y-3">
+                      <div className="flex items-center gap-2 text-sm text-celebre-muted">
+                        <Phone className="size-4" />
+                        <span>{vendor.phone || 'Sem telefone'}</span>
+                      </div>
+                      {vendor.email && (
+                        <div className="flex items-center gap-2 text-sm text-celebre-muted">
+                          <Mail className="size-4" />
+                          <span className="truncate">{vendor.email}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2 text-sm text-celebre-muted">
+                        <FileText className="size-4" />
+                        <span>{vendor._count.tasks} tarefas vinculadas</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-celebre-muted">Pago</span>
-                      <span className="font-semibold text-green-600">
-                        {formatCurrency(vendor.amountPaid)}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-celebre-muted">Status</span>
-                      <Badge
-                        className={`text-xs ${PAYMENT_STATUS_COLORS[vendor.paymentStatus as keyof typeof PAYMENT_STATUS_COLORS]}`}
-                      >
-                        {getPaymentLabel(vendor.paymentStatus)}
-                      </Badge>
-                    </div>
-                  </div>
 
-                  {/* Progress Bar */}
-                  <div className="mt-4">
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
-                      <div
-                        className="h-full bg-green-500 transition-all duration-300"
-                        style={{
-                          width: `${vendor.contractValue > 0 ? (vendor.amountPaid / vendor.contractValue) * 100 : 0}%`,
-                        }}
-                      />
+                    <div className="space-y-2 border-t pt-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-celebre-muted">Valor do Contrato</span>
+                        <span className="font-semibold text-celebre-ink">
+                          {formatCurrency(contractValue)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-celebre-muted">Pago</span>
+                        <span className="font-semibold text-green-600">
+                          {formatCurrency(amountPaid)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-celebre-muted">Status</span>
+                        <Badge className={`text-xs ${paymentStatusClass}`}>
+                          {getPaymentLabel(paymentStatus)}
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+                    {/* Progress Bar */}
+                    <div className="mt-4">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                        <div
+                          className="h-full bg-green-500 transition-all duration-300"
+                          style={{
+                            width: `${contractValue > 0 ? (amountPaid / contractValue) * 100 : 0}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         )}
       </main>

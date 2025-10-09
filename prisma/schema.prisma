@@ -38,8 +38,41 @@ model Event {
   interactions      Interaction[]
   engagementScores  EngagementScore[]
   checkins          Checkin[]
+  hostMemberships   HostOnEvent[]
 
   @@map("events")
+}
+
+model Host {
+  id              String    @id @default(cuid())
+  name            String?
+  email           String?   @unique
+  phone           String?
+  phoneNormalized String?   @unique @map("phone_normalized")
+  passwordHash    String?   @map("password_hash")
+  phoneVerifiedAt DateTime? @map("phone_verified_at")
+  lastLoginAt     DateTime? @map("last_login_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  events HostOnEvent[]
+
+  @@index([phoneNormalized])
+  @@map("hosts")
+}
+
+model HostOnEvent {
+  hostId    String   @map("host_id")
+  eventId   String   @map("event_id")
+  role      HostRole @default(STAFF)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  host  Host  @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([hostId, eventId])
+  @@index([eventId])
+  @@map("hosts_on_events")
 }
 
 model Contact {
@@ -776,4 +809,10 @@ enum VendorStatusAction {
   suspended
   updated
   reactivated
+}
+
+enum HostRole {
+  OWNER
+  ADMIN
+  STAFF
 }

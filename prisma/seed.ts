@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client'
+import { HostRole, PrismaClient } from '@prisma/client'
+import bcrypt from 'bcrypt'
 
 const prisma = new PrismaClient()
 
@@ -35,6 +36,8 @@ async function main() {
   await prisma.consentLog.deleteMany()
   await prisma.contact.deleteMany()
   await prisma.household.deleteMany()
+  await prisma.hostOnEvent.deleteMany()
+  await prisma.host.deleteMany()
   await prisma.event.deleteMany()
 
   console.log('🧹 Cleaned existing data')
@@ -900,6 +903,84 @@ async function main() {
   })
 
   console.log(`✅ Created event: ${event2.title}`)
+
+  // =============================================
+  // HOSTS & MEMBERSHIPS
+  // =============================================
+  console.log('🚀 Creating hosts and memberships')
+
+  const celebDefaultPassword = await bcrypt.hash('Celebre123!', 12)
+
+  const hostAna = await prisma.host.create({
+    data: {
+      name: 'Ana Clara Santos',
+      email: 'ana@celebre.app',
+      phone: '+5527999000001',
+      phoneNormalized: '+5527999000001',
+      passwordHash: celebDefaultPassword,
+      phoneVerifiedAt: new Date(),
+      events: {
+        create: [
+          {
+            role: HostRole.OWNER,
+            event: {
+              connect: { id: event1.id },
+            },
+          },
+          {
+            role: HostRole.ADMIN,
+            event: {
+              connect: { id: event2.id },
+            },
+          },
+        ],
+      },
+    },
+  })
+
+  const hostPedro = await prisma.host.create({
+    data: {
+      name: 'Pedro Henrique Oliveira',
+      email: 'pedro@celebre.app',
+      phone: '+5527999000002',
+      phoneNormalized: '+5527999000002',
+      events: {
+        create: [
+          {
+            role: HostRole.ADMIN,
+            event: {
+              connect: { id: event1.id },
+            },
+          },
+        ],
+      },
+    },
+  })
+
+  const hostMaria = await prisma.host.create({
+    data: {
+      name: 'Maria Eduarda Ribeiro',
+      email: 'maria@celebre.app',
+      phone: '+5527999000003',
+      phoneNormalized: '+5527999000003',
+      passwordHash: celebDefaultPassword,
+      phoneVerifiedAt: new Date(),
+      events: {
+        create: [
+          {
+            role: HostRole.OWNER,
+            event: {
+              connect: { id: event2.id },
+            },
+          },
+        ],
+      },
+    },
+  })
+
+  console.log(
+    `✅ Hosts created: ${hostAna.name}, ${hostPedro.name}, ${hostMaria.name}`
+  )
 
   // Create smaller dataset for event 2 (reuse some contacts, create new ones)
   const event2Contacts = allContacts.slice(0, 40)

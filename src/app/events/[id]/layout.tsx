@@ -30,6 +30,7 @@ import {
   TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip'
+import { EventSwitcher } from '@/components/auth/EventSwitcher'
 import { cn } from '@/lib/utils'
 
 interface EventLayoutProps {
@@ -299,7 +300,12 @@ export default function EventLayout({ children, params }: EventLayoutProps) {
             'pl-0 lg:pl-[calc(var(--rail-width)+1rem)]'
           )}
         >
-          <div className="px-4 pb-20 pt-6 sm:px-6 lg:px-8 lg:pb-8">{children}</div>
+          <div className="px-4 pb-20 pt-6 sm:px-6 lg:px-8 lg:pb-8">
+            <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <EventSwitcher className="w-full lg:max-w-sm" />
+            </div>
+            {children}
+          </div>
         </main>
 
         {/* === BOTTOM NAV MOBILE (atalhos) === */}

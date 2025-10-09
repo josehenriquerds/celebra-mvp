@@ -3,30 +3,43 @@
 import { Download, LayoutGrid, Redo, Undo, ZoomIn, ZoomOut, Shapes } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { usePlannerStore } from '../stores/usePlannerStore'
+import {
+  createPlannerSelector,
+  getPlannerStore,
+  type PlannerStoreHook,
+} from '../stores/usePlannerStore'
 
 interface ToolbarProps {
   onExport: () => void
   onAutoArrange: () => void
   onAutoAllocate: () => void
   exporting?: boolean
+  eventId?: string
+  plannerStore?: PlannerStoreHook
 }
 
 const controlButtonClasses =
   'transition-transform duration-200 ease-smooth hover:bg-muted/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]'
 
-export function Toolbar({ onExport, onAutoArrange, onAutoAllocate, exporting }: ToolbarProps) {
-  const {
-    zoom,
-    zoomIn,
-    zoomOut,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    toggleElementsPalette,
-    showElementsPalette,
-  } = usePlannerStore()
+export function Toolbar({
+  onExport,
+  onAutoArrange,
+  onAutoAllocate,
+  exporting,
+  eventId,
+  plannerStore,
+}: ToolbarProps) {
+  const store = plannerStore ?? getPlannerStore(eventId)
+
+  const zoom = createPlannerSelector(store, (state) => state.zoom)
+  const zoomIn = createPlannerSelector(store, (state) => state.zoomIn)
+  const zoomOut = createPlannerSelector(store, (state) => state.zoomOut)
+  const undo = createPlannerSelector(store, (state) => state.undo)
+  const redo = createPlannerSelector(store, (state) => state.redo)
+  const canUndo = createPlannerSelector(store, (state) => state.canUndo)
+  const canRedo = createPlannerSelector(store, (state) => state.canRedo)
+  const toggleElementsPalette = createPlannerSelector(store, (state) => state.toggleElementsPalette)
+  const showElementsPalette = createPlannerSelector(store, (state) => state.showElementsPalette)
 
   return (
     <div className="flex flex-wrap items-center gap-2">

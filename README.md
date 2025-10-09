@@ -1122,3 +1122,41 @@ MIT Â© 2025 Celebre
 ---
 
 **Feito com â¤ï¸ para transformar eventos em momentos inesquecÃ­veis.**
+## Autenticação de Hosts
+
+A autenticação de anfitriões agora é baseada em NextAuth com sessão JWT e seleção de evento.
+
+### Fluxo de login
+- /login: coleta o telefone e verifica a existência do anfitrião.
+- /login/create-password: permite definir a primeira senha quando ainda não existe.
+- /login/password: autentica com telefone + senha.
+- /login/select-event: lista os eventos vinculados e persiste o evento atual na sessão.
+
+### Endpoints
+- POST /api/auth/lookup-phone
+- POST /api/auth/set-password
+- POST /api/auth/login
+- POST /api/auth/select-event
+- GET /api/auth/session
+
+Todos os endpoints exigem cabeçalho x-csrf-token alinhado com o cookie 
+ext-auth.csrf-token e aplicam rate limit (5 req/min) + bloqueio após 5 tentativas inválidas.
+
+### Variáveis de ambiente
+- NEXTAUTH_SECRET: obrigatório para assinar os tokens.
+- AUTH_DEFAULT_COUNTRY (opcional, padrão BR): país usado ao normalizar telefones.
+- BCRYPT_COST (opcional, mínimo 10): custo de hashing de senha.
+
+### Migrações e seed
+1. 
+px prisma migrate dev --name host_authentication
+2. 
+pm run db:seed
+
+O seed cria três anfitriões de exemplo. A senha padrão é Celebre123! para contas que já têm hash gerado.
+
+### Testes
+- 
+pm run test executa a suíte de unit + integração (Vitest).
+- Playwright pode ser usado para E2E (
+pm run test:e2e) após configurar o ambiente local.
