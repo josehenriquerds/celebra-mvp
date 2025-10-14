@@ -3,6 +3,9 @@ import { z } from 'zod'
 // Table shape enum
 export const tableShapeEnum = z.enum(['round', 'square', 'rect', 'circular'])
 
+// Table type enum
+export const tableTypeEnum = z.enum(['regular', 'vip', 'family', 'kids', 'singles'])
+
 // Element type enum (for decorative elements)
 export const elementTypeEnum = z.enum([
   'cakeTable',
@@ -31,6 +34,8 @@ export const seatSchema = z.object({
         contact: z.object({
           fullName: z.string(),
           isVip: z.boolean(),
+          gender: z.enum(['male', 'female', 'other']).optional(),
+          ageGroup: z.enum(['adult', 'child', 'baby']).default('adult'),
         }),
         children: z.number().int().min(0),
       }),
@@ -45,6 +50,7 @@ export const tableSchema = z.object({
   label: z.string(),
   capacity: z.number().int().positive(),
   shape: tableShapeEnum,
+  tableType: tableTypeEnum.default('regular'),
   x: z.number(),
   y: z.number(),
   radius: z.number().positive(),
@@ -61,6 +67,8 @@ export const unassignedGuestSchema = z.object({
     id: z.string(),
     fullName: z.string(),
     isVip: z.boolean(),
+    gender: z.enum(['male', 'female', 'other']).optional(),
+    ageGroup: z.enum(['adult', 'child', 'baby']).default('adult'),
   }),
   household: z
     .object({
@@ -97,6 +105,7 @@ export const tableInputSchema = z.object({
   label: z.string().min(1, 'Label é obrigatório'),
   capacity: z.number().int().positive('Capacidade deve ser positiva'),
   zone: z.string().optional(),
+  tableType: tableTypeEnum.default('regular'),
   x: z.number().default(0),
   y: z.number().default(0),
   radius: z.number().positive().default(80),
@@ -110,6 +119,7 @@ export const tableUpdateSchema = z.object({
   label: z.string().min(1).optional(),
   capacity: z.number().int().positive().optional(),
   zone: z.string().optional(),
+  tableType: tableTypeEnum.optional(),
   x: z.number().optional(),
   y: z.number().optional(),
   radius: z.number().positive().optional(),
@@ -165,3 +175,4 @@ export type ElementInput = z.infer<typeof elementInputSchema>
 export type ElementUpdate = z.infer<typeof elementUpdateSchema>
 export type ElementType = z.infer<typeof elementTypeEnum>
 export type TableShape = z.infer<typeof tableShapeEnum>
+export type TableType = z.infer<typeof tableTypeEnum>

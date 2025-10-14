@@ -5,6 +5,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { Baby, Star, Users } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { getGuestIcon } from '@/lib/guest-icons'
 import type { UnassignedGuest } from '@/schemas'
 
 interface GuestChipProps {
@@ -36,6 +37,9 @@ export function GuestChip({ guest }: GuestChipProps) {
       title={guest.contact.fullName}
     >
       <div className="flex items-center gap-2">
+        <div className="flex-shrink-0">
+          {getGuestIcon(guest.contact.gender, guest.contact.ageGroup)}
+        </div>
         {guest.contact.isVip && (
           <Star className="size-4 text-yellow-500 transition-colors duration-200 ease-smooth group-hover:text-yellow-600" />
         )}

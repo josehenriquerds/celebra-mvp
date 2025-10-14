@@ -9,6 +9,12 @@ export const engagementTierSchema = z.enum(['bronze', 'prata', 'ouro'])
 // Invite status enum
 export const inviteStatusSchema = z.enum(['pending', 'sent', 'viewed', 'confirmed'])
 
+// Gender enum
+export const genderSchema = z.enum(['male', 'female', 'other'])
+
+// Age group enum
+export const ageGroupSchema = z.enum(['adult', 'child', 'baby'])
+
 // Guest base schema (aligned with Prisma model)
 export const guestSchema = z.object({
   id: z.string(),
@@ -28,6 +34,8 @@ export const guestSchema = z.object({
     email: z.string().nullable(),
     relation: z.string(),
     isVip: z.boolean(),
+    gender: genderSchema.optional(),
+    ageGroup: ageGroupSchema.default('adult'),
     restrictions: z.any().nullable(),
   }),
   household: z
@@ -153,3 +161,5 @@ export type GuestWithTimeline = z.infer<typeof guestWithTimelineSchema>
 export type RsvpStatus = z.infer<typeof rsvpStatusSchema>
 export type EngagementTier = z.infer<typeof engagementTierSchema>
 export type InviteStatus = z.infer<typeof inviteStatusSchema>
+export type Gender = z.infer<typeof genderSchema>
+export type AgeGroup = z.infer<typeof ageGroupSchema>

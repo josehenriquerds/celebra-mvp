@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { TABLE_TYPE_CONFIG } from '@/lib/guest-icons'
+import type { TableType } from '@/schemas'
 
 interface CreateTableModalProps {
   onClose: () => void
@@ -14,6 +16,7 @@ interface CreateTableModalProps {
     capacity: number
     color: string
     shape: 'round' | 'square'
+    tableType: TableType
   }) => Promise<void>
   tablesCount: number
 }
@@ -34,6 +37,7 @@ export function CreateTableModal({ onClose, onCreate, tablesCount }: CreateTable
   const [capacity, setCapacity] = useState(8)
   const [color, setColor] = useState(PRESET_COLORS[0]!)
   const [shape, setShape] = useState<'round' | 'square'>('round')
+  const [tableType, setTableType] = useState<TableType>('regular')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,7 +50,7 @@ export function CreateTableModal({ onClose, onCreate, tablesCount }: CreateTable
 
     try {
       setLoading(true)
-      await onCreate({ label, capacity, color, shape })
+      await onCreate({ label, capacity, color, shape, tableType })
       onClose()
     } catch (error) {
       console.error('Error creating table:', error)
@@ -98,6 +102,34 @@ export function CreateTableModal({ onClose, onCreate, tablesCount }: CreateTable
               <p className="mt-1 text-xs text-celebre-muted">
                 Número de assentos ao redor da mesa
               </p>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-celebre-ink">Tipo de Mesa</label>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {(Object.entries(TABLE_TYPE_CONFIG) as [TableType, typeof TABLE_TYPE_CONFIG[TableType]][]).map(([type, config]) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => {
+                      setTableType(type)
+                      setColor(config.color)
+                    }}
+                    className={cn(
+                      'flex flex-col items-start gap-1 rounded-lg border-2 p-3 text-left transition-all',
+                      tableType === type
+                        ? 'border-celebre-brand bg-celebre-accent/10'
+                        : 'border-gray-200 hover:border-gray-300'
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{config.icon}</span>
+                      <span className="text-sm font-medium">{config.label}</span>
+                    </div>
+                    <span className="text-xs text-celebre-muted">{config.description}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>

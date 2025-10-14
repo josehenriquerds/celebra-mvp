@@ -14,10 +14,10 @@ import {
 } from '@dnd-kit/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import { toPng } from 'html-to-image'
-import { ArrowLeft, Plus, Users, X, LayoutGrid } from 'lucide-react'
+import { ArrowLeft, Plus, Users, X, LayoutGrid, Search, Filter, List, Map } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -28,11 +28,13 @@ import {
   ElementsPalette,
   GuestChip,
   TablesCanvas,
+  TablesListView,
   Toolbar,
   UnassignedZone,
   TableStage,
   TableLayoutToolbar,
 } from '@/features/tables/components'
+import { ExportCanvas } from '@/features/tables/components/ExportCanvas'
 import {
   useAssignGuestToSeat,
   useCreateTable,
@@ -187,9 +189,13 @@ export default function TablePlannerPage() {
   const [snapToGrid, setSnapToGrid] = useState(true)
   const [decorativeElements, setDecorativeElements] = useState<any[]>([])
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null)
+  const [guestSearchQuery, setGuestSearchQuery] = useState('')
+  const [selectedHousehold, setSelectedHousehold] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map')
 
   const interactiveButtonClasses = 'transition-transform duration-200 ease-smooth hover:bg-muted/60 hover:shadow-elevation-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.98]'
   const mobilePanelTransition = { duration: 0.3, ease: EASE_SMOOTH }
+  const exportCanvasRef = useRef<HTMLDivElement>(null)
 
   // DnD Sensors
   const sensors = useSensors(
@@ -207,7 +213,32 @@ export default function TablePlannerPage() {
 
   // Extract data
   const tables = data?.tables || []
-  const unassigned = data?.unassigned || []
+  const unassignedAll = data?.unassigned || []
+
+  // Filter guests based on search and household
+  const unassigned = unassignedAll.filter((guest) => {
+    const matchesSearch = !guestSearchQuery ||
+      guest.contact.fullName.toLowerCase().includes(guestSearchQuery.toLowerCase())
+    const matchesHousehold = !selectedHousehold ||
+      guest.household?.id === selectedHousehold
+    return matchesSearch && matchesHousehold
+  })
+
+  // Get unique households for filter
+  const households = Array.from(
+    new Set(unassignedAll.filter(g => g.household).map(g => g.household!))
+  ).filter((h, i, arr) => arr.findIndex(x => x.id === h.id) === i)
+
+  // Calculate statistics
+  const totalSeats = tables.reduce((sum, table) => sum + table.capacity, 0)
+  const occupiedSeats = tables.reduce(
+    (sum, table) => sum + (table.seats?.filter((s) => s.assignment).length || 0),
+    0
+  )
+  const occupancyPercentage = totalSeats > 0 ? Math.round((occupiedSeats / totalSeats) * 100) : 0
+  const fullyOccupiedTables = tables.filter(
+    (table) => table.seats?.filter((s) => s.assignment).length === table.capacity
+  ).length
 
   /* ======= DnD Callbacks ======= */
 
@@ -335,12 +366,14 @@ export default function TablePlannerPage() {
     capacity: number
     color: string
     shape: 'round' | 'square'
+    tableType: 'regular' | 'vip' | 'family' | 'kids' | 'singles'
   }) {
     try {
       await createTableMutation.mutateAsync({
         label: data.label,
         capacity: data.capacity,
         shape: data.shape,
+        tableType: data.tableType,
         x: snap(400 + Math.random() * 200),
         y: snap(300 + Math.random() * 200),
         radius: 80,
@@ -448,12 +481,16 @@ export default function TablePlannerPage() {
   }
 
   async function handleExport() {
-    const canvas = document.getElementById('tables-canvas')
-    if (!canvas) return
+    if (!exportCanvasRef.current) return
 
     try {
       setExporting(true)
-      const dataUrl = await toPng(canvas, { quality: 1.0, pixelRatio: 2 })
+      const dataUrl = await toPng(exportCanvasRef.current, {
+        quality: 1.0,
+        pixelRatio: 2,
+        width: CANVAS_W + 80,
+        height: CANVAS_H + 80,
+      })
       const link = document.createElement('a')
       link.download = `planner-mesas-${eventId}.png`
       link.href = dataUrl
@@ -504,15 +541,52 @@ export default function TablePlannerPage() {
                 <span className="sr-only">Voltar para o evento</span>
               </Button>
             </Link>
-            <div>
+            <div className="flex-1">
               <h1 className="font-heading text-2xl font-bold text-celebre-ink">
                 Planner de Mesas
               </h1>
-              <p className="mt-1 text-sm text-celebre-muted">
-                {tables.length} mesa{tables.length !== 1 ? 's' : ''} • {unassigned.length}{' '}
-                convidado{unassigned.length !== 1 ? 's' : ''} não alocado
-                {unassigned.length !== 1 ? 's' : ''}
-              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-4 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-purple-100 p-2">
+                    <LayoutGrid className="size-4 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-celebre-ink">{tables.length}</p>
+                    <p className="text-xs text-celebre-muted">
+                      Mesa{tables.length !== 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-blue-100 p-2">
+                    <Users className="size-4 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-celebre-ink">
+                      {occupiedSeats} / {totalSeats}
+                    </p>
+                    <p className="text-xs text-celebre-muted">Assentos</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-green-100 p-2">
+                    <span className="text-sm font-bold text-green-600">{occupancyPercentage}%</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-celebre-ink">{fullyOccupiedTables}</p>
+                    <p className="text-xs text-celebre-muted">Completas</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="rounded-lg bg-orange-100 p-2">
+                    <Users className="size-4 text-orange-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-celebre-ink">{unassignedAll.length}</p>
+                    <p className="text-xs text-celebre-muted">Não alocados</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -527,19 +601,45 @@ export default function TablePlannerPage() {
               {useStageMode ? 'Editar Mapa dos Convidados' : 'Implementar Convidados'}
             </Button>
             {!useStageMode && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setGuestPanelOpen((prev) => !prev)}
-                aria-expanded={guestPanelOpen}
-                aria-controls="guest-panel-desktop"
-                data-state={guestPanelOpen ? 'open' : 'closed'}
-                className={cn("hidden items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium md:inline-flex", interactiveButtonClasses, "data-[state=open]:bg-muted/60")}
-              >
-                <Users className="size-4" aria-hidden="true" />
-                {guestPanelOpen ? 'Ocultar nomes' : 'Mostrar nomes'}
-              </Button>
+              <>
+                <div className="flex items-center gap-1 rounded-full border border-border p-1">
+                  <Button
+                    type="button"
+                    variant={viewMode === 'map' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('map')}
+                    className="rounded-full"
+                  >
+                    <Map className="mr-1 size-4" />
+                    Mapa
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={viewMode === 'list' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('list')}
+                    className="rounded-full"
+                  >
+                    <List className="mr-1 size-4" />
+                    Lista
+                  </Button>
+                </div>
+                {viewMode === 'map' && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setGuestPanelOpen((prev) => !prev)}
+                    aria-expanded={guestPanelOpen}
+                    aria-controls="guest-panel-desktop"
+                    data-state={guestPanelOpen ? 'open' : 'closed'}
+                    className={cn("hidden items-center gap-2 rounded-full border border-border px-3 py-2 text-sm font-medium md:inline-flex", interactiveButtonClasses, "data-[state=open]:bg-muted/60")}
+                  >
+                    <Users className="size-4" aria-hidden="true" />
+                    {guestPanelOpen ? 'Ocultar nomes' : 'Mostrar nomes'}
+                  </Button>
+                )}
+              </>
             )}
             <Toolbar
               onExport={handleExport}
@@ -676,16 +776,44 @@ export default function TablePlannerPage() {
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="animate-accordion-down data-[state=closed]:animate-accordion-up">
-                    <div className="max-h-[60vh] space-y-3 overflow-y-auto px-4 pb-4">
-                      <UnassignedZone>
-                        {unassigned.length === 0 ? (
-                          <p className="py-6 text-center text-sm text-celebre-muted">
-                            Todos os convidados foram alocados
-                          </p>
-                        ) : (
-                          unassigned.map((guest) => <GuestChip key={guest.id} guest={guest} />)
-                        )}
-                      </UnassignedZone>
+                    <div className="space-y-3 px-4 pb-4">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-celebre-muted" />
+                        <Input
+                          type="text"
+                          placeholder="Buscar convidado..."
+                          value={guestSearchQuery}
+                          onChange={(e) => setGuestSearchQuery(e.target.value)}
+                          className="pl-9 text-sm"
+                        />
+                      </div>
+                      {households.length > 0 && (
+                        <select
+                          value={selectedHousehold || ''}
+                          onChange={(e) => setSelectedHousehold(e.target.value || null)}
+                          className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          <option value="">Todos os grupos</option>
+                          {households.map((household) => (
+                            <option key={household.id} value={household.id}>
+                              {household.label} ({unassignedAll.filter(g => g.household?.id === household.id).length})
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <div className="max-h-[50vh] space-y-3 overflow-y-auto">
+                        <UnassignedZone>
+                          {unassigned.length === 0 ? (
+                            <p className="py-6 text-center text-sm text-celebre-muted">
+                              {guestSearchQuery || selectedHousehold
+                                ? 'Nenhum convidado encontrado'
+                                : 'Todos os convidados foram alocados'}
+                            </p>
+                          ) : (
+                            unassigned.map((guest) => <GuestChip key={guest.id} guest={guest} />)
+                          )}
+                        </UnassignedZone>
+                      </div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -713,12 +841,44 @@ export default function TablePlannerPage() {
                           <Users className="size-5" aria-hidden="true" />
                           Convidados ({unassigned.length})
                         </CardTitle>
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-celebre-muted" />
+                          <Input
+                            type="text"
+                            placeholder="Buscar convidado..."
+                            value={guestSearchQuery}
+                            onChange={(e) => setGuestSearchQuery(e.target.value)}
+                            className="pl-9 text-sm"
+                          />
+                        </div>
+                        {households.length > 0 && (
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center gap-2 text-xs font-medium text-celebre-muted">
+                              <Filter className="size-3" />
+                              <span>Filtrar por grupo</span>
+                            </div>
+                            <select
+                              value={selectedHousehold || ''}
+                              onChange={(e) => setSelectedHousehold(e.target.value || null)}
+                              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                            >
+                              <option value="">Todos os grupos</option>
+                              {households.map((household) => (
+                                <option key={household.id} value={household.id}>
+                                  {household.label} ({unassignedAll.filter(g => g.household?.id === household.id).length})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
                       </CardHeader>
-                      <CardContent className="max-h-[70vh] space-y-3 overflow-y-auto pr-1">
+                      <CardContent className="max-h-[60vh] space-y-3 overflow-y-auto pr-1">
                         <UnassignedZone>
                           {unassigned.length === 0 ? (
                             <p className="py-8 text-center text-sm text-celebre-muted">
-                              Todos os convidados foram alocados
+                              {guestSearchQuery || selectedHousehold
+                                ? 'Nenhum convidado encontrado'
+                                : 'Todos os convidados foram alocados'}
                             </p>
                           ) : (
                             unassigned.map((guest) => <GuestChip key={guest.id} guest={guest} />)
@@ -849,7 +1009,9 @@ export default function TablePlannerPage() {
                     <Card className="w-full border border-border bg-card shadow-elevation-2">
                       <CardHeader className="flex flex-col gap-3 pb-3">
                         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                          <CardTitle className="font-heading text-lg">Layout das Mesas</CardTitle>
+                          <CardTitle className="font-heading text-lg">
+                            {viewMode === 'map' ? 'Layout das Mesas' : 'Lista de Mesas'}
+                          </CardTitle>
                           <Button
                             type="button"
                             size="sm"
@@ -861,15 +1023,26 @@ export default function TablePlannerPage() {
                           </Button>
                         </div>
                       </CardHeader>
-                      <CardContent className="overflow-auto rounded-3xl border border-dashed border-muted/50 bg-white p-4 transition-colors duration-200 ease-smooth">
-                        <TablesCanvas
-                          tables={tables}
-                          zoom={zoom}
-                          canvasWidth={CANVAS_W}
-                          canvasHeight={CANVAS_H}
-                          onEditTable={setEditingTable}
-                          onDeleteTable={handleDeleteTable}
-                        />
+                      <CardContent className={cn(
+                        "transition-colors duration-200 ease-smooth",
+                        viewMode === 'map' ? "overflow-auto rounded-3xl border border-dashed border-muted/50 bg-white p-4" : "p-4"
+                      )}>
+                        {viewMode === 'map' ? (
+                          <TablesCanvas
+                            tables={tables}
+                            zoom={zoom}
+                            canvasWidth={CANVAS_W}
+                            canvasHeight={CANVAS_H}
+                            onEditTable={setEditingTable}
+                            onDeleteTable={handleDeleteTable}
+                          />
+                        ) : (
+                          <TablesListView
+                            tables={tables}
+                            onEditTable={setEditingTable}
+                            onDeleteTable={handleDeleteTable}
+                          />
+                        )}
                       </CardContent>
                     </Card>
                   </motion.div>
@@ -938,6 +1111,19 @@ export default function TablePlannerPage() {
           </DragOverlay>
         </DndContext>
       </main>
+
+      {/* Hidden Export Canvas */}
+      <div className="fixed left-[-9999px] top-[-9999px]">
+        <ExportCanvas
+          ref={exportCanvasRef}
+          tables={tables}
+          elements={decorativeElements}
+          width={CANVAS_W}
+          height={CANVAS_H}
+          showNumbers={true}
+          showOccupancy={true}
+        />
+      </div>
     </div>
   )
 }

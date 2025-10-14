@@ -1,6 +1,7 @@
 'use client'
 
 import { useDraggable, useDroppable } from '@dnd-kit/core'
+import { getGuestIconEmoji } from '@/lib/guest-icons'
 import type { Seat } from '@/schemas'
 
 interface DroppableSeatProps {
@@ -57,13 +58,20 @@ export function DroppableSeat({ seat, tableId, tableColor, tableRadius, zoom }: 
       title={seat.assignment?.guest.contact.fullName || 'Vazio'}
     >
       <div
-        className={`flex size-10 items-center justify-center rounded-full border-2 text-[11px] font-medium transition-all ${assigned ? 'text-white' : 'bg-white'} ${isOver ? 'border-celebre-brand' : 'border-gray-300'}`}
+        className={`flex size-10 items-center justify-center rounded-full border-2 text-base font-medium transition-all ${assigned ? 'text-white' : 'bg-white'} ${isOver ? 'border-celebre-brand' : 'border-gray-300'}`}
         style={{
           backgroundColor: assigned ? `${tableColor || '#8b5cf6'}30` : undefined,
           borderColor: assigned ? tableColor || 'var(--celebre-brand)' : undefined,
         }}
       >
-        {assigned ? (vip ? '⭐' : seat.index + 1) : seat.index + 1}
+        {assigned ? (
+          vip ? '⭐' : getGuestIconEmoji(
+            seat.assignment!.guest.contact.gender,
+            seat.assignment!.guest.contact.ageGroup
+          )
+        ) : (
+          <span className="text-[11px]">{seat.index + 1}</span>
+        )}
       </div>
     </div>
   )
