@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { getCsrfToken } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import InputMask from 'react-input-mask'
+import { IMaskInput } from 'react-imask'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -101,7 +101,7 @@ export default function LoginPage() {
             Esqueceu a senha?{' '}
             <Link
               href="mailto:suporte@celebre.app"
-              className="font-semibold text-pastel-mint-600 hover:text-pastel-mint-700"
+              className="font-semibold text-[#2d5016] transition-opacity hover:opacity-70"
             >
               Fale com o suporte
             </Link>
@@ -110,7 +110,7 @@ export default function LoginPage() {
             Ainda não tem conta?{' '}
             <Link
               href="/signup"
-              className="font-semibold text-pastel-mint-600 hover:text-pastel-mint-700"
+              className="font-semibold text-[#2d5016] transition-opacity hover:opacity-70"
             >
               Criar conta
             </Link>
@@ -126,23 +126,16 @@ export default function LoginPage() {
             E-mail ou Telefone
           </Label>
           {isPhone ? (
-            <InputMask
-              mask="+55 99 99999-9999"
+            <IMaskInput
+              mask="+55 00 00000-0000"
               value={form.watch('identifier')}
-              onChange={(e) => handleIdentifierChange(e.target.value)}
+              onAccept={(value) => handleIdentifierChange(value)}
               disabled={loading}
-            >
-              {(inputProps: React.InputHTMLAttributes<HTMLInputElement>) => (
-                <Input
-                  {...inputProps}
-                  id="identifier"
-                  placeholder="+55 27 99999-0000"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  className="pastel-input"
-                />
-              )}
-            </InputMask>
+              placeholder="+55 27 99999-0000"
+              inputMode="tel"
+              autoComplete="tel"
+              className="pastel-input flex h-10 w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-celebre-muted disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-celebre-brand focus-visible:ring-offset-2"
+            />
           ) : (
             <Input
               id="identifier"

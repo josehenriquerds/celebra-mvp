@@ -59,7 +59,8 @@
       "Bash(move next.config.js next.config.mjs)",
       "Bash(ren:*)",
       "Bash(npx kill-port:*)",
-      "Bash(if exist node_modules.cache rmdir /s /q node_modules.cache)"
+      "Bash(if exist node_modules.cache rmdir /s /q node_modules.cache)",
+      "Bash(npm uninstall:*)"
     ],
     "deny": [],
     "ask": []

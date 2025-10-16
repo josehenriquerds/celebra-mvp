@@ -36,7 +36,8 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 8%;
+  padding-right: 5%;
+  padding-left: 5%;
   position: relative;
   overflow: hidden;
 }
@@ -44,7 +45,8 @@
 @media (max-width: 768px) {
   .animated-gradient-bg {
     justify-content: center;
-    padding-right: 0;
+    padding-right: 1rem;
+    padding-left: 1rem;
   }
 }
 
@@ -63,6 +65,8 @@
 .login-card {
   position: relative;
   z-index: 10;
+  padding-top: 5.5rem;
+  padding-bottom: 4.5rem;
 }
 
 .social-icon-button {
