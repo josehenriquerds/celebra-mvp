@@ -24,7 +24,7 @@ interface WindowWithCover extends Window {
 
 export default function EventDashboard() {
   const { id } = useParams()
-  const eventId = id as string
+  const eventId = typeof id === 'string' ? id : Array.isArray(id) ? id[0] : ''
   const [coverVisible, setCoverVisible] = useState(true)
 
   // Use backend API via TanStack Query

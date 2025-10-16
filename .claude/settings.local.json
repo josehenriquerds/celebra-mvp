@@ -55,7 +55,11 @@
       "Bash(if exist .next rmdir /s /q .next)",
       "Bash(rm:*)",
       "Bash(netstat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(move next.config.js next.config.mjs)",
+      "Bash(ren:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(if exist node_modules.cache rmdir /s /q node_modules.cache)"
     ],
     "deny": [],
     "ask": []
