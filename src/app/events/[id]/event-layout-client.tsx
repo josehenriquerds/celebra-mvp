@@ -21,19 +21,40 @@ import {
   Calendar,
   LayoutGrid,
 } from 'lucide-react'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import * as React from 'react'
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
   TooltipProvider,
 } from '@/components/ui/tooltip'
-import { EventSwitcher } from '@/components/auth/EventSwitcher'
 import { cn } from '@/lib/utils'
+import type { SidebarNavItem } from './sidebar-item'
 
-type Item = { name: string; href: string; icon: React.ElementType }
+type Item = SidebarNavItem & { href: string }
+
+const livelyGradient = 'from-[#fcb3c1] via-[#fcb3c1] to-[#fcb3c1]'
+const livelyGlow = 'shadow-[0_22px_55px_rgba(7, 7, 7, 0.25)]'
+const livelyAccent = 'bg-[#fa96cb]'
+
+const EventSwitcher = dynamic(
+  () => import('@/components/auth/EventSwitcher').then((mod) => mod.EventSwitcher),
+  {
+    loading: () => (
+      <div
+        className="h-12 w-full animate-pulse rounded-2xl bg-white/60"
+        role="status"
+        aria-label="Carregando eventos"
+      />
+    ),
+    ssr: false,
+  }
+)
+
+const SidebarItem = dynamic(() => import('./sidebar-item'), {
+  ssr: false,
+  loading: () => <li className="h-14 w-full animate-pulse rounded-2xl bg-white/40" />,
+})
 
 const navigation: Item[] = [
   { name: 'Visão Geral', href: '', icon: Home },
@@ -62,6 +83,15 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
   // Rail desktop
   const [pinned, setPinned] = React.useState(false)   // fixa expandida
   const [hovering, setHovering] = React.useState(false)
+  const [viewportWidth, setViewportWidth] = React.useState(0)
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return
+    const handleResize = () => setViewportWidth(window.innerWidth)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const isActive = React.useCallback(
     (href: string) => {
@@ -73,7 +103,14 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
 
   // Colapsa por padrão; expande ao hover ou se "fixar"
   const collapsed = !(pinned || hovering)
-  const width = collapsed ? 80 : 268
+  const expandedWidth = React.useMemo(() => {
+    if (viewportWidth >= 1536) return 320
+    if (viewportWidth >= 1280) return 292
+    if (viewportWidth >= 1024) return 272
+    return 248
+  }, [viewportWidth])
+  const collapsedWidth = React.useMemo(() => (viewportWidth >= 1536 ? 96 : 80), [viewportWidth])
+  const width = collapsed ? collapsedWidth : expandedWidth
 
   const layoutStyle = {
     '--rail-width': `${width}px`,
@@ -96,29 +133,24 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
           onMouseLeave={() => setHovering(false)}
           aria-label="Barra lateral"
         >
-          {/* Glow pastel atrás do rail (sem bloco branco) */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-y-10 -left-6 w-24 rounded-3xl bg-pastel-peach-200/60 blur-[2px]"
-          />
-
           <motion.div
             layout
             style={{ width }}
             transition={
               prefersReducedMotion
                 ? { duration: 0 }
-                : { type: 'spring', stiffness: 380, damping: 32 }
+                : { type: 'spring', stiffness: 520, damping: 28, mass: 0.9 }
             }
             className={cn(
-              'relative my-6 mr-4 h-[calc(100dvh-3rem)]',
-              'rounded-3xl border border-black/5',
-              // Vidro suave (sem placa branca sólida)
-              'bg-white/60 shadow-glass backdrop-blur-lg supports-[backdrop-filter]:bg-white/45'
+              'relative mr-4 flex h-dvh flex-col overflow-hidden',
+              'rounded-r-[36px] rounded-l-none border border-white/40',
+              'bg-white/70 backdrop-blur-2xl supports-[backdrop-filter]:bg-white/60',
+              'pb-5 pt-4',
+              livelyGlow
             )}
           >
             {/* Header do rail */}
-            <div className="flex items-center justify-between px-3 pb-2 pt-3">
+            <div className="flex items-center justify-center rounded-2xl px-1.5 pb-1 pt-1.5">
               <AnimatePresence initial={false}>
                 {!collapsed && (
                   <motion.div
@@ -140,26 +172,27 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
                 aria-expanded={!collapsed}
                 aria-label={pinned ? 'Retrair menu' : 'Expandir e fixar menu'}
                 className={cn(
-                  'rounded-xl p-2 text-xs font-medium transition-all',
-                  'border border-black/5 bg-white/70 shadow-sm hover:bg-white',
-                  'hover:shadow-md active:scale-95'
+                  'rounded-2xl p-2 text-xs font-semibold transition-all',
+                  'border border-white/60 bg-white/80 text-[#ff4f8d]',
+                  'shadow-[0_6px_18px_rgba(15,23,42,0.08)] hover:bg-white active:scale-95'
                 )}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.96 }}
               >
-                {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+                {collapsed ? <ChevronRight className="size-5" /> : <ChevronLeft className="size-5" />}
               </motion.button>
             </div>
 
             {/* Navegação */}
-            <nav
-              aria-label="Navegação Principal"
-              className="custom-scrollbar mt-1 h-[calc(100%-7.25rem)] overflow-y-auto overflow-x-hidden px-2 pb-16"
-            >
-              <ul className="space-y-0.5">
-                {navigation.map((item) => {
-                  const href = `/events/${eventId}${item.href}`
-                  const active = isActive(item.href)
+            <div className="mt-4 flex-1">
+              <nav
+                aria-label="Navegação principal"
+                className="flex h-full flex-col px-1"
+              >
+                <ul className="flex flex-col gap-1">
+                  {navigation.map((item) => {
+                    const href = `/events/${eventId}${item.href}`
+                    const active = isActive(item.href)
                   return (
                     <SidebarItem
                       key={item.name}
@@ -167,25 +200,28 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
                       href={href}
                       active={!!active}
                       collapsed={collapsed}
+                      gradientClass={livelyGradient}
+                      glowClass={livelyGlow}
                     />
                   )
                 })}
               </ul>
             </nav>
+            </div>
 
-            {/* Usuário (rodapé) */}
-            <div className="absolute inset-x-0 bottom-3 px-3">
+            {/* Usuário */}
+            <div className="mt-3 px-1.5">
               <motion.div
                 className={cn(
-                  'group flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-2.5',
-                  'border border-black/5 bg-gradient-to-br from-white/80 to-pastel-mint-50/80',
-                  'shadow-[0_6px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_28px_rgba(0,0,0,0.10)]'
+                  'group flex cursor-pointer items-center gap-3 rounded-2xl border border-white/60 px-3.5 py-3',
+                  'bg-gradient-to-r from-white via-[#fff5fb] to-[#fff1f8]',
+                  'shadow-[0_12px_32px_rgba(15,23,42,0.08)] hover:shadow-[0_18px_40px_rgba(15,23,42,0.12)]'
                 )}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="flex size-9 items-center justify-center rounded-full bg-primary/15 ring-1 ring-primary/20">
-                  <span className="text-sm font-bold text-primary">JH</span>
+                <div className="flex size-10 items-center justify-center rounded-2xl bg-[#ffe1ee] ring-1 ring-white/70">
+                  <span className="text-base font-bold text-[#ff4f8d]">JH</span>
                 </div>
 
                 <AnimatePresence initial={false}>
@@ -196,7 +232,7 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -8 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      transition={{ duration: 0.14, ease: 'easeOut' }}
                     >
                       <p className="truncate text-sm font-semibold leading-none text-foreground">
                         José Henrique
@@ -268,13 +304,18 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
                             href={href}
                             onClick={() => setMobileMenuOpen(false)}
                             className={cn(
-                              'group flex items-center gap-3 rounded-2xl px-3 py-3 text-sm font-medium',
+                              'group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-150',
                               active
-                                ? 'bg-primary text-primary-foreground'
-                                : 'text-muted-foreground hover:bg-primary/10 hover:text-foreground'
+                                ? cn('bg-gradient-to-r text-white', livelyGradient, 'shadow-[0_14px_32px_rgba(255,95,143,0.35)]')
+                                : 'text-foreground/70 hover:bg-white/70 hover:text-foreground'
                             )}
                           >
-                            <item.icon className={cn('h-5 w-5', active && 'text-primary-foreground')} />
+                            <item.icon
+                              className={cn(
+                                'size-5 transition-transform',
+                                active ? 'text-white' : 'text-[#ff4f8d] group-hover:text-[#ff2f78]'
+                              )}
+                            />
                             {item.name}
                           </Link>
                         </li>
@@ -313,20 +354,23 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
                   key={item.name}
                   href={href}
                   className={cn(
-                    'relative flex flex-col items-center gap-1 px-2 py-2.5 text-[10px] font-medium transition-all',
-                    active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+                    'group relative flex flex-col items-center gap-1 px-2 py-2.5 text-[10px] font-semibold transition-all',
+                    active ? 'text-[#ff4f8d]' : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
                   {active && (
                     <motion.div
                       layoutId="mobile-indicator"
-                      className="absolute left-1/2 top-0 h-0.5 w-8 -translate-x-1/2 rounded-full bg-primary"
+                      className={cn(
+                        'absolute left-1/2 top-0 h-1 w-10 -translate-x-1/2 rounded-full',
+                        livelyAccent
+                      )}
                       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                     />
                   )}
                   <item.icon
                     className={cn(
-                      'h-5 w-5 transition-transform',
+                      'h-5 w-5 transition-transform text-current',
                       active ? 'scale-110' : 'group-hover:scale-105'
                     )}
                   />
@@ -338,101 +382,5 @@ export function EventLayoutClient({ children, eventId }: { children: React.React
         </div>
       </div>
     </TooltipProvider>
-  )
-}
-
-/* ======= SUBCOMPONENTES ======= */
-
-function SidebarItem({
-  item,
-  href,
-  active,
-  collapsed,
-}: {
-  item: Item
-  href: string
-  active: boolean
-  collapsed: boolean
-}) {
-  const Icon = item.icon
-
-  const link = (
-    <Link
-      href={href}
-      aria-current={active ? 'page' : undefined}
-      className={cn(
-        'group relative flex items-center gap-3 rounded-xl px-3 py-2 transition-all duration-200',
-        active
-          ? 'font-semibold text-foreground'
-          : 'text-foreground/70 hover:text-foreground'
-      )}
-    >
-      {/* Pílula do item ativo, acompanhando o tema */}
-      <AnimatePresence>
-        {active && (
-          <motion.span
-            layoutId="sb-pill"
-            className="absolute inset-0 rounded-xl bg-primary/10 ring-1 ring-primary/15"
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.98 }}
-            transition={{ type: 'spring', stiffness: 420, damping: 30 }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Ícone com "bolha" que muda de cor conforme o tema */}
-      <motion.div
-        whileHover={{ scale: 1.06, rotate: active ? 0 : 3 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: 'spring', stiffness: 420, damping: 18 }}
-        className="relative z-10"
-      >
-        <span
-          className={cn(
-            'inline-grid size-8 place-items-center rounded-lg',
-            active
-              ? 'bg-primary/15 text-primary ring-1 ring-primary/20'
-              : 'bg-transparent text-foreground/80 group-hover:bg-primary/10 group-hover:text-primary'
-          )}
-        >
-          <Icon className="size-[18px]" />
-        </span>
-      </motion.div>
-
-      {/* Label visível só quando expandida */}
-      <AnimatePresence initial={false}>
-        {!collapsed && (
-          <motion.span
-            key="label"
-            className="relative z-10 truncate text-sm"
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -8 }}
-            transition={{ duration: 0.16, ease: 'easeOut' }}
-          >
-            {item.name}
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </Link>
-  )
-
-  return (
-    <li>
-      {collapsed ? (
-        <Tooltip>
-          <TooltipTrigger asChild>{link}</TooltipTrigger>
-          <TooltipContent
-            side="right"
-            className="bg-foreground text-background"
-          >
-            {item.name}
-          </TooltipContent>
-        </Tooltip>
-      ) : (
-        link
-      )}
-    </li>
   )
 }
